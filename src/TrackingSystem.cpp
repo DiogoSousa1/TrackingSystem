@@ -9,9 +9,13 @@
 #include <iostream>
 #include <librealsense2/rs.hpp>
 #include <apriltag/apriltag.h>
+#include "TagManager.h"
 using namespace std;
 
+
+
 int main() {
-	cout << "!!!Hello World!!!" << endl;
+	rs2::pipeline pipe;
+
 	return 0;
 }
