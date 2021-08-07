@@ -18,7 +18,6 @@ using namespace std;
 int main() {
 	rs2::pipeline pipe;
 	Tag_Manager tag = Tag_Manager();
-	pipe.start();
 	cout << "Hello world!";
 	return 0;
 }

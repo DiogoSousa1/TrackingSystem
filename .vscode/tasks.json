@@ -7,9 +7,9 @@
 			"command": "/usr/bin/g++",
 			"args": [
 				"-g",
-				"${fileDirname}/*.cpp",
+				"${fileDirname}/../src/*.cpp",
 				"-o",
-				"${fileDirname}/${fileBasenameNoExtension}",
+				"${fileDirname}/../bin/TrackingSystem",
 				"-lrealsense2", "-lapriltag"
 			],
 			"options": {
