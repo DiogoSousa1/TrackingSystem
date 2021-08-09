@@ -44,7 +44,7 @@ rs2_extrinsics Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_
     apriltag_pose_t *rawPose = new apriltag_pose_t();
     rs2_extrinsics cameraCoordinatesPosition;
     //right now only one tag is important
-    
+
     for (int actualTag = 0; actualTag < totalTagsDetected; actualTag++)
     {
         zarray_get(detection, actualTag, dataDetection);
@@ -54,7 +54,11 @@ rs2_extrinsics Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_
         for(int c : {1,2,4,5,7,8}) {
             rawPose->R->data[c] *=-1;
         }
+        
         cameraCoordinatesPosition = transformToRS2Structure(rawPose->R->data, rawPose->t->data); 
     }
+    
+    apriltag_detection_destroy(dataDetection);
+    image_u8_destroy(&img);
     return cameraCoordinatesPosition;
 }
