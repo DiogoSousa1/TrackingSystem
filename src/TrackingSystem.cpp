@@ -7,13 +7,12 @@
 //============================================================================
 
 #include <iostream>
-#ifndef REALSENSE2_H
-#define REALSENSE2_H
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
-#endif
 #include <apriltag/apriltag.h>
+
+//My headers
 #include "Headers/TagManager.h"
 
 using namespace std;
@@ -25,5 +24,26 @@ int main()
 	cfg.enable_stream(RS2_STREAM_POSE, RS2_FORMAT_6DOF);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
+	const int fisheye_sensor_idx = 1;
+	rs2::pipeline_profile profile = pipe.start(cfg);
+	rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
+	rs2_extrinsics tagPose = {0};
+	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
+	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
+	bool tagAlreadyDetected = false;
+	const double tagSize = 0.144; //tag size in meters;
+	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
+	while(!tagAlreadyDetected) {
+		rs2::frameset frame = pipe.wait_for_frames();
+		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
+		
+		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
+		//only do tag detector between 6 frames
+		if(frame_Number % 6 == 0) {
+			fisheyeFrame.keep();
+		}
+	}
+
+	std::cout << "Tag detected!";
 	return 0;
 }

@@ -1,34 +1,36 @@
-/*
- * TagManager.h
- *
- *  Created on: 06/08/2021
- *      Author: barata
+/**
+ * @file TagManager.h
+ * @author Diogo Sousa
+ * @brief 
+ * @version 0.1
+ * @date 2021-08-09
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
-
+/* TAGMANAGER_H */
 #ifndef TAGMANAGER_H_
 #define TAGMANAGER_H_
 
-#ifndef APRILTAG_h
-#define APRILTAG_H
 #include <apriltag/apriltag.h>
 #include <apriltag/tag36h11.h>
 #include <apriltag/apriltag_pose.h>
-#endif
-
-#ifndef REALSENSE2_H
-#define REALSENSE2_H
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
-#endif
 
-#include <math.h>
 #include <iostream>
+
+#include "MathHelper.h"
+#include "GeometryHelpers.h"
 
 class Tag_Manager
 {
 public:
+	//constructor and destructors
 	Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics, float tagSize);
 	virtual ~Tag_Manager();
+
+	//detect tag position relative to camera
 	rs2_extrinsics detect(unsigned char *grayImage, const rs2_pose *camera_pose);
 
 private:
