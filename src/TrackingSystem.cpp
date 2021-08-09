@@ -1,9 +1,9 @@
 //============================================================================
 // Name        : TrackingSystem.cpp
 // Author      : Barata
-// Version     :
+// Version     : 1.0
 // Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
+// Description : Tracking System, Ansi-style
 //============================================================================
 
 #include <iostream>
@@ -17,6 +17,7 @@
 
 using namespace std;
 
+//entry point for tracking application
 int main()
 {
 	rs2::pipeline pipe;
@@ -31,16 +32,19 @@ int main()
 	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
 	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
 	bool tagAlreadyDetected = false;
+
 	const double tagSize = 0.144; //tag size in meters;
+
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 	while(!tagAlreadyDetected) {
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
+		
 		//only do tag detector between 6 frames
 		if(frame_Number % 6 == 0) {
-			fisheyeFrame.keep();
+		
 		}
 	}
 

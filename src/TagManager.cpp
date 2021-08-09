@@ -1,10 +1,3 @@
-/*
- * TagManager.cpp
- *
- *  Created on: 06/08/2021
- *      Author: barata
- */
-
 #include "Headers/TagManager.h"
 
 Tag_Manager::Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics, float tagSize)
@@ -37,10 +30,11 @@ rs2_extrinsics Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_
     zarray_t *detection = apriltag_detector_detect(tag_detector, &img);
     int totalTagsDetected = zarray_size(detection);
     if (totalTagsDetected)
-    {
         std::cout << totalTagsDetected + " tag detected\n";
-    } else std::cout << "No tag detected\n";
-    apriltag_detection* dataDetection;
+    else
+        std::cout << "No tag detected\n";
+
+    apriltag_detection *dataDetection;
     apriltag_pose_t *rawPose = new apriltag_pose_t();
     rs2_extrinsics cameraCoordinatesPosition;
 
@@ -49,16 +43,17 @@ rs2_extrinsics Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_
     {
         zarray_get(detection, actualTag, dataDetection);
         undistort(*dataDetection, camera_intrinsics);
+
         //rawPose gets the tag pose in relation to camera
-        
         estimate_pose_for_tag_homography(info, rawPose);
-        for(int c : {1,2,4,5,7,8}) {
-            rawPose->R->data[c] *=-1;
+        for (int c : {1, 2, 4, 5, 7, 8})
+        {
+            rawPose->R->data[c] *= -1;
         }
 
-        cameraCoordinatesPosition = transformToRS2Structure(rawPose->R->data, rawPose->t->data); 
+        cameraCoordinatesPosition = transformToRS2Structure(rawPose->R->data, rawPose->t->data);
     }
-    
+
     apriltag_detection_destroy(dataDetection);
     image_u8_destroy(&img);
     return cameraCoordinatesPosition;

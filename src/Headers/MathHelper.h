@@ -2,7 +2,7 @@
  * @file MathHelper.h
  * @author Diogo Sousa
  * @brief 
- * @version 0.1
+ * @version 1.0
  * @date 2021-08-09
  * 
  * @copyright Copyright (c) 2021

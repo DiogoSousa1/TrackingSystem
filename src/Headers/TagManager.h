@@ -2,7 +2,7 @@
  * @file TagManager.h
  * @author Diogo Sousa
  * @brief 
- * @version 0.1
+ * @version 1.0
  * @date 2021-08-09
  * 
  * @copyright Copyright (c) 2021
@@ -26,6 +26,7 @@
 class Tag_Manager
 {
 public:
+
 	//constructor and destructors
 	Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics, float tagSize);
 	virtual ~Tag_Manager();
@@ -34,6 +35,7 @@ public:
 	rs2_extrinsics detect(unsigned char *grayImage, const rs2_pose *camera_pose);
 
 private:
+
 	apriltag_detector *tag_detector;
 	apriltag_family_t *tag;
 	apriltag_detection_info_t *info;
