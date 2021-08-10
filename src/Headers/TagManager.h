@@ -20,8 +20,10 @@
 
 #include <iostream>
 
+//My headers
 #include "MathHelper.h"
 #include "GeometryHelpers.h"
+#include "TagStructures.h"
 
 class Tag_Manager
 {
@@ -32,7 +34,7 @@ public:
 	virtual ~Tag_Manager();
 
 	//detect tag position relative to camera
-	rs2_extrinsics detect(unsigned char *grayImage, const rs2_pose *camera_pose);
+	bool detect(unsigned char *grayImage, TagStructure* tags);
 
 private:
 

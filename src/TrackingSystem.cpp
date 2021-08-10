@@ -31,23 +31,29 @@ int main()
 	rs2_extrinsics tagPose = {0};
 	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
 	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
-	bool tagAlreadyDetected = false;
 
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
-	while(!tagAlreadyDetected) {
+	//structure where all pose data of tags is stored
+	TagStructure tagsDetected = {0};
+	
+	while(true) {
+
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
-		
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
-		
 		//only do tag detector between 6 frames
-		if(frame_Number % 6 == 0) {
-		
+		if(frame_Number % 6 == 0 && tagsDetected.totalTagsDetected == 0) {
+			fisheyeFrame.keep();
+			tagManager.detect((unsigned char*)fisheyeFrame.get_data(), &tagsDetected);
+
 		}
 	}
 
-	std::cout << "Tag detected!";
+	tagManager.~Tag_Manager();
+	free(&tagsDetected);
+	pipe.stop();
+	
 	return 0;
 }
