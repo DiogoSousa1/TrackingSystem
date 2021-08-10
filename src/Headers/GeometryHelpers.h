@@ -11,6 +11,32 @@
 #ifndef GEOMETRYHELPER_H
 #define GEOMETRYHELPER_H
 #include <librealsense2/rsutil.h>
+#include "TagStructures.h"
+#include <math.h>
+
+static EulerAngles convertMatrixToEuler(float matrixToEuler[9])
+{
+    EulerAngles euler = {0};
+    float sy = sqrt(matrixToEuler[0] * matrixToEuler[0] + matrixToEuler[3] * matrixToEuler[3]);
+    bool singular = sy < 1e-6;
+    float x, y, z;
+    if (!singular)
+    {
+        x = atan2(matrixToEuler[7], matrixToEuler[8]);
+        y = atan2(-matrixToEuler[6], sy);
+        z = atan2(matrixToEuler[3], matrixToEuler[0]);
+    }
+    else
+    {
+        x = atan2(-matrixToEuler[4], matrixToEuler[3]);
+        y = atan2(-matrixToEuler[6], sy);
+        z = 0;
+    }
+    euler.x = x;
+    euler.y = y;
+    euler.z = z;
+    return euler;
+}
 
 static rs2_extrinsics transformToRS2Structure(const double rotation[9], const double translation[3])
 {

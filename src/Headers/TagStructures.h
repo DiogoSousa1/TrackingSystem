@@ -11,11 +11,19 @@
 #ifndef TAGSTRUCTURES_H
 #define TAGSTRUCTURES_H
 #include <librealsense2/rsutil.h>
+
+struct EulerAngles {
+    float x;
+    float y;
+    float z;
+};
+
 struct TagStructure
 {
     rs2_extrinsics* tagsPositions;
     int totalTagsDetected;
-
+    EulerAngles* eulerOftags;
 };
+
 
 #endif

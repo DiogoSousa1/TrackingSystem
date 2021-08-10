@@ -17,6 +17,8 @@
 
 using namespace std;
 
+//TODO: Test if tag detection works!! 
+
 //entry point for tracking application
 int main()
 {
@@ -43,12 +45,17 @@ int main()
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
+		
+		
 		//only do tag detector between 6 frames
 		if(frame_Number % 6 == 0 && tagsDetected.totalTagsDetected == 0) {
 			fisheyeFrame.keep();
 			tagManager.detect((unsigned char*)fisheyeFrame.get_data(), &tagsDetected);
-
+			
 		}
+		
+		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
+		
 	}
 
 	tagManager.~Tag_Manager();
