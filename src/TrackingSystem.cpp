@@ -28,6 +28,7 @@ int main()
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
 	const int fisheye_sensor_idx = 1;
+	cout << "Starting pipeline...";
 	rs2::pipeline_profile profile = pipe.start(cfg);
 	rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
 	rs2_extrinsics tagPose = {0};
@@ -37,8 +38,7 @@ int main()
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
-	//structure where all pose data of tags is stored
-	TagStructure tagsDetected = {0};
+	
 	
 	while(true) {
 
@@ -48,18 +48,19 @@ int main()
 		
 		
 		//only do tag detector between 6 frames
-		if(frame_Number % 6 == 0 && tagsDetected.totalTagsDetected == 0) {
+		if(frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0) {
+			
 			fisheyeFrame.keep();
-			tagManager.detect((unsigned char*)fisheyeFrame.get_data(), &tagsDetected);
+			tagManager.detect((unsigned char*)fisheyeFrame.get_data());
 			
 		}
 		
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
-		
+
+		std::cout << "Detected origin tag\n";
 	}
 
 	tagManager.~Tag_Manager();
-	free(&tagsDetected);
 	pipe.stop();
 	
 	return 0;

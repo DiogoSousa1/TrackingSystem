@@ -1,7 +1,7 @@
 /**
  * @file TagManager.h
  * @author Diogo Sousa
- * @brief 
+ * @brief Tag manager responsible for detecting tags and storing all their data
  * @version 1.0
  * @date 2021-08-09
  * 
@@ -33,8 +33,10 @@ public:
 	Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics, float tagSize);
 	virtual ~Tag_Manager();
 
-	//detect tag position relative to camera
-	bool detect(unsigned char *grayImage, TagStructure* tags);
+	//detect tag position and rotation relative to camera
+	bool detect(unsigned char *grayImage);
+
+	TagStructure allTagsDetected;
 
 private:
 
@@ -42,6 +44,7 @@ private:
 	apriltag_family_t *tag;
 	apriltag_detection_info_t *info;
 	rs2_intrinsics camera_intrinsics;
+
 };
 
 #endif /* TAGMANAGER_H_ */
