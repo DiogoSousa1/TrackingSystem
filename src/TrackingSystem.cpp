@@ -17,7 +17,7 @@
 
 using namespace std;
 
-//TODO: Test if tag detection works!! 
+//TODO: Test if tag detection works!!
 
 //entry point for tracking application
 int main()
@@ -38,23 +38,28 @@ int main()
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
-	
-	
-	while(true) {
+
+	while (true)
+	{
 
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
-		
-		
+
 		//only do tag detector between 6 frames
-		if(frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0) {
-			
+		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0)
+		{
+
 			fisheyeFrame.keep();
-			tagManager.detect((unsigned char*)fisheyeFrame.get_data());
-			
+			tagManager.detect((unsigned char *)fisheyeFrame.get_data());
+			if (tagManager.allTagsDetected.totalTagsDetected > 0)
+			{
+				rs2::pose_frame poseFrame = frame.get_pose_frame();
+				rs2_pose cameraPose = poseFrame.get_pose_data();
+				
+			}
 		}
-		
+
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
 
 		std::cout << "Detected origin tag\n";
@@ -62,6 +67,6 @@ int main()
 
 	tagManager.~Tag_Manager();
 	pipe.stop();
-	
+
 	return 0;
 }
