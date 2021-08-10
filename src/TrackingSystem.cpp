@@ -34,7 +34,7 @@ int main()
 	rs2_extrinsics tagPose = {0};
 	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
 	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
-
+	rs2_pose cameraLastKnownPose;
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
@@ -45,18 +45,19 @@ int main()
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
-
+		rs2::pose_frame poseFrame = frame.get_pose_frame();
+		
 		//only do tag detector between 6 frames
 		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0)
 		{
 
 			fisheyeFrame.keep();
 			tagManager.detect((unsigned char *)fisheyeFrame.get_data());
+			//TODO: rotate relative pose to coordinate system given by tag yaw
 			if (tagManager.allTagsDetected.totalTagsDetected > 0)
 			{
-				rs2::pose_frame poseFrame = frame.get_pose_frame();
-				rs2_pose cameraPose = poseFrame.get_pose_data();
-				
+				cameraLastKnownPose = poseFrame.get_pose_data();
+
 			}
 		}
 
