@@ -11,15 +11,21 @@
 #ifndef ENGINECLIENT_H
 #define ENGINECLIENT_H
 #include "TrackingStructures.h"
+#include <sys/socket.h>
+#include <iostream>
+#include <netinet/in.h>
+using namespace std;
+
 class EngineClient
 {
 public:
-    EngineClient();
+    EngineClient(string ip, string port);
     virtual ~EngineClient();
     bool sendToEngine(poseData dataToSend);
 
 private:
-
+    int sockerDescriptor;
+    sockaddr_in address;
 };
 
 
