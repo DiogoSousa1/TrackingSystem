@@ -17,6 +17,7 @@
 #include <apriltag/apriltag_pose.h>
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
+#include <memory>
 
 #include <iostream>
 
@@ -36,13 +37,12 @@ public:
 	//detect tag position and rotation relative to camera
 	bool detect(unsigned char *grayImage);
 
+	static void apriltag_pose_destroy(apriltag_pose_t* p){ matd_destroy(p->R); matd_destroy(p->t); delete p;}
+   
 	TagStructure allTagsDetected;
-
-private:
-
 	apriltag_detector *tag_detector;
 	apriltag_family_t *tag;
-	apriltag_detection_info_t *info;
+	apriltag_detection_info_t info;
 	rs2_intrinsics camera_intrinsics;
 
 };

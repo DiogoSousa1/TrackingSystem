@@ -11,7 +11,7 @@
 #ifndef TAGSTRUCTURES_H
 #define TAGSTRUCTURES_H
 #include <librealsense2/rsutil.h>
-
+#include <vector>
 struct EulerAngles {
     float x;
     float y;
@@ -20,7 +20,9 @@ struct EulerAngles {
 
 struct TagStructure
 {
-    rs2_extrinsics* tagsPositions;
+    std::shared_ptr<zarray_t> detections;
+    std::vector<std::shared_ptr<apriltag_pose_t>> pose_raw;
+    std::vector<std::shared_ptr<rs2_extrinsics>> tagsPositions;
     int totalTagsDetected;
     EulerAngles* eulerOftags;
 };

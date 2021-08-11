@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ - Build and debug active file",
+            "name": "g++ - Build Tracking System",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileWorkspaceFolder}/bin/TrackingSystem",
@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ build active file",
+            "preLaunchTask": "C/C++: g++ build Tracking System",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

@@ -23,8 +23,6 @@ using namespace std;
 //TODO: ASAP linux support for this project in wTVision
 //TODO: receive tag and rotation and apply to all the points given by camera
 
-
-
 //entry point for tracking application
 int main()
 {
@@ -52,24 +50,30 @@ int main()
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
 		rs2::pose_frame poseFrame = frame.get_pose_frame();
-		
+
 		//only do tag detector between 6 frames
 		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0)
 		{
 
 			fisheyeFrame.keep();
-			tagManager.detect((unsigned char *)fisheyeFrame.get_data());
-			//TODO: rotate relative pose to coordinate system given by tag yaw
-			if (tagManager.allTagsDetected.totalTagsDetected > 0)
+		
+			//TODO: rotate relative pose to coordinate system given by tag rotation matrix
+			if (tagManager.detect((unsigned char *)fisheyeFrame.get_data()))
 			{
-				cameraLastKnownPose = poseFrame.get_pose_data();
-
+				stringstream stream;
+				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.eulerOftags[0].x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.eulerOftags[0].y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.eulerOftags[0].z << "\n";
+				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation[0] << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation[1] << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation[2] << "\n";
+				cout << stream.str();
 			}
+			else
+				cout << "No tag detected\n";
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
-
-		std::cout << "Detected origin tag\n";
 	}
 
 	tagManager.~Tag_Manager();
