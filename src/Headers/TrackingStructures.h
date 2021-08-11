@@ -14,9 +14,9 @@
 
 
 struct EulerAngles {
-    float x;
-    float y;
-    float z;
+    float tilt;
+    float pan;
+    float roll;
 };
 
 /**

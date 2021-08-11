@@ -14,12 +14,15 @@
 
 //My headers
 #include "Headers/TagManager.h"
-
+#include "Headers/EngineClient.h"
 using namespace std;
 
 //entry point for tracking application
 int main()
 {
+	//HardCoded stuff to delete
+	string ip = "192.xxx";
+	string port = "6301";
 	rs2::pipeline pipe;
 	rs2::config cfg;
 	cfg.enable_stream(RS2_STREAM_POSE, RS2_FORMAT_6DOF);
@@ -36,7 +39,7 @@ int main()
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
-
+	EngineClient client = EngineClient(ip,port);
 	while (true)
 	{
 
@@ -57,9 +60,9 @@ int main()
 			{
 				//DEBUG
 				stringstream stream;
-				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.x << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.y << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.z << "\n";
+				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.tilt << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.pan << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.roll << "\n";
 				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation.x << "\n";
 				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation.y << "\n";
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
