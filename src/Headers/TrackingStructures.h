@@ -26,14 +26,16 @@ struct EulerAngles
  *  m31 m32 m33
  * 
  */
-struct Matrix
+struct Matrix3
 {
     float m11;
     float m12;
     float m13;
+
     float m21;
     float m22;
     float m23;
+
     float m31;
     float m32;
     float m33;
@@ -43,7 +45,7 @@ typedef rs2_vector Vector3;
 
 struct poseData
 {
-    Matrix rotation;
+    Matrix3 rotation;
     Vector3 translation;
     EulerAngles eulerOfRotation;
 };

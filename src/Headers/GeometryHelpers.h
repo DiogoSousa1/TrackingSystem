@@ -14,7 +14,7 @@
 #include "TrackingStructures.h"
 #include <math.h>
 
-static EulerAngles convertMatrixToEuler(Matrix matrixToEuler)
+static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
 {
     EulerAngles euler = {0};
     float sy = sqrt(matrixToEuler.m11 * matrixToEuler.m11 + matrixToEuler.m21 * matrixToEuler.m21);
@@ -78,18 +78,30 @@ static poseData transformToPosestructure(const rs2_quaternion &quaternion, const
     tf.translation.z = translation.z;
     return tf;
 }
-static Matrix IdentityMatrix()
+
+//Vector3 operators
+static Vector3 operator+(Vector3 left, Vector3 right)
 {
-    Matrix identity = {0};
-    identity.m11 = 1.0f;
-    identity.m22 = 1.0f;
-    identity.m33 = 1.0f;
-    return identity;
+    Vector3 result;
+    result.x = left.x + right.x;
+    result.y = left.y + right.y;
+    result.z = left.z + right.z;
+    return result;
 }
 
-static Matrix multiplyMatrices(Matrix left, Matrix right)
+static Vector3 operator-(Vector3 left, Vector3 right)
 {
-    Matrix result;
+    Vector3 result;
+    result.x = left.x - right.x;
+    result.y = left.y - right.y;
+    result.z = left.z - right.z;
+    return result;
+}
+
+//Matrix operators
+static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
+{
+    Matrix3 result;
     result.m11 = (left.m11 * right.m11) + (left.m12 * right.m21) + (left.m13 * right.m31);
     result.m12 = (left.m11 * right.m12) + (left.m12 * right.m22) + (left.m13 * right.m32);
     result.m13 = (left.m11 * right.m13) + (left.m12 * right.m23) + (left.m13 * right.m33);
@@ -102,19 +114,27 @@ static Matrix multiplyMatrices(Matrix left, Matrix right)
     return result;
 }
 
-static Matrix translateMatrix(Matrix toTranslate, Vector3 translation)
+static Matrix3 IdentityMatrix()
 {
-    Matrix identity = IdentityMatrix();
+    Matrix3 identity = {0};
+    identity.m11 = 1.0f;
+    identity.m22 = 1.0f;
+    identity.m33 = 1.0f;
+    return identity;
+}
+
+static Matrix3 translateMatrix(Matrix3 toTranslate, Vector3 translation)
+{
+    Matrix3 identity = IdentityMatrix();
     identity.m11 = translation.x;
     identity.m12 = translation.y;
     identity.m13 = translation.z;
     return multiplyMatrices(identity, toTranslate);
 }
 
-static Matrix operator *(Matrix left, Matrix right) {
+static Matrix3 operator*(Matrix3 left, Matrix3 right)
+{
     return multiplyMatrices(left, right);
 }
-
-
 
 #endif
