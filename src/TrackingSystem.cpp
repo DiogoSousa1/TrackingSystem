@@ -44,28 +44,39 @@ int main()
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
 		rs2::pose_frame poseFrame = frame.get_pose_frame();
+		rs2_pose lastKnownPose;
+		rs2_pose lastPose = poseFrame.get_pose_data();
 
 		//only do tag detector between 6 frames
-		if (frame_Number % 6 == 0)
+		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected > 0)
 		{
 
 			fisheyeFrame.keep();
-		
-			
+
 			if (tagManager.detect((unsigned char *)fisheyeFrame.get_data()))
 			{
 				//DEBUG
 				stringstream stream;
-				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.eulerOftags[0].x << "\n";
-				stream << "y: " << tagManager.allTagsDetected.eulerOftags[0].y << "\n";
-				stream << "z: " << tagManager.allTagsDetected.eulerOftags[0].z << "\n";
+				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.z << "\n";
 				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation.x << "\n";
 				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation.y << "\n";
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
 				cout << stream.str();
+				lastKnownPose = poseFrame.get_pose_data();
 			}
 			else
 				cout << "No tag detected\n";
+		}
+		else
+		{
+			poseData pose;
+			pose.translation = lastPose.translation;
+			pose.translation.x -= lastKnownPose.translation.x;
+			pose.translation.y -= lastKnownPose.translation.y;
+			pose.translation.z -= lastKnownPose.translation.z;
+
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected

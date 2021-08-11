@@ -26,7 +26,7 @@ struct EulerAngles {
  *  m31 m32 m33
  * 
  */
-typedef struct Matrix {
+struct Matrix {
      float m11;
      float m12;
      float m13;
@@ -43,14 +43,13 @@ typedef rs2_vector Vector3;
 struct poseData {
     Matrix rotation;
     Vector3 translation;
-    
+    EulerAngles eulerOfRotation;
 };
 
 struct TagStructure
 {
     poseData* tagsPositions;
     int totalTagsDetected;
-    EulerAngles* eulerOftags;
 };
 
 #endif

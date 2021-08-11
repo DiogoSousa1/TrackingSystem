@@ -11,7 +11,7 @@
 #ifndef GEOMETRYHELPER_H
 #define GEOMETRYHELPER_H
 #include <librealsense2/rsutil.h>
-#include "TagStructures.h"
+#include "TrackingStructures.h"
 #include <math.h>
 
 static EulerAngles convertMatrixToEuler(Matrix matrixToEuler)
@@ -38,7 +38,7 @@ static EulerAngles convertMatrixToEuler(Matrix matrixToEuler)
     return euler;
 }
 
-static poseData transformToRS2Structure(const double rotation[9], const double translation[3])
+static poseData transformToPoseStructure(const double rotation[9], const double translation[3])
 {
     poseData result;
 
@@ -55,6 +55,8 @@ static poseData transformToRS2Structure(const double rotation[9], const double t
     result.translation.x = static_cast<float>(translation[0]);
     result.translation.y = static_cast<float>(translation[1]);
     result.translation.z = static_cast<float>(translation[2]);
+
+    result.eulerOfRotation = convertMatrixToEuler(result.rotation);
 
     return result;
 }
@@ -76,5 +78,35 @@ static poseData transformToPosestructure(const rs2_quaternion &quaternion, const
     tf.translation.z = translation.z;
     return tf;
 }
+static Matrix IdentityMatrix() {
+    Matrix identity = {0};
+    identity.m11 = 1.0f;
+    identity.m22 = 1.0f;
+    identity.m33 = 1.0f;
+    return identity;
+}
+
+static Matrix multiplyMatrices(Matrix left, Matrix right)
+{
+    Matrix result;
+    result.m11 = (left.m11 * right.m11) + (left.m12 * right.m21) + (left.m13 * right.m31); 
+    result.m12 = (left.m11 * right.m12) + (left.m12 * right.m22) + (left.m13 * right.m32);
+    result.m13 = (left.m11 * right.m13) + (left.m12 * right.m23) + (left.m13 * right.m33);
+    result.m21 = (left.m21 * right.m11) + (left.m22 * right.m21) + (left.m23 * right.m31);
+    result.m22 = (left.m21 * right.m12) + (left.m22 * right.m22) + (left.m23 * right.m32);
+    result.m23 = (left.m21 * right.m13) + (left.m22 * right.m23) + (left.m23 * right.m33);
+    result.m31 = (left.m31 * right.m11) + (left.m32 * right.m21) + (left.m33 * right.m31);
+    result.m32 = (left.m31 * right.m12) + (left.m32 * right.m22) + (left.m33 * right.m32);
+    result.m33 = (left.m31 * right.m13) + (left.m32 * right.m23) + (left.m33 * right.m33);
+    return result;
+}
+
+static Matrix translateMatrix(Matrix toTranslate, Vector3 translation) {
+    Matrix identity = IdentityMatrix();
+    identity.m11 = translation.x;
+    identity.m12 = translation.y;
+    identity.m13 = translation.z;
+    return multiplyMatrices(identity, toTranslate);
+} 
 
 #endif

@@ -24,7 +24,7 @@
 //My headers
 #include "MathHelper.h"
 #include "GeometryHelpers.h"
-#include "TagStructures.h"
+#include "TrackingStructures.h"
 
 class Tag_Manager
 {

@@ -34,13 +34,11 @@ bool Tag_Manager::detect(unsigned char *image)
     if(!totalTagsDetected) {  
         return false;
     }
-    free(allTagsDetected.eulerOftags);
     free(allTagsDetected.tagsPositions);
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 
     //alloc memory for tag data
     allTagsDetected.tagsPositions = (poseData*) malloc(sizeof(poseData)*totalTagsDetected);
-    allTagsDetected.eulerOftags = (EulerAngles*) malloc(sizeof(EulerAngles)*totalTagsDetected);
 
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
@@ -61,9 +59,8 @@ bool Tag_Manager::detect(unsigned char *image)
         {
             rawPose.R->data[c] *= -1;
         }
-        cameraCoordinatesPosition = transformToRS2Structure(rawPose.R->data, rawPose.t->data);
+        cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
         allTagsDetected.tagsPositions[actualTag] = cameraCoordinatesPosition;
-        allTagsDetected.eulerOftags[actualTag] = convertMatrixToEuler(cameraCoordinatesPosition.rotation);
     }
     apriltag_detection_destroy(dataDetection);
     
