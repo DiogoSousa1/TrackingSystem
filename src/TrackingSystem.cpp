@@ -17,12 +17,6 @@
 
 using namespace std;
 
-//TODO: Test if tag detection works!!
-//TODO: check rotation matrix of tag in aprilrobotics api, may be needed an initial transformation for coordinate system
-//TODO: use the tags rotation matrix to rotate all points to new coord system, because y may change to
-//TODO: ASAP linux support for this project in wTVision
-//TODO: receive tag and rotation and apply to all the points given by camera
-
 //entry point for tracking application
 int main()
 {
