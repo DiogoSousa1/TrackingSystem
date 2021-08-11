@@ -77,8 +77,10 @@ int main()
 			poseData pose;
 			pose.translation = lastPose.translation - lastKnownPose.translation;
 			//Calculate new translation based on the tag position relative to camera
-			pose.translation = tagManager.allTagsDetected.tagsPositions->translation + pose.translation;
+			pose.translation = tagManager.allTagsDetected.tagsPositions[0].translation + pose.translation;
+			pose.translation = transform(pose.translation, tagManager.allTagsDetected.tagsPositions[0].rotation);
 			
+			client.sendToEngine(pose);
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
