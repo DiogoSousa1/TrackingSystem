@@ -2,7 +2,7 @@
 // Name        : TrackingSystem.cpp
 // Author      : Barata
 // Version     : 1.0
-// Copyright   : Your copyright notice
+// Copyright   : wTVIsion stuff
 // Description : Tracking System, Ansi-style
 //============================================================================
 
@@ -51,16 +51,17 @@ int main()
 
 			fisheyeFrame.keep();
 		
-			//TODO: rotate relative pose to coordinate system given by tag rotation matrix
+			
 			if (tagManager.detect((unsigned char *)fisheyeFrame.get_data()))
 			{
+				//DEBUG
 				stringstream stream;
 				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.eulerOftags[0].x << "\n";
 				stream << "y: " << tagManager.allTagsDetected.eulerOftags[0].y << "\n";
 				stream << "z: " << tagManager.allTagsDetected.eulerOftags[0].z << "\n";
-				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation[0] << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation[1] << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation[2] << "\n";
+				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
 				cout << stream.str();
 			}
 			else

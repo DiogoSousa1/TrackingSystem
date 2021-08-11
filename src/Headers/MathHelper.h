@@ -1,7 +1,7 @@
 /**
  * @file MathHelper.h
  * @author Diogo Sousa
- * @brief 
+ * @brief Math helpers for computing homographys, based on intel realsense library examples (this header may be in future useless!)
  * @version 1.0
  * @date 2021-08-09
  * 
@@ -14,6 +14,7 @@
 #include <math.h>
 #include <librealsense2/rsutil.h>
 #include <apriltag/apriltag.h>
+
 
 
 

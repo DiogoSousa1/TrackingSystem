@@ -39,12 +39,12 @@ bool Tag_Manager::detect(unsigned char *image)
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 
     //alloc memory for tag data
-    allTagsDetected.tagsPositions = (rs2_extrinsics*) malloc(sizeof(rs2_extrinsics)*totalTagsDetected);
+    allTagsDetected.tagsPositions = (poseData*) malloc(sizeof(poseData)*totalTagsDetected);
     allTagsDetected.eulerOftags = (EulerAngles*) malloc(sizeof(EulerAngles)*totalTagsDetected);
 
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
-    rs2_extrinsics cameraCoordinatesPosition;
+    poseData cameraCoordinatesPosition;
     auto info_ = info;
     
     //right now only one tag is important
