@@ -39,7 +39,7 @@ int main()
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
-	EngineClient client = EngineClient(ip,port);
+	EngineClient client = EngineClient(ip, port);
 	while (true)
 	{
 
@@ -75,11 +75,10 @@ int main()
 		else
 		{
 			poseData pose;
-			pose.translation = lastPose.translation;
-			pose.translation.x -= lastKnownPose.translation.x;
-			pose.translation.y -= lastKnownPose.translation.y;
-			pose.translation.z -= lastKnownPose.translation.z;
-
+			pose.translation = lastPose.translation - lastKnownPose.translation;
+			//Calculate new translation based on the tag position relative to camera
+			pose.translation = tagManager.allTagsDetected.tagsPositions->translation + pose.translation;
+			
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected

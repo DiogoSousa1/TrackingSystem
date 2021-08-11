@@ -137,4 +137,13 @@ static Matrix3 operator*(Matrix3 left, Matrix3 right)
     return multiplyMatrices(left, right);
 }
 
+static Vector3 transform(Vector3 vector, Matrix3 transform)
+{
+    Vector3 result;
+    result.x = (vector.x * transform.m11) + (vector.y * transform.m21) + (vector.z * transform.m31);
+    result.y = (vector.x * transform.m12) + (vector.y * transform.m22) + (vector.z * transform.m32);
+    result.z = (vector.x * transform.m13) + (vector.y * transform.m23) + (vector.z * transform.m33);
+    return result;
+}
+
 #endif
