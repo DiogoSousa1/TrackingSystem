@@ -52,7 +52,7 @@ int main()
 		rs2::pose_frame poseFrame = frame.get_pose_frame();
 
 		//only do tag detector between 6 frames
-		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected == 0)
+		if (frame_Number % 6 == 0)
 		{
 
 			fisheyeFrame.keep();
