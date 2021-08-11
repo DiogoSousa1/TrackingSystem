@@ -29,5 +29,4 @@ private:
     sockaddr_in address;
 };
 
-
 #endif

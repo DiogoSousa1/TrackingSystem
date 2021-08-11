@@ -32,9 +32,9 @@ static EulerAngles convertMatrixToEuler(Matrix matrixToEuler)
         y = atan2(-matrixToEuler.m31, sy);
         z = 0;
     }
-    euler.x = x;
-    euler.y = y;
-    euler.z = z;
+    euler.tilt = x;
+    euler.pan = y;
+    euler.roll = z;
     return euler;
 }
 
@@ -78,7 +78,8 @@ static poseData transformToPosestructure(const rs2_quaternion &quaternion, const
     tf.translation.z = translation.z;
     return tf;
 }
-static Matrix IdentityMatrix() {
+static Matrix IdentityMatrix()
+{
     Matrix identity = {0};
     identity.m11 = 1.0f;
     identity.m22 = 1.0f;
@@ -89,7 +90,7 @@ static Matrix IdentityMatrix() {
 static Matrix multiplyMatrices(Matrix left, Matrix right)
 {
     Matrix result;
-    result.m11 = (left.m11 * right.m11) + (left.m12 * right.m21) + (left.m13 * right.m31); 
+    result.m11 = (left.m11 * right.m11) + (left.m12 * right.m21) + (left.m13 * right.m31);
     result.m12 = (left.m11 * right.m12) + (left.m12 * right.m22) + (left.m13 * right.m32);
     result.m13 = (left.m11 * right.m13) + (left.m12 * right.m23) + (left.m13 * right.m33);
     result.m21 = (left.m21 * right.m11) + (left.m22 * right.m21) + (left.m23 * right.m31);
@@ -101,12 +102,19 @@ static Matrix multiplyMatrices(Matrix left, Matrix right)
     return result;
 }
 
-static Matrix translateMatrix(Matrix toTranslate, Vector3 translation) {
+static Matrix translateMatrix(Matrix toTranslate, Vector3 translation)
+{
     Matrix identity = IdentityMatrix();
     identity.m11 = translation.x;
     identity.m12 = translation.y;
     identity.m13 = translation.z;
     return multiplyMatrices(identity, toTranslate);
-} 
+}
+
+static Matrix operator *(Matrix left, Matrix right) {
+    return multiplyMatrices(left, right);
+}
+
+
 
 #endif

@@ -12,8 +12,8 @@
 #define TAGSTRUCTURES_H
 #include <librealsense2/rsutil.h>
 
-
-struct EulerAngles {
+struct EulerAngles
+{
     float tilt;
     float pan;
     float roll;
@@ -26,21 +26,23 @@ struct EulerAngles {
  *  m31 m32 m33
  * 
  */
-struct Matrix {
-     float m11;
-     float m12;
-     float m13;
-     float m21;
-     float m22;
-     float m23;
-     float m31;
-     float m32;
-     float m33;   
+struct Matrix
+{
+    float m11;
+    float m12;
+    float m13;
+    float m21;
+    float m22;
+    float m23;
+    float m31;
+    float m32;
+    float m33;
 };
 
 typedef rs2_vector Vector3;
 
-struct poseData {
+struct poseData
+{
     Matrix rotation;
     Vector3 translation;
     EulerAngles eulerOfRotation;
@@ -48,7 +50,7 @@ struct poseData {
 
 struct TagStructure
 {
-    poseData* tagsPositions;
+    poseData *tagsPositions;
     int totalTagsDetected;
 };
 

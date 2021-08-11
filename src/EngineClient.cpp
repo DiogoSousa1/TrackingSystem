@@ -12,13 +12,15 @@ EngineClient::EngineClient(string ip, string port)
 }
 bool EngineClient::sendToEngine(poseData dataToSend)
 {
-    FreeDOperators operators;
+
     CameraData data;
     data.Header = 0xD1;
+    data.Checksum = 1;
     data.CameraId = 0;
     convertPoseToCameraData(dataToSend, 1, 1, &data);
     data.UserDefined = 1;
-    if(sendto(sockerDescriptor,(char*)&data,sizeof(data), 0, (struct sockaddr*)&address,sizeof(address)) == -1) {
+    if (sendto(sockerDescriptor, (char *)&data, sizeof(data), 0, (struct sockaddr *)&address, sizeof(address)) == -1)
+    {
         std::cout << "Could not send data to engine";
         return false;
     };
@@ -27,4 +29,5 @@ bool EngineClient::sendToEngine(poseData dataToSend)
 
 EngineClient::~EngineClient()
 {
+    
 }

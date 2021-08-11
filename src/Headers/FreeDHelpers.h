@@ -12,7 +12,9 @@
 #define FREEDSTRUCTURES_H
 #include <cstring>
 #include "TrackingStructures.h"
-typedef struct FreeDOperators {
+
+typedef const struct FreeDOperators
+{
     const unsigned int pan = 32768;
     const unsigned int tilt = 32768;
     const unsigned int roll = 32768;
@@ -21,13 +23,13 @@ typedef struct FreeDOperators {
     const unsigned int z = 64000;
     const unsigned int zoom = 524288;
     const unsigned int focus = 524288;
-    
-    
 };
+
 FreeDOperators operators;
 
 #pragma pack(1)
-typedef struct CameraData {
+typedef struct CameraData
+{
     unsigned char Header;
     unsigned char CameraId;
     unsigned char Pan[3];
@@ -57,7 +59,8 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
     FourBytesToThreeBigEndian(value_in_bytes, bytes);
 }
 
-static void convertPoseToCameraData(poseData data,unsigned int zoom, unsigned int focus, CameraData* toSend) {
+static void convertPoseToCameraData(poseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
+{
     ConvertToFreeDFormat(toSend->Pan, data.eulerOfRotation.pan, operators.pan);
     ConvertToFreeDFormat(toSend->Tilt, data.eulerOfRotation.tilt, operators.tilt);
     ConvertToFreeDFormat(toSend->Roll, data.eulerOfRotation.roll, operators.roll);
@@ -66,7 +69,6 @@ static void convertPoseToCameraData(poseData data,unsigned int zoom, unsigned in
     ConvertToFreeDFormat(toSend->z, data.translation.z, operators.z);
     ConvertToFreeDFormat(toSend->zoom, zoom, operators.zoom);
     ConvertToFreeDFormat(toSend->focus, focus, operators.focus);
-    
 }
 
 #endif
