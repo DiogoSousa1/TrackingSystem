@@ -9,7 +9,6 @@ EngineClient::EngineClient(string ip, string port)
     }
     address = {0};
     address.sin_family = AF_INET;
-    //TODO: CHECK THIS STUFF
     inet_aton(ip.data(), &address.sin_addr);
     address.sin_port = htons(atoi(port.data()));
     int opt = 1;

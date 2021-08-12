@@ -91,6 +91,7 @@ int main()
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
+		
 	}
 
 	tagManager.~Tag_Manager();

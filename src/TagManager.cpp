@@ -57,7 +57,6 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
         info_.det = dataDetection;
         undistort(*dataDetection, camera_intrinsics);
 
-        //TODO: seg fault here
         estimate_pose_for_tag_homography(&info_, &rawPose);
 
         for (int c : {1, 2, 4, 5, 7, 8})
