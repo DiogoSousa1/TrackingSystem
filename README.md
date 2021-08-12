@@ -1,10 +1,5 @@
 # TrackingSystem
-ul {
-  list-style: none;
-}
-ul li:before {
-  content
-}
+
 <h1>Intel realsense tracking system with tag detection</h1>
 <h2>Requirements:</h2>
 
