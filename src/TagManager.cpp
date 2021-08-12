@@ -23,6 +23,7 @@ Tag_Manager::~Tag_Manager()
     tag36h11_destroy(tag);
     free(&info);
     free(&allTagsDetected);
+    delete this;
 }
 
  
@@ -38,11 +39,11 @@ bool Tag_Manager::detect(unsigned char *image)
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 
     //alloc memory for tag data
-    allTagsDetected.tagsPositions = (poseData*) malloc(sizeof(poseData)*totalTagsDetected);
+    allTagsDetected.tagsPositions = (PoseData*) malloc(sizeof(PoseData)*totalTagsDetected);
 
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
-    poseData cameraCoordinatesPosition;
+    PoseData cameraCoordinatesPosition;
     auto info_ = info;
     
     //right now only one tag is important

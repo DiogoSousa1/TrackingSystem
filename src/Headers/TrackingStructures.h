@@ -43,7 +43,7 @@ struct Matrix3
 
 typedef rs2_vector Vector3;
 
-struct poseData
+struct PoseData
 {
     Matrix3 rotation;
     Vector3 translation;
@@ -52,7 +52,7 @@ struct poseData
 
 struct TagStructure
 {
-    poseData *tagsPositions;
+    PoseData *tagsPositions;
     int totalTagsDetected;
 };
 

@@ -1,7 +1,7 @@
 /**
  * @file FreeDStructures.h
  * @author Diogo Sousa
- * @brief 
+ * @brief FreeD protocol helpers for R3 engine
  * @version 1.0
  * @date 2021-08-11
  * 
@@ -25,6 +25,7 @@ struct FreeDOperators
     const unsigned int focus = 524288;
 };
 static FreeDOperators freeDOperators;
+
 #pragma pack(1)
 struct CameraData
 {
@@ -57,7 +58,7 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
     FourBytesToThreeBigEndian(value_in_bytes, bytes);
 }
 
-static void convertPoseToCameraData(poseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
+static void convertPoseToCameraData(PoseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
     ConvertToFreeDFormat(toSend->Pan, data.eulerOfRotation.pan, freeDOperators.pan);
     ConvertToFreeDFormat(toSend->Tilt, data.eulerOfRotation.tilt, freeDOperators.tilt);

@@ -38,9 +38,9 @@ static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
     return euler;
 }
 
-static poseData transformToPoseStructure(const double rotation[9], const double translation[3])
+static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
 {
-    poseData result;
+    PoseData result;
 
     result.rotation.m11 = static_cast<float>(rotation[0]);
     result.rotation.m12 = static_cast<float>(rotation[1]);
@@ -61,9 +61,9 @@ static poseData transformToPoseStructure(const double rotation[9], const double 
     return result;
 }
 
-static poseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
+static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
 {
-    poseData tf;
+    PoseData tf;
     tf.rotation.m11 = quaternion.w * quaternion.w + quaternion.x * quaternion.x - quaternion.y * quaternion.y - quaternion.z * quaternion.z;
     tf.rotation.m12 = 2 * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
     tf.rotation.m13 = 2 * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);

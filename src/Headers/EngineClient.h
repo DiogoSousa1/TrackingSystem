@@ -2,7 +2,7 @@
  * @file EngineClient.h
  * @author Diogo Sousa
  * @brief Client to connect to R3 engine using FreeD protocol
- * @version 0.1
+ * @version 1.0
  * @date 2021-08-11
  * 
  * @copyright Copyright (c) 2021
@@ -15,6 +15,8 @@
 #include <iostream>
 #include <netinet/in.h>
 #include "FreeDHelpers.h"
+#include <arpa/inet.h>
+#include <unistd.h>
 
 using namespace std;
 
@@ -23,10 +25,10 @@ class EngineClient
 public:
     EngineClient(string ip, string port);
     virtual ~EngineClient();
-    bool sendToEngine(poseData dataToSend);
+    bool sendToEngine(PoseData dataToSend);
 
 private:
-    int sockerDescriptor;
+    int socketDescriptor;
     sockaddr_in address;
 };
 

@@ -20,8 +20,8 @@ using namespace std;
 //entry point for tracking application
 int main()
 {
-	//HardCoded stuff to delete
-	string ip = "192.xxx";
+
+	string ip = "192.168.1.70";
 	string port = "6301";
 	rs2::pipeline pipe;
 	rs2::config cfg;
@@ -74,12 +74,12 @@ int main()
 		}
 		else
 		{
-			poseData pose;
+			PoseData pose;
 			pose.translation = lastPose.translation - lastKnownPose.translation;
 			//Calculate new translation based on the tag position relative to camera
 			pose.translation = tagManager.allTagsDetected.tagsPositions[0].translation + pose.translation;
 			pose.translation = transform(pose.translation, tagManager.allTagsDetected.tagsPositions[0].rotation);
-			
+			pose.eulerOfRotation = EulerAngles{.tilt = 0.0f,.pan = 0.0f,.roll = 0.0f};
 			client.sendToEngine(pose);
 		}
 
@@ -88,6 +88,6 @@ int main()
 
 	tagManager.~Tag_Manager();
 	pipe.stop();
-
+	client.~EngineClient();
 	return 0;
 }
