@@ -14,6 +14,7 @@
 #include <math.h>
 #include <librealsense2/rsutil.h>
 #include <apriltag/apriltag.h>
+#include "TrackingStructures.h"
 
 #define PI 3.1415926535
 
@@ -194,5 +195,6 @@ static float degreesToRadians(float degrees)
 {
     return (PI * degrees) / 180;
 }
+
 
 #endif

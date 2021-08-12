@@ -31,11 +31,13 @@ class Tag_Manager
 public:
 
 	//constructor and destructors
-	Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics, float tagSize);
+	Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &intrisics , float tagSize);
 	virtual ~Tag_Manager();
 
 	//detect tag position and rotation relative to camera
-	bool detect(unsigned char *grayImage);
+	bool detect(unsigned char *grayImage, const rs2_pose* camera_world_pose);
+
+	void compute_tag_pose_in_world(PoseData *tagData, const rs2_pose &camera_world_pose);
 
 	static void apriltag_pose_destroy(apriltag_pose_t* p){ matd_destroy(p->R); matd_destroy(p->t); delete p;}
    
@@ -44,6 +46,7 @@ public:
 	apriltag_family_t *tag;
 	apriltag_detection_info_t info;
 	rs2_intrinsics camera_intrinsics;
+	PoseData body_to_Fisheye_data;
 
 };
 

@@ -57,16 +57,16 @@ int main()
 
 			fisheyeFrame.keep();
 
-			if (tagManager.detect((unsigned char *)fisheyeFrame.get_data()))
+			if (tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose))
 			{
 				//DEBUG
 				stringstream stream;
 				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.tilt << "\n";
 				stream << "y: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.pan << "\n";
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.roll << "\n";
-				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].translation.x << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation.y << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
+				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.z << "\n";
 				cout << stream.str();
 				cameraLastKnownPose = poseFrame.get_pose_data();
 			}
@@ -78,16 +78,12 @@ int main()
 		{
 			PoseData tagPose = tagManager.allTagsDetected.tagsPositions[0];
 
-			//Calculate tag detected coordinate system
-			coordinateTransform = rotateX(degreesToRadians(90)) * tagPose.rotation;
-
+			
 			PoseData enginePose;
 
 			//Calculate new translation based on the tag position relative to camera
-			enginePose.translation = tagPose.translation + (lastPose.translation - cameraLastKnownPose.translation);
-			enginePose.translation = transform(enginePose.translation, coordinateTransform);
-			enginePose.rotation = quaternionToMatrix(lastPose.rotation);
 			
+
 
 			client.sendToEngine(enginePose);
 		}

@@ -63,9 +63,9 @@ static void convertPoseToCameraData(PoseData data, unsigned int zoom, unsigned i
     ConvertToFreeDFormat(toSend->Pan, data.eulerOfRotation.pan, freeDOperators.pan);
     ConvertToFreeDFormat(toSend->Tilt, data.eulerOfRotation.tilt, freeDOperators.tilt);
     ConvertToFreeDFormat(toSend->Roll, data.eulerOfRotation.roll, freeDOperators.roll);
-    ConvertToFreeDFormat(toSend->x, data.translation.x, freeDOperators.x);
-    ConvertToFreeDFormat(toSend->y, data.translation.y, freeDOperators.y);
-    ConvertToFreeDFormat(toSend->z, data.translation.z, freeDOperators.z);
+    ConvertToFreeDFormat(toSend->x, data.worldPosition.x, freeDOperators.x);
+    ConvertToFreeDFormat(toSend->y, data.worldPosition.y, freeDOperators.y);
+    ConvertToFreeDFormat(toSend->z, data.worldPosition.z, freeDOperators.z);
     ConvertToFreeDFormat(toSend->zoom, zoom, freeDOperators.zoom);
     ConvertToFreeDFormat(toSend->focus, focus, freeDOperators.focus);
 }

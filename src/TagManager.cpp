@@ -15,6 +15,7 @@ Tag_Manager::Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &
     info.tagsize = tagSize;
     info.fx = info.fy = 1;
     info.cx = info.cy = 0;
+    body_to_Fisheye_data = transformToPoseStructure(extrinsics.rotation, extrinsics.translation);
 }
 
 Tag_Manager::~Tag_Manager()
@@ -26,13 +27,13 @@ Tag_Manager::~Tag_Manager()
     delete this;
 }
 
- 
-bool Tag_Manager::detect(unsigned char *image)
+bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose)
 {
     image_u8_t img = {camera_intrinsics.width, camera_intrinsics.height, camera_intrinsics.width, image};
     zarray_t *detection = apriltag_detector_detect(tag_detector, &img);
     int totalTagsDetected = zarray_size(detection);
-    if(!totalTagsDetected) {  
+    if (!totalTagsDetected)
+    {
         return false;
     }
 
@@ -40,13 +41,13 @@ bool Tag_Manager::detect(unsigned char *image)
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 
     //alloc memory for tag data
-    allTagsDetected.tagsPositions = (PoseData*) malloc(sizeof(PoseData)*totalTagsDetected);
+    allTagsDetected.tagsPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
 
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
     PoseData cameraCoordinatesPosition;
     auto info_ = info;
-    
+
     //right now only one tag is important
     for (int actualTag = 0; actualTag < totalTagsDetected; actualTag++)
     {
@@ -54,7 +55,7 @@ bool Tag_Manager::detect(unsigned char *image)
         info_.det = dataDetection;
         undistort(*dataDetection, camera_intrinsics);
 
-    //TODO: seg fault here
+        //TODO: seg fault here
         estimate_pose_for_tag_homography(&info_, &rawPose);
 
         for (int c : {1, 2, 4, 5, 7, 8})
@@ -63,8 +64,17 @@ bool Tag_Manager::detect(unsigned char *image)
         }
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
         allTagsDetected.tagsPositions[actualTag] = cameraCoordinatesPosition;
+        compute_tag_pose_in_world(&cameraCoordinatesPosition, *camera_world_pose);
     }
     apriltag_detection_destroy(dataDetection);
-    
+
     return true;
+}
+
+void Tag_Manager::compute_tag_pose_in_world(PoseData *tagData, const rs2_pose &camera_world_pose)
+{
+    PoseData world_to_body = transformToPosestructure(camera_world_pose.rotation, camera_world_pose.translation);
+    PoseData resultOfWorldPose = calculateWorldPosition(calculateWorldPosition(world_to_body, body_to_Fisheye_data), *tagData);
+    tagData->worldPosition = resultOfWorldPose.cameraPosition;
+    tagData->cameraRotation = resultOfWorldPose.cameraRotation;
 }

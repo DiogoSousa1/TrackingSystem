@@ -45,8 +45,10 @@ typedef rs2_vector Vector3;
 
 struct PoseData
 {
-    Matrix3 rotation;
-    Vector3 translation;
+    Matrix3 cameraRotation;
+    Matrix3 worldRotation;
+    Vector3 cameraPosition;
+    Vector3 worldPosition;
     EulerAngles eulerOfRotation;
 };
 
