@@ -16,23 +16,23 @@
 
 typedef rs2_quaternion Quaternion;
 
-static PoseData calculateWorldPosition(PoseData left, PoseData right)
+static PoseData operator*(PoseData left, PoseData right)
 {
-    //is using cameraRotation and cameraPosition just because yes
-    PoseData result;
-    result.cameraRotation.m11 = left.cameraRotation.m11 * right.cameraRotation.m11 + left.cameraRotation.m12 * right.cameraRotation.m21 + left.cameraRotation.m13 * right.cameraRotation.m31;
-    result.cameraRotation.m12 = left.cameraRotation.m11 * right.cameraRotation.m12 + left.cameraRotation.m12 * right.cameraRotation.m22 + left.cameraRotation.m13 * right.cameraRotation.m32;
-    result.cameraRotation.m13 = left.cameraRotation.m11 * right.cameraRotation.m13 + left.cameraRotation.m12 * right.cameraRotation.m23 + left.cameraRotation.m13 * right.cameraRotation.m33;
-    result.cameraRotation.m21 = left.cameraRotation.m21 * right.cameraRotation.m11 + left.cameraRotation.m22 * right.cameraRotation.m21 + left.cameraRotation.m23 * right.cameraRotation.m31;
-    result.cameraRotation.m22 = left.cameraRotation.m21 * right.cameraRotation.m12 + left.cameraRotation.m22 * right.cameraRotation.m22 + left.cameraRotation.m23 * right.cameraRotation.m32;
-    result.cameraRotation.m23 = left.cameraRotation.m21 * right.cameraRotation.m13 + left.cameraRotation.m22 * right.cameraRotation.m23 + left.cameraRotation.m23 * right.cameraRotation.m33;
-    result.cameraRotation.m31 = left.cameraRotation.m31 * right.cameraRotation.m11 + left.cameraRotation.m32 * right.cameraRotation.m21 + left.cameraRotation.m33 * left.cameraRotation.m31;
-    result.cameraRotation.m32 = left.cameraRotation.m31 * right.cameraRotation.m12 + left.cameraRotation.m32 * right.cameraRotation.m22 + left.cameraRotation.m33 * right.cameraRotation.m32;
-    result.cameraRotation.m33 = left.cameraRotation.m31 * right.cameraRotation.m13 + left.cameraRotation.m32 * right.cameraRotation.m23 + left.cameraRotation.m33 * right.cameraRotation.m33;
 
-    result.cameraPosition.x = left.cameraRotation.m11 * right.cameraPosition.x + left.cameraRotation.m12 * right.cameraPosition.y + left.cameraRotation.m13 * right.cameraPosition.z + left.cameraPosition.x;
-    result.cameraPosition.y = left.cameraRotation.m21 * right.cameraPosition.x + left.cameraRotation.m22 * right.cameraPosition.y + left.cameraRotation.m23 * right.cameraPosition.z + left.cameraPosition.y;
-    result.cameraPosition.z = left.cameraRotation.m31 * right.cameraPosition.x + left.cameraRotation.m32 * right.cameraPosition.y + left.cameraRotation.m33 * right.cameraPosition.z + left.cameraPosition.z;
+    PoseData result;
+    result.rotationMatrix.m11 = left.rotationMatrix.m11 * right.rotationMatrix.m11 + left.rotationMatrix.m12 * right.rotationMatrix.m21 + left.rotationMatrix.m13 * right.rotationMatrix.m31;
+    result.rotationMatrix.m12 = left.rotationMatrix.m11 * right.rotationMatrix.m12 + left.rotationMatrix.m12 * right.rotationMatrix.m22 + left.rotationMatrix.m13 * right.rotationMatrix.m32;
+    result.rotationMatrix.m13 = left.rotationMatrix.m11 * right.rotationMatrix.m13 + left.rotationMatrix.m12 * right.rotationMatrix.m23 + left.rotationMatrix.m13 * right.rotationMatrix.m33;
+    result.rotationMatrix.m21 = left.rotationMatrix.m21 * right.rotationMatrix.m11 + left.rotationMatrix.m22 * right.rotationMatrix.m21 + left.rotationMatrix.m23 * right.rotationMatrix.m31;
+    result.rotationMatrix.m22 = left.rotationMatrix.m21 * right.rotationMatrix.m12 + left.rotationMatrix.m22 * right.rotationMatrix.m22 + left.rotationMatrix.m23 * right.rotationMatrix.m32;
+    result.rotationMatrix.m23 = left.rotationMatrix.m21 * right.rotationMatrix.m13 + left.rotationMatrix.m22 * right.rotationMatrix.m23 + left.rotationMatrix.m23 * right.rotationMatrix.m33;
+    result.rotationMatrix.m31 = left.rotationMatrix.m31 * right.rotationMatrix.m11 + left.rotationMatrix.m32 * right.rotationMatrix.m21 + left.rotationMatrix.m33 * left.rotationMatrix.m31;
+    result.rotationMatrix.m32 = left.rotationMatrix.m31 * right.rotationMatrix.m12 + left.rotationMatrix.m32 * right.rotationMatrix.m22 + left.rotationMatrix.m33 * right.rotationMatrix.m32;
+    result.rotationMatrix.m33 = left.rotationMatrix.m31 * right.rotationMatrix.m13 + left.rotationMatrix.m32 * right.rotationMatrix.m23 + left.rotationMatrix.m33 * right.rotationMatrix.m33;
+
+    result.position.x = left.rotationMatrix.m11 * right.position.x + left.rotationMatrix.m12 * right.position.y + left.rotationMatrix.m13 * right.position.z + left.position.x;
+    result.position.y = left.rotationMatrix.m21 * right.position.x + left.rotationMatrix.m22 * right.position.y + left.rotationMatrix.m23 * right.position.z + left.position.y;
+    result.position.z = left.rotationMatrix.m31 * right.position.x + left.rotationMatrix.m32 * right.position.y + left.rotationMatrix.m33 * right.position.z + left.position.z;
     return result;
 }
 
@@ -63,21 +63,21 @@ static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
 static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
 {
     PoseData result;
-    result.cameraRotation.m11 = rotation[0];
-    result.cameraRotation.m12 = rotation[1];
-    result.cameraRotation.m13 = rotation[2];
-    result.cameraRotation.m21 = rotation[3];
-    result.cameraRotation.m22 = rotation[4];
-    result.cameraRotation.m23 = rotation[5];
-    result.cameraRotation.m31 = rotation[6];
-    result.cameraRotation.m32 = rotation[7];
-    result.cameraRotation.m33 = rotation[8];
+    result.rotationMatrix.m11 = rotation[0];
+    result.rotationMatrix.m12 = rotation[1];
+    result.rotationMatrix.m13 = rotation[2];
+    result.rotationMatrix.m21 = rotation[3];
+    result.rotationMatrix.m22 = rotation[4];
+    result.rotationMatrix.m23 = rotation[5];
+    result.rotationMatrix.m31 = rotation[6];
+    result.rotationMatrix.m32 = rotation[7];
+    result.rotationMatrix.m33 = rotation[8];
 
-    result.cameraPosition.x = translation[0];
-    result.cameraPosition.y = translation[1];
-    result.cameraPosition.z = translation[2];
+    result.position.x = translation[0];
+    result.position.y = translation[1];
+    result.position.z = translation[2];
 
-    result.cameraEulerOfRotation = convertMatrixToEuler(result.cameraRotation);
+    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
     return result;
 }
 
@@ -85,21 +85,21 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 {
     PoseData result;
 
-    result.cameraRotation.m11 = static_cast<float>(rotation[0]);
-    result.cameraRotation.m12 = static_cast<float>(rotation[1]);
-    result.cameraRotation.m13 = static_cast<float>(rotation[2]);
-    result.cameraRotation.m21 = static_cast<float>(rotation[3]);
-    result.cameraRotation.m22 = static_cast<float>(rotation[4]);
-    result.cameraRotation.m23 = static_cast<float>(rotation[5]);
-    result.cameraRotation.m31 = static_cast<float>(rotation[6]);
-    result.cameraRotation.m32 = static_cast<float>(rotation[7]);
-    result.cameraRotation.m33 = static_cast<float>(rotation[8]);
+    result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
+    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
+    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
+    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
+    result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
+    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
+    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
+    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
+    result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
 
-    result.cameraPosition.x = static_cast<float>(translation[0]);
-    result.cameraPosition.y = static_cast<float>(translation[1]);
-    result.cameraPosition.z = static_cast<float>(translation[2]);
+    result.position.x = static_cast<float>(translation[0]);
+    result.position.y = static_cast<float>(translation[1]);
+    result.position.z = static_cast<float>(translation[2]);
 
-    result.cameraEulerOfRotation = convertMatrixToEuler(result.cameraRotation);
+    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
 
     return result;
 }
@@ -107,18 +107,18 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
 {
     PoseData tf;
-    tf.cameraRotation.m11 = quaternion.w * quaternion.w + quaternion.x * quaternion.x - quaternion.y * quaternion.y - quaternion.z * quaternion.z;
-    tf.cameraRotation.m12 = 2 * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
-    tf.cameraRotation.m13 = 2 * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
-    tf.cameraRotation.m21 = 2 * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
-    tf.cameraRotation.m22 = quaternion.w * quaternion.w - quaternion.x * quaternion.x + quaternion.y * quaternion.y - quaternion.z * quaternion.z;
-    tf.cameraRotation.m23 = 2 * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
-    tf.cameraRotation.m31 = 2 * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
-    tf.cameraRotation.m32 = 2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
-    tf.cameraRotation.m33 = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z;
-    tf.cameraPosition.x = translation.x;
-    tf.cameraPosition.y = translation.y;
-    tf.cameraPosition.z = translation.z;
+    tf.rotationMatrix.m11 = quaternion.w * quaternion.w + quaternion.x * quaternion.x - quaternion.y * quaternion.y - quaternion.z * quaternion.z;
+    tf.rotationMatrix.m12 = 2 * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
+    tf.rotationMatrix.m13 = 2 * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
+    tf.rotationMatrix.m21 = 2 * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
+    tf.rotationMatrix.m22 = quaternion.w * quaternion.w - quaternion.x * quaternion.x + quaternion.y * quaternion.y - quaternion.z * quaternion.z;
+    tf.rotationMatrix.m23 = 2 * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
+    tf.rotationMatrix.m31 = 2 * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
+    tf.rotationMatrix.m32 = 2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
+    tf.rotationMatrix.m33 = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z;
+    tf.position.x = translation.x;
+    tf.position.y = translation.y;
+    tf.position.z = translation.z;
     return tf;
 }
 

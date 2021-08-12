@@ -37,7 +37,7 @@ public:
 	//detect tag position and rotation relative to camera
 	bool detect(unsigned char *grayImage, const rs2_pose* camera_world_pose);
 
-	void compute_tag_pose_in_world(PoseData *tagData, const rs2_pose &camera_world_pose);
+	PoseData compute_tag_pose_in_world(PoseData tagData, const rs2_pose &camera_world_pose);
 
 	static void apriltag_pose_destroy(apriltag_pose_t* p){ matd_destroy(p->R); matd_destroy(p->t); delete p;}
    

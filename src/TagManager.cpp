@@ -37,11 +37,13 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
         return false;
     }
 
-    free(allTagsDetected.tagsPositions);
+    free(allTagsDetected.tagsCameraPositions);
+    free(allTagsDetected.tagsWorldPositions);
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 
     //alloc memory for tag data
-    allTagsDetected.tagsPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
+    allTagsDetected.tagsCameraPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
+    allTagsDetected.tagsWorldPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
 
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
@@ -63,19 +65,21 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
             rawPose.R->data[c] *= -1;
         }
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
-        allTagsDetected.tagsPositions[actualTag] = cameraCoordinatesPosition;
-        compute_tag_pose_in_world(&cameraCoordinatesPosition, *camera_world_pose);
+        allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
+        allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
     }
     apriltag_detection_destroy(dataDetection);
 
     return true;
 }
 
-void Tag_Manager::compute_tag_pose_in_world(PoseData *tagData, const rs2_pose &camera_world_pose)
+PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs2_pose &camera_world_pose)
 {
+    PoseData worldTagData = {0};
     PoseData world_to_body = transformToPosestructure(camera_world_pose.rotation, camera_world_pose.translation);
-    PoseData resultOfWorldPose = calculateWorldPosition(calculateWorldPosition(world_to_body, body_to_Fisheye_data), *tagData);
-    tagData->worldPosition = resultOfWorldPose.cameraPosition;
-    tagData->cameraRotation = resultOfWorldPose.cameraRotation;
-    tagData->cameraEulerOfRotation = convertMatrixToEuler(tagData->worldRotation);
+    PoseData resultOfWorldPose = world_to_body * body_to_Fisheye_data * cameraTagData;
+    worldTagData.position = resultOfWorldPose.position;
+    worldTagData.rotationMatrix = resultOfWorldPose.rotationMatrix;
+    worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
+    return worldTagData;
 }

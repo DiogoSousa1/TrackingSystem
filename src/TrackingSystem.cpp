@@ -60,18 +60,18 @@ int main()
 			{
 				//DEBUG
 				stringstream stream;
-				stream << "Tags detected\n CameraRotation:\ntilt:" << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.tilt << "\n";
-				stream << "pan: " << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.pan << "\n";
-				stream << "roll: " << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.roll << "\n";
-				stream << "Camera Pos:\nx: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.x << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.y << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.z << "\n";
-				stream << "World Pos:\nx: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.x << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.y << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.z << "\n";
-				stream << "World rotation:\ntilt: " << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.tilt << "\n";
-				stream << "pan:" << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.pan << "\n";
-				stream << "roll:" << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.roll << "\n";
+				stream << "Tags detected\n CameraRotation:\ntilt:" << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.tilt << "\n";
+				stream << "pan: " << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.pan << "\n";
+				stream << "roll: " << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.roll << "\n";
+				stream << "Camera Pos:\nx: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.z << "\n";
+				stream << "World Pos:\nx: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.z << "\n";
+				stream << "World rotation:\ntilt: " << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.tilt << "\n";
+				stream << "pan:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.pan << "\n";
+				stream << "roll:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.roll << "\n";
 				cout << stream.str();
 				cameraLastKnownPose = poseFrame.get_pose_data();
 			}
@@ -81,7 +81,7 @@ int main()
 
 		if (tagManager.allTagsDetected.totalTagsDetected > 0)
 		{
-			PoseData tagPose = tagManager.allTagsDetected.tagsPositions[0];
+			PoseData tagPose = tagManager.allTagsDetected.tagsCameraPositions[0];
 
 			PoseData enginePose;
 

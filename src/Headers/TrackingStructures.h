@@ -45,17 +45,15 @@ typedef rs2_vector Vector3;
 
 struct PoseData
 {
-    Matrix3 cameraRotation;
-    Matrix3 worldRotation;
-    Vector3 cameraPosition;
-    Vector3 worldPosition;
-    EulerAngles cameraEulerOfRotation;
-    EulerAngles worldEulerOfRotation;
+    Matrix3 rotationMatrix;
+    Vector3 position;
+    EulerAngles eulerRotation;
 };
 
 struct TagStructure
 {
-    PoseData *tagsPositions;
+    PoseData *tagsCameraPositions;
+    PoseData *tagsWorldPositions;
     int totalTagsDetected;
 };
 
