@@ -11,7 +11,6 @@
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
 #include <apriltag/apriltag.h>
-
 //My headers
 #include "Headers/TagManager.h"
 #include "Headers/EngineClient.h"
@@ -25,6 +24,7 @@ int main()
 	string port = "6301";
 	rs2::pipeline pipe;
 	rs2::config cfg;
+	Matrix3 coordinateTransform;
 	cfg.enable_stream(RS2_STREAM_POSE, RS2_FORMAT_6DOF);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
@@ -51,7 +51,7 @@ int main()
 		rs2_pose lastPose = poseFrame.get_pose_data();
 
 		//only do tag detector between 6 frames
-		if (frame_Number % 6 == 0 && tagManager.allTagsDetected.totalTagsDetected > 0)
+		if (frame_Number % 6 == 0)
 		{
 
 			fisheyeFrame.keep();
@@ -68,18 +68,26 @@ int main()
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
 				cout << stream.str();
 				lastKnownPose = poseFrame.get_pose_data();
-			}
+						}
 			else
 				cout << "No tag detected\n";
 		}
-		else
+
+		if (tagManager.allTagsDetected.totalTagsDetected > 0)
 		{
+			PoseData tagPose = tagManager.allTagsDetected.tagsPositions[0];
+
+			//Calculate tag detected coordinate system
+			coordinateTransform = rotateX(degreesToRadians(90)) * tagPose.rotation;
+
 			PoseData pose;
-			pose.translation = lastPose.translation - lastKnownPose.translation;
+
 			//Calculate new translation based on the tag position relative to camera
-			pose.translation = tagManager.allTagsDetected.tagsPositions[0].translation + pose.translation;
-			pose.translation = transform(pose.translation, tagManager.allTagsDetected.tagsPositions[0].rotation);
-			pose.eulerOfRotation = EulerAngles{.tilt = 0.0f,.pan = 0.0f,.roll = 0.0f};
+			pose.translation = tagPose.translation + (lastPose.translation - lastKnownPose.translation);
+			pose.translation = transform(pose.translation, coordinateTransform);
+			
+			//pose.translation = transform(pose.translation, tagManager.allTagsDetected.tagsPositions[0].rotation);
+			
 			client.sendToEngine(pose);
 		}
 

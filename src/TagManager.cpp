@@ -35,6 +35,7 @@ bool Tag_Manager::detect(unsigned char *image)
     if(!totalTagsDetected) {  
         return false;
     }
+
     free(allTagsDetected.tagsPositions);
     allTagsDetected.totalTagsDetected = totalTagsDetected;
 

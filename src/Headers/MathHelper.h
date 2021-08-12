@@ -15,8 +15,7 @@
 #include <librealsense2/rsutil.h>
 #include <apriltag/apriltag.h>
 
-
-
+#define PI 3.1415926535
 
 static void deproject(double point[2], const rs2_intrinsics &intrinsics, const double px[2])
 {
@@ -25,7 +24,6 @@ static void deproject(double point[2], const rs2_intrinsics &intrinsics, const d
     point[0] = fpt[0];
     point[1] = fpt[1];
 }
-
 
 static void homography_compute2(const double c[4][4], matd_t *H)
 {
@@ -171,7 +169,6 @@ static void homography_compute2(const double c[4][4], matd_t *H)
     H->data[8] = 1;
 }
 
-
 static void undistort(apriltag_detection_t &detection, const rs2_intrinsics &intrinsics)
 {
     deproject(detection.c, intrinsics, detection.c);
@@ -179,11 +176,11 @@ static void undistort(apriltag_detection_t &detection, const rs2_intrinsics &int
     for (int corner = 0; corner < 4; corner++)
     {
         deproject(detection.p[corner], intrinsics, detection.p[corner]);
-        
+
         corr_arr[corner][0] = (corner == 0 || corner == 3) ? -1 : 1; // tag corners in an ideal image
         corr_arr[corner][1] = (corner == 0 || corner == 1) ? -1 : 1; // tag corners in an ideal image
-        corr_arr[corner][2] = detection.p[corner][0];           // tag corners in undistorted image focal length = 1
-        corr_arr[corner][3] = detection.p[corner][1];           // tag corners in undistorted image focal length = 1
+        corr_arr[corner][2] = detection.p[corner][0];                // tag corners in undistorted image focal length = 1
+        corr_arr[corner][3] = detection.p[corner][1];                // tag corners in undistorted image focal length = 1
     }
 
     if (detection.H == nullptr)
@@ -193,6 +190,9 @@ static void undistort(apriltag_detection_t &detection, const rs2_intrinsics &int
     homography_compute2(corr_arr, detection.H);
 }
 
-
+static float degreesToRadians(float degrees)
+{
+    return (PI * degrees) / 180;
+}
 
 #endif

@@ -14,6 +14,8 @@
 #include "TrackingStructures.h"
 #include <math.h>
 
+typedef rs2_quaternion Quaternion;
+
 static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
 {
     EulerAngles euler = {0};
@@ -99,6 +101,16 @@ static Vector3 operator-(Vector3 left, Vector3 right)
 }
 
 //Matrix operators
+
+static Matrix3 IdentityMatrix()
+{
+    Matrix3 identity = {0};
+    identity.m11 = 1.0f;
+    identity.m22 = 1.0f;
+    identity.m33 = 1.0f;
+    return identity;
+}
+
 static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
 {
     Matrix3 result;
@@ -114,15 +126,55 @@ static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
     return result;
 }
 
-static Matrix3 IdentityMatrix()
+static Matrix3 Invert(Matrix3 value)
 {
-    Matrix3 identity = {0};
-    identity.m11 = 1.0f;
-    identity.m22 = 1.0f;
-    identity.m33 = 1.0f;
-    return identity;
+    Matrix3 result = {0};
+    float det = value.m11 * (value.m22 * value.m33 - value.m31 * value.m23) -
+                value.m12 * (value.m21 * value.m33 - value.m23 * value.m31) +
+                value.m13 * (value.m21 * value.m32 - value.m22 * value.m31);
+    if (det == 0)
+    {
+        return result;
+    }
+    float inverseDet = 1 / det;
+    result.m11 = (value.m22 * value.m33 - value.m32 * value.m23) * inverseDet;
+    result.m12 = (value.m13 * value.m32 - value.m12 * value.m33) * inverseDet;
+    result.m13 = (value.m12 * value.m13 - value.m13 * value.m22) * inverseDet;
+    result.m21 = (value.m23 * value.m31 - value.m21 * value.m33) * inverseDet;
+    result.m22 = (value.m11 * value.m33 - value.m13 * value.m31) * inverseDet;
+    result.m23 = (value.m21 * value.m13 - value.m11 * value.m23) * inverseDet;
+    result.m31 = (value.m21 * value.m32 - value.m31 * value.m22) * inverseDet;
+    result.m32 = (value.m31 * value.m12 - value.m11 * value.m32) * inverseDet;
+    result.m33 = (value.m11 * value.m22 - value.m21 * value.m12) * inverseDet;
+    return result;
 }
 
+static Matrix3 transpose(Matrix3 value)
+{
+    Matrix3 result = {0};
+    result.m11 = value.m11;
+    result.m12 = value.m21;
+    result.m13 = value.m31;
+    result.m21 = value.m12;
+    result.m22 = value.m22;
+    result.m23 = value.m32;
+    result.m31 = value.m13;
+    result.m32 = value.m23;
+    result.m33 = value.m33;
+    return result;
+}
+
+static Matrix3 rotateX(float angle)
+{
+    Matrix3 result = IdentityMatrix();
+    float cosVal = cos(angle);
+    float sinVal = sin(angle);
+    result.m22 = cosVal;
+    result.m23 = sinVal;
+    result.m32 = -sinVal;
+    result.m33 = cosVal;
+    return result;
+}
 static Matrix3 translateMatrix(Matrix3 toTranslate, Vector3 translation)
 {
     Matrix3 identity = IdentityMatrix();
@@ -143,6 +195,36 @@ static Vector3 transform(Vector3 vector, Matrix3 transform)
     result.x = (vector.x * transform.m11) + (vector.y * transform.m21) + (vector.z * transform.m31);
     result.y = (vector.x * transform.m12) + (vector.y * transform.m22) + (vector.z * transform.m32);
     result.z = (vector.x * transform.m13) + (vector.y * transform.m23) + (vector.z * transform.m33);
+    return result;
+}
+
+static Matrix3 quaternionToMatrix(Quaternion q)
+{
+    Matrix3 result = {0};
+    float sqw = q.w * q.w;
+    float sqx = q.x * q.x;
+    float sqy = q.y * q.y;
+    float sqz = q.z * q.z;
+    float inverse = 1 / (sqx + sqy + sqz + sqw);
+    result.m11 = (sqx - sqy - sqz + sqw) * inverse;
+    result.m22 = (-sqx + sqy - sqz + sqw) * inverse;
+    result.m33 = (-sqx - sqy + sqz + sqw) * inverse;
+
+    float tmp1 = q.x * q.y;
+    float tmp2 = q.z * q.w;
+    result.m21 = 2.0f * (tmp1 + tmp2) * inverse;
+    result.m12 = 2.0f * (tmp1 - tmp2) * inverse;
+
+    tmp1 = q.x * q.z;
+    tmp2 = q.y * q.w;
+    result.m31 = 2.0f * (tmp1 - tmp2) * inverse;
+    result.m13 = 2.0f * (tmp1 + tmp2) * inverse;
+
+    tmp1 = q.y * q.z;
+    tmp2 = q.x * q.w;
+    result.m32 = 2.0f * (tmp1 + tmp2) * inverse;
+    result.m23 = 2.0f * (tmp1 - tmp2) * inverse;
+    
     return result;
 }
 

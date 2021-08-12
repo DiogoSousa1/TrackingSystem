@@ -6,7 +6,7 @@
 			"label": "C/C++: g++ build Tracking System",
 			"command": "/usr/bin/g++",
 			"args": [
-				"-g",
+				"-g", 
 				"${fileWorkspaceFolder}/src/*.cpp",
 				"-o",
 				"${fileWorkspaceFolder}/bin/TrackingSystem",
