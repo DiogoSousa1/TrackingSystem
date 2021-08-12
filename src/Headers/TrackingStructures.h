@@ -49,7 +49,8 @@ struct PoseData
     Matrix3 worldRotation;
     Vector3 cameraPosition;
     Vector3 worldPosition;
-    EulerAngles eulerOfRotation;
+    EulerAngles cameraEulerOfRotation;
+    EulerAngles worldEulerOfRotation;
 };
 
 struct TagStructure

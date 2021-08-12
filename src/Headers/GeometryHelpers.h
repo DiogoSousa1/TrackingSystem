@@ -77,7 +77,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     result.cameraPosition.y = translation[1];
     result.cameraPosition.z = translation[2];
 
-    result.eulerOfRotation = convertMatrixToEuler(result.cameraRotation);
+    result.cameraEulerOfRotation = convertMatrixToEuler(result.cameraRotation);
     return result;
 }
 
@@ -99,7 +99,7 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     result.cameraPosition.y = static_cast<float>(translation[1]);
     result.cameraPosition.z = static_cast<float>(translation[2]);
 
-    result.eulerOfRotation = convertMatrixToEuler(result.cameraRotation);
+    result.cameraEulerOfRotation = convertMatrixToEuler(result.cameraRotation);
 
     return result;
 }

@@ -35,8 +35,7 @@ int main()
 	rs2_extrinsics tagPose = {0};
 	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
 	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
-	
-	
+
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
@@ -61,12 +60,18 @@ int main()
 			{
 				//DEBUG
 				stringstream stream;
-				stream << "Tags detected\n R:\nx:" << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.tilt << "\n";
-				stream << "y: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.pan << "\n";
-				stream << "z: " << tagManager.allTagsDetected.tagsPositions->eulerOfRotation.roll << "\n";
-				stream << "T:\nx: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.x << "\n";
+				stream << "Tags detected\n CameraRotation:\ntilt:" << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.tilt << "\n";
+				stream << "pan: " << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.pan << "\n";
+				stream << "roll: " << tagManager.allTagsDetected.tagsPositions[0].cameraEulerOfRotation.roll << "\n";
+				stream << "Camera Pos:\nx: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.x << "\n";
 				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.y << "\n";
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].cameraPosition.z << "\n";
+				stream << "World Pos:\nx: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.x << "\n";
+				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.y << "\n";
+				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].worldPosition.z << "\n";
+				stream << "World rotation:\ntilt: " << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.tilt << "\n";
+				stream << "pan:" << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.pan << "\n";
+				stream << "roll:" << tagManager.allTagsDetected.tagsPositions[0].worldEulerOfRotation.roll << "\n";
 				cout << stream.str();
 				cameraLastKnownPose = poseFrame.get_pose_data();
 			}
@@ -78,12 +83,9 @@ int main()
 		{
 			PoseData tagPose = tagManager.allTagsDetected.tagsPositions[0];
 
-			
 			PoseData enginePose;
 
 			//Calculate new translation based on the tag position relative to camera
-			
-
 
 			client.sendToEngine(enginePose);
 		}

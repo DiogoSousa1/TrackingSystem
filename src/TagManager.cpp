@@ -77,4 +77,5 @@ void Tag_Manager::compute_tag_pose_in_world(PoseData *tagData, const rs2_pose &c
     PoseData resultOfWorldPose = calculateWorldPosition(calculateWorldPosition(world_to_body, body_to_Fisheye_data), *tagData);
     tagData->worldPosition = resultOfWorldPose.cameraPosition;
     tagData->cameraRotation = resultOfWorldPose.cameraRotation;
+    tagData->cameraEulerOfRotation = convertMatrixToEuler(tagData->worldRotation);
 }
