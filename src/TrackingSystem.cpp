@@ -35,7 +35,8 @@ int main()
 	rs2_extrinsics tagPose = {0};
 	rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
 	rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
-	rs2_pose cameraLastKnownPose;
+	
+	
 	const double tagSize = 0.144; //tag size in meters;
 
 	Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
@@ -46,8 +47,8 @@ int main()
 		rs2::frameset frame = pipe.wait_for_frames();
 		rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
 		unsigned long long frame_Number = fisheyeFrame.get_frame_number();
+		rs2_pose cameraLastKnownPose;
 		rs2::pose_frame poseFrame = frame.get_pose_frame();
-		rs2_pose lastKnownPose;
 		rs2_pose lastPose = poseFrame.get_pose_data();
 
 		//only do tag detector between 6 frames
@@ -67,8 +68,8 @@ int main()
 				stream << "y: " << tagManager.allTagsDetected.tagsPositions[0].translation.y << "\n";
 				stream << "z: " << tagManager.allTagsDetected.tagsPositions[0].translation.z << "\n";
 				cout << stream.str();
-				lastKnownPose = poseFrame.get_pose_data();
-						}
+				cameraLastKnownPose = poseFrame.get_pose_data();
+			}
 			else
 				cout << "No tag detected\n";
 		}
@@ -80,15 +81,15 @@ int main()
 			//Calculate tag detected coordinate system
 			coordinateTransform = rotateX(degreesToRadians(90)) * tagPose.rotation;
 
-			PoseData pose;
+			PoseData enginePose;
 
 			//Calculate new translation based on the tag position relative to camera
-			pose.translation = tagPose.translation + (lastPose.translation - lastKnownPose.translation);
-			pose.translation = transform(pose.translation, coordinateTransform);
+			enginePose.translation = tagPose.translation + (lastPose.translation - cameraLastKnownPose.translation);
+			enginePose.translation = transform(enginePose.translation, coordinateTransform);
+			enginePose.rotation = quaternionToMatrix(lastPose.rotation);
 			
-			//pose.translation = transform(pose.translation, tagManager.allTagsDetected.tagsPositions[0].rotation);
-			
-			client.sendToEngine(pose);
+
+			client.sendToEngine(enginePose);
 		}
 
 		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
