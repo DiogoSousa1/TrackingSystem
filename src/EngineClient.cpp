@@ -16,7 +16,9 @@ EngineClient::EngineClient(string ip, string port)
 }
 bool EngineClient::sendToEngine(PoseData dataToSend)
 {
-
+    /*std::cout << "Sending to engine...\n";
+    std::cout << "Position: x:" << dataToSend.position.x <<" y:"<< dataToSend.position.y << " z:" << dataToSend.position.z << std::endl;
+*/
     CameraData data;
     data.Header = 0xD1;
     data.Checksum = 1;

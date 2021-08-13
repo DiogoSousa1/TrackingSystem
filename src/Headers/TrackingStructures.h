@@ -1,7 +1,7 @@
 /**
  * @file TagStructures.h
  * @author Diogo Sousa 
- * @brief File where all structure definitions are declared
+ * @brief File where all structure definitions and debuggers are declared
  * @version 1.0
  * @date 2021-08-10
  * 
@@ -11,6 +11,7 @@
 #ifndef TAGSTRUCTURES_H
 #define TAGSTRUCTURES_H
 #include <librealsense2/rsutil.h>
+#include <iostream>
 
 struct EulerAngles
 {
@@ -57,5 +58,12 @@ struct TagStructure
     PoseData *tagsWorldPositions;
     int totalTagsDetected;
 };
+
+static void printEulers(EulerAngles angles)
+{
+    std::cout << "Euler angles:\ntilt: " << angles.tilt << "\n";
+    std::cout << "pan: " << angles.pan << "\n";
+    std::cout << "roll: " << angles.roll << std::endl;
+}
 
 #endif
