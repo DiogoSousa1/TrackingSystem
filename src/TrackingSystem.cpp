@@ -18,6 +18,12 @@
 //My headers
 #include "Headers/TagManager.h"
 #include "Headers/EngineClient.h"
+
+#define PROJECT_PATH_LOGS "/home/barata/Documentos/Tracking_System/TrackingSystem/logs/"
+#define DEFAULT_LOG_FILE "out.txt"
+#define concat(first, second) first second
+
+#define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
 using namespace std;
 
 static void readInput(int pipe)
@@ -64,8 +70,9 @@ int main()
 		const int fisheye_sensor_idx = 1;
 
 		//write standart output to out.txt file
-		remove("out.log");
-		int out = open("out.log", O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
+		
+		remove(FULL_PATH_OUT_LOG);
+		int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
 		dup2(out, 1);
 		int curFileOffset;
 		cout << "Starting pipeline..." << endl;
@@ -111,6 +118,7 @@ int main()
 
 				//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
 				//! rotation not implemented
+
 				PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
