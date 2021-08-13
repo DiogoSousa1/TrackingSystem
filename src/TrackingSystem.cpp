@@ -24,12 +24,12 @@ int main()
 	string port = "6301";
 	rs2::pipeline pipe;
 	rs2::config cfg;
-	Matrix3 coordinateTransform;
+	Matrix3 coordinateTransform = rotateX(degreesToRadians(90.0f));
 	cfg.enable_stream(RS2_STREAM_POSE, RS2_FORMAT_6DOF);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
 	cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
 	const int fisheye_sensor_idx = 1;
-	cout << "Starting pipeline...";
+	cout << "Starting pipeline..." << endl;
 	rs2::pipeline_profile profile = pipe.start(cfg);
 	rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
 	rs2_extrinsics tagPose = {0};
@@ -72,26 +72,28 @@ int main()
 				stream << "World rotation:\ntilt: " << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.tilt << "\n";
 				stream << "pan:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.pan << "\n";
 				stream << "roll:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.roll << "\n";
-				cout << stream.str();
+				cout << stream.str() << endl;
 				cameraLastKnownPose = poseFrame.get_pose_data();
 			}
-			else
-				cout << "No tag detected\n";
 		}
 
 		if (tagManager.allTagsDetected.totalTagsDetected > 0)
 		{
-			PoseData tagPose = tagManager.allTagsDetected.tagsCameraPositions[0];
-
-			PoseData enginePose;
-
+		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
+			PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
+			coordinateTransform = coordinateTransform * tagWorldPose.rotationMatrix;
+			PoseData enginePose = {0};
+			enginePose.position = cameraLastKnownPose.translation - lastPose.translation;
+			enginePose.position = transform(enginePose.position, coordinateTransform);
+			Matrix3 cameraRotation = Invert(coordinateTransform);
+			enginePose.rotationMatrix = cameraRotation;
+			enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 			//Calculate new translation based on the tag position relative to camera
-
 			client.sendToEngine(enginePose);
+		} else {
+			cout << "Waiting for tag detection..." << endl;
 		}
 
-		//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
-		
 	}
 
 	tagManager.~Tag_Manager();

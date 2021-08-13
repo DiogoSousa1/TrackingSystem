@@ -42,6 +42,7 @@ struct Matrix3
 };
 
 typedef rs2_vector Vector3;
+typedef rs2_quaternion Quaternion;
 
 struct PoseData
 {

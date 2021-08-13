@@ -64,7 +64,9 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
             rawPose.R->data[c] *= -1;
         }
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
+    
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
+
         allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
     }
     apriltag_detection_destroy(dataDetection);
@@ -76,9 +78,7 @@ PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs
 {
     PoseData worldTagData = {0};
     PoseData world_to_body = transformToPosestructure(camera_world_pose.rotation, camera_world_pose.translation);
-    PoseData resultOfWorldPose = world_to_body * body_to_Fisheye_data * cameraTagData;
-    worldTagData.position = resultOfWorldPose.position;
-    worldTagData.rotationMatrix = resultOfWorldPose.rotationMatrix;
+    worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
     worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
     return worldTagData;
 }

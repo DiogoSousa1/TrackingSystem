@@ -14,8 +14,7 @@
 #include "TrackingStructures.h"
 #include <math.h>
 
-typedef rs2_quaternion Quaternion;
-
+//Pose operators
 static PoseData operator*(PoseData left, PoseData right)
 {
 
