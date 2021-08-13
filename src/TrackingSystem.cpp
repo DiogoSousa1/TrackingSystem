@@ -27,8 +27,8 @@ static void readInput(int pipe)
 	while (command != 's')
 	{
 		command = getchar();
+		//read \n after char
 		getchar();
-		cout << "U wrote " << command << "\n";
 		write(pipe, &command, sizeof(char));
 	}
 	cout << "Closing app..." << endl;
@@ -50,7 +50,7 @@ int main()
 		return -1;
 	}
 
-	if (fork() != 0)
+	if (fork())
 	{
 		close(p[1]);
 
@@ -157,6 +157,7 @@ int main()
 	}
 	else
 	{
+		//child code
 		close(p[0]);
 		readInput(p[1]);
 	}
