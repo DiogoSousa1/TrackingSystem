@@ -20,23 +20,40 @@
 #include "Headers/EngineClient.h"
 using namespace std;
 
+static void readInput(int pipe)
+{
+	cout << "Receiving input here..." << endl;
+	char command;
+	while (command != 's')
+	{
+		command = getchar();
+		getchar();
+		cout << "U wrote " << command << "\n";
+		write(pipe, &command, sizeof(char));
+	}
+	cout << "Closing app..." << endl;
+	exit(0);
+}
+
 //entry point for tracking application
 int main()
 {
 	//? create fork to read input and use pipe ?
-
 	int p[2];
 	if (pipe(p) == 0)
 	{
-		cout << "Pipe created sucessfully" << endl;
-		fcntl(p[0], F_SETFL, fcntl(p[1], F_GETFL) | O_NONBLOCK);
+		cout << "Pipe created..." << endl;
+		fcntl(p[0], F_SETFL, O_NONBLOCK);
 	}
 	else
 	{
-		exit(-1);
+		return -1;
 	}
-	if (fork())
+
+	if (fork() != 0)
 	{
+		close(p[1]);
+
 		string ip = "192.168.1.70";
 		string port = "6301";
 		rs2::pipeline camPipeline;
@@ -45,8 +62,12 @@ int main()
 		cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
 		cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
 		const int fisheye_sensor_idx = 1;
-		ofstream outStream("out.txt", ofstream::out);
-		cout.rdbuf(outStream.rdbuf());
+
+		//write standart output to out.txt file
+		remove("out.txt");
+		int out = open("out.txt", O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
+		dup2(out, 1);
+
 		cout << "Starting pipeline..." << endl;
 		rs2::pipeline_profile profile = camPipeline.start(cfg);
 		rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
@@ -118,30 +139,25 @@ int main()
 			{
 				cout << "Waiting for tag detection..." << endl;
 			}
+			char commandSent = (char)0;
 
-			char commandSent;
-			read(p[0], &commandSent, sizeof(char));
+			if (read(p[0], &commandSent, sizeof(char)) != -1)
+			{
+				cout << "command received: " << commandSent << endl;
+			}
+
 			if (commandSent == 's')
 			{
 				stop = true;
 			}
 		}
 
-		close(p[0]);
-		tagManager.~Tag_Manager();
 		camPipeline.stop();
-		client.~EngineClient();
+		return 0;
 	}
 	else
 	{
-		char command = 0;
-		while (command != 's')
-		{
-			command = getchar();
-			write(p[1], &command, sizeof(char));
-		}
-		
-		close(p[1]);
+		close(p[0]);
+		readInput(p[1]);
 	}
-	return 0;
 }

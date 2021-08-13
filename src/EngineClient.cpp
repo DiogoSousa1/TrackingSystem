@@ -39,6 +39,5 @@ EngineClient::~EngineClient()
     close(socketDescriptor);
     socketDescriptor = 0;
     address = {0};
-    delete this;
     return;
 }

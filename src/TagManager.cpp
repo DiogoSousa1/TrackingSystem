@@ -22,9 +22,8 @@ Tag_Manager::~Tag_Manager()
 {
     apriltag_detector_destroy(tag_detector);
     tag36h11_destroy(tag);
-    free(&info);
-    free(&allTagsDetected);
-    delete this;
+    info = {0};
+    allTagsDetected = {0};
 }
 
 bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose)
@@ -64,7 +63,7 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
             rawPose.R->data[c] *= -1;
         }
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
-    
+
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
 
         allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
