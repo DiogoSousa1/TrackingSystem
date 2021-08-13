@@ -61,9 +61,28 @@ struct TagStructure
 
 static void printEulers(EulerAngles angles)
 {
-    std::cout << "Euler angles:\ntilt: " << angles.tilt << "\n";
+    std::cout << "------------------Euler angles----------------------\ntilt: " << angles.tilt << "\n";
     std::cout << "pan: " << angles.pan << "\n";
-    std::cout << "roll: " << angles.roll << std::endl;
+    std::cout << "roll: " << angles.roll << "\n";
+    std::cout << "-----------------------------------"
+              << std::endl;
+}
+
+static void printVector3(Vector3 vector)
+{
+
+    std::cout << "--------------Vector with values-------------------\nx: " << vector.x << "\n";
+    std::cout << "y: " << vector.y << "\n";
+    std::cout << "z: " << vector.z << "\n";
+    std::cout << "-----------------------------------"
+              << std::endl;
+}
+
+static void printPoseData(PoseData data)
+{
+    printVector3(data.position);
+    printEulers(data.eulerRotation);
+    //print of matrix is useless in terms of debug
 }
 
 #endif

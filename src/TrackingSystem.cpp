@@ -64,11 +64,14 @@ int main()
 		const int fisheye_sensor_idx = 1;
 
 		//write standart output to out.txt file
-		remove("out.txt");
-		int out = open("out.txt", O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
+		remove("out.log");
+		int out = open("out.log", O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
 		dup2(out, 1);
-
+		int curFileOffset;
 		cout << "Starting pipeline..." << endl;
+		//To keep log file small store the curfile offset then rewrite data on the same bytes (old data is useless to debug)
+		curFileOffset = lseek(1, 0, SEEK_CUR);
+		cout << flush;
 		rs2::pipeline_profile profile = camPipeline.start(cfg);
 		rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
 		rs2_extrinsics tagPose = {0};
@@ -77,6 +80,7 @@ int main()
 
 		const double tagSize = 0.144; //tag size in meters;
 
+		stringstream stream;
 		Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 		EngineClient client = EngineClient(ip, port);
 		bool stop = false;
@@ -97,22 +101,7 @@ int main()
 
 				if (tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose))
 				{
-					//DEBUG
-					stringstream stream;
-					stream << "Tags detected\nCameraRotation:\ntilt:" << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.tilt << "\n";
-					stream << "pan: " << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.pan << "\n";
-					stream << "roll: " << tagManager.allTagsDetected.tagsCameraPositions[0].eulerRotation.roll << "\n";
-					stream << "Camera Pos:\nx: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.x << "\n";
-					stream << "y: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.y << "\n";
-					stream << "z: " << tagManager.allTagsDetected.tagsCameraPositions[0].position.z << "\n";
-					stream << "World Pos:\nx: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.x << "\n";
-					stream << "y: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.y << "\n";
-					stream << "z: " << tagManager.allTagsDetected.tagsWorldPositions[0].position.z << "\n";
-					stream << "World rotation:\ntilt: " << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.tilt << "\n";
-					stream << "pan:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.pan << "\n";
-					stream << "roll:" << tagManager.allTagsDetected.tagsWorldPositions[0].eulerRotation.roll << "\n";
 
-					cout << stream.str() << endl;
 					cameraLastKnownPose = poseFrame.get_pose_data();
 				}
 			}
@@ -121,35 +110,36 @@ int main()
 			{
 
 				//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
+				//! rotation not implemented
 				PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
-				cout << "Coordinate transformation: \n";
-				printEulers(convertMatrixToEuler(coordinateTransform));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				Matrix3 cameraRotation = Invert(coordinateTransform * quaternionToMatrix(lastPose.rotation));
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
-				//enginePose.eulerRotation = EulerAngles{.tilt = 0.0f, .pan = 0.0f, .roll = 0.0f};
-				//Calculate new translation based on the tag position relative to camera
+
+				cout << "Sending to engine:\n";
+				printPoseData(enginePose);
+
 				client.sendToEngine(enginePose);
+				cout << flush;
 			}
 			else
 			{
 				cout << "Waiting for tag detection..." << endl;
 			}
+
 			char commandSent = (char)0;
 
-			if (read(p[0], &commandSent, sizeof(char)) != -1)
-			{
-				cout << "command received: " << commandSent << endl;
-			}
+			read(p[0], &commandSent, sizeof(char));
 
 			if (commandSent == 's')
 			{
 				stop = true;
 			}
+			lseek(1, curFileOffset, SEEK_SET);
 		}
 
 		camPipeline.stop();
