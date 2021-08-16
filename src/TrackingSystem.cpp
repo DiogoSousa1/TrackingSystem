@@ -64,13 +64,11 @@ int main()
 		string port = "6301";
 		rs2::pipeline camPipeline;
 		rs2::config cfg;
-		cfg.enable_stream(RS2_STREAM_POSE, RS2_FORMAT_6DOF);
-		cfg.enable_stream(RS2_STREAM_FISHEYE, 1, RS2_FORMAT_Y8);
-		cfg.enable_stream(RS2_STREAM_FISHEYE, 2, RS2_FORMAT_Y8);
+		cfg.enable_all_streams();
+
 		const int fisheye_sensor_idx = 1;
 
-		//write standart output to out.txt file
-		
+		//write standard output to out.txt file
 		remove(FULL_PATH_OUT_LOG);
 		int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
 		dup2(out, 1);
@@ -78,7 +76,7 @@ int main()
 		cout << "Starting pipeline..." << endl;
 		//To keep log file small store the curfile offset then rewrite data on the same bytes (old data is useless to debug)
 		curFileOffset = lseek(1, 0, SEEK_CUR);
-		cout << flush;
+
 		rs2::pipeline_profile profile = camPipeline.start(cfg);
 		rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
 		rs2_extrinsics tagPose = {0};
@@ -100,7 +98,7 @@ int main()
 			rs2_pose cameraLastKnownPose;
 			rs2::pose_frame poseFrame = frame.get_pose_frame();
 			rs2_pose lastPose = poseFrame.get_pose_data();
-
+			cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
 			//only do tag detector between 6 frames
 			if (frame_Number % 6 == 0)
 			{
@@ -124,7 +122,8 @@ int main()
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
-				Matrix3 cameraRotation = Invert(coordinateTransform * quaternionToMatrix(lastPose.rotation));
+				enginePose.position.z *= -1.0f;
+				Matrix3 cameraRotation = Invert(coordinateTransform) * quaternionToMatrix(lastPose.rotation);
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 
@@ -132,13 +131,15 @@ int main()
 				printPoseData(enginePose);
 
 				client.sendToEngine(enginePose);
-				cout << flush;
 			}
 			else
 			{
 				cout << "Waiting for tag detection..." << endl;
 			}
 
+			lseek(1, curFileOffset, SEEK_SET);
+
+			//read commands from pipe
 			char commandSent = (char)0;
 
 			read(p[0], &commandSent, sizeof(char));
@@ -147,7 +148,6 @@ int main()
 			{
 				stop = true;
 			}
-			lseek(1, curFileOffset, SEEK_SET);
 		}
 
 		camPipeline.stop();

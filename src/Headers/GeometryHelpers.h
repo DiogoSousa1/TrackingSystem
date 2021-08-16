@@ -14,27 +14,6 @@
 #include "TrackingStructures.h"
 #include <math.h>
 
-//Pose operators
-static PoseData operator*(PoseData left, PoseData right)
-{
-
-    PoseData result;
-    result.rotationMatrix.m11 = left.rotationMatrix.m11 * right.rotationMatrix.m11 + left.rotationMatrix.m12 * right.rotationMatrix.m21 + left.rotationMatrix.m13 * right.rotationMatrix.m31;
-    result.rotationMatrix.m12 = left.rotationMatrix.m11 * right.rotationMatrix.m12 + left.rotationMatrix.m12 * right.rotationMatrix.m22 + left.rotationMatrix.m13 * right.rotationMatrix.m32;
-    result.rotationMatrix.m13 = left.rotationMatrix.m11 * right.rotationMatrix.m13 + left.rotationMatrix.m12 * right.rotationMatrix.m23 + left.rotationMatrix.m13 * right.rotationMatrix.m33;
-    result.rotationMatrix.m21 = left.rotationMatrix.m21 * right.rotationMatrix.m11 + left.rotationMatrix.m22 * right.rotationMatrix.m21 + left.rotationMatrix.m23 * right.rotationMatrix.m31;
-    result.rotationMatrix.m22 = left.rotationMatrix.m21 * right.rotationMatrix.m12 + left.rotationMatrix.m22 * right.rotationMatrix.m22 + left.rotationMatrix.m23 * right.rotationMatrix.m32;
-    result.rotationMatrix.m23 = left.rotationMatrix.m21 * right.rotationMatrix.m13 + left.rotationMatrix.m22 * right.rotationMatrix.m23 + left.rotationMatrix.m23 * right.rotationMatrix.m33;
-    result.rotationMatrix.m31 = left.rotationMatrix.m31 * right.rotationMatrix.m11 + left.rotationMatrix.m32 * right.rotationMatrix.m21 + left.rotationMatrix.m33 * left.rotationMatrix.m31;
-    result.rotationMatrix.m32 = left.rotationMatrix.m31 * right.rotationMatrix.m12 + left.rotationMatrix.m32 * right.rotationMatrix.m22 + left.rotationMatrix.m33 * right.rotationMatrix.m32;
-    result.rotationMatrix.m33 = left.rotationMatrix.m31 * right.rotationMatrix.m13 + left.rotationMatrix.m32 * right.rotationMatrix.m23 + left.rotationMatrix.m33 * right.rotationMatrix.m33;
-
-    result.position.x = left.rotationMatrix.m11 * right.position.x + left.rotationMatrix.m12 * right.position.y + left.rotationMatrix.m13 * right.position.z + left.position.x;
-    result.position.y = left.rotationMatrix.m21 * right.position.x + left.rotationMatrix.m22 * right.position.y + left.rotationMatrix.m23 * right.position.z + left.position.y;
-    result.position.z = left.rotationMatrix.m31 * right.position.x + left.rotationMatrix.m32 * right.position.y + left.rotationMatrix.m33 * right.position.z + left.position.z;
-    return result;
-}
-
 static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
 {
     EulerAngles euler = {0};
@@ -215,6 +194,7 @@ static Matrix3 rotateX(float angle)
     result.m33 = cosVal;
     return result;
 }
+
 static Matrix3 translateMatrix(Matrix3 toTranslate, Vector3 translation)
 {
     Matrix3 identity = IdentityMatrix();
@@ -265,6 +245,17 @@ static Matrix3 quaternionToMatrix(Quaternion q)
     result.m32 = 2.0f * (tmp1 + tmp2) * inverse;
     result.m23 = 2.0f * (tmp1 - tmp2) * inverse;
 
+    return result;
+}
+
+//Pose operators
+static PoseData operator*(PoseData left, PoseData right)
+{
+
+    PoseData result;
+    result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
+
+    result.position = transform(right.position, left.rotationMatrix) + left.position;
     return result;
 }
 
