@@ -195,15 +195,6 @@ static Matrix3 rotateX(float angle)
     return result;
 }
 
-static Matrix3 translateMatrix(Matrix3 toTranslate, Vector3 translation)
-{
-    Matrix3 identity = IdentityMatrix();
-    identity.m11 = translation.x;
-    identity.m12 = translation.y;
-    identity.m13 = translation.z;
-    return multiplyMatrices(identity, toTranslate);
-}
-
 static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
     return multiplyMatrices(left, right);
@@ -254,7 +245,6 @@ static PoseData operator*(PoseData left, PoseData right)
 
     PoseData result;
     result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
-
     result.position = transform(right.position, left.rotationMatrix) + left.position;
     return result;
 }

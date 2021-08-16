@@ -38,7 +38,6 @@ static void readInput(int pipe)
 		write(pipe, &command, sizeof(char));
 	}
 	cout << "Closing app..." << endl;
-	exit(0);
 }
 
 //entry point for tracking application
@@ -107,7 +106,7 @@ int main()
 				if (tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose))
 				{
 
-					cameraLastKnownPose = poseFrame.get_pose_data();
+					cameraLastKnownPose = lastPose;
 				}
 			}
 
@@ -119,7 +118,7 @@ int main()
 
 				PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
+				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix; //* rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				enginePose.position.z *= -1.0f;
@@ -151,6 +150,7 @@ int main()
 		}
 
 		camPipeline.stop();
+		close(p[0]);
 		return 0;
 	}
 	else
@@ -158,5 +158,7 @@ int main()
 		//child code
 		close(p[0]);
 		readInput(p[1]);
+		close(p[1]);
+		exit(0);
 	}
 }

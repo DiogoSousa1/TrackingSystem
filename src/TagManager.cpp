@@ -31,7 +31,7 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
     image_u8_t img = {camera_intrinsics.width, camera_intrinsics.height, camera_intrinsics.width, image};
     zarray_t *detection = apriltag_detector_detect(tag_detector, &img);
     int totalTagsDetected = zarray_size(detection);
-    if (!totalTagsDetected)
+    if (totalTagsDetected == 0)
     {
         return false;
     }
@@ -77,7 +77,7 @@ PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs
 {
     PoseData worldTagData = {0};
     PoseData world_to_body = transformToPosestructure(camera_world_pose.rotation, camera_world_pose.translation);
-    worldTagData = world_to_body * (body_to_Fisheye_data * cameraTagData);
+    worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
     worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
     return worldTagData;
 }
