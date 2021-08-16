@@ -20,7 +20,7 @@
 #include "Headers/EngineClient.h"
 
 #define PROJECT_PATH_LOGS "/home/barata/Documentos/Tracking_System/TrackingSystem/logs/"
-#define DEFAULT_LOG_FILE "out.txt"
+#define DEFAULT_LOG_FILE "out.log"
 #define concat(first, second) first second
 
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
