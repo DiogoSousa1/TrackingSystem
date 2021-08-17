@@ -23,6 +23,9 @@
 #define DEFAULT_LOG_FILE "out.log"
 #define concat(first, second) first second
 
+#define DEFAULT_IP "192.168.5.199"
+#define DEFAULT_PORT "6301"
+
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
 using namespace std;
 
@@ -59,8 +62,8 @@ int main()
 	{
 		close(p[1]);
 
-		string ip = "192.168.1.70";
-		string port = "6301";
+		string ip = DEFAULT_IP;
+		string port = DEFAULT_PORT;
 		rs2::pipeline camPipeline;
 		rs2::config cfg;
 		cfg.enable_all_streams();
@@ -123,7 +126,7 @@ int main()
 				cout << "--------------------------\n\nTag pose in world:\n";
 
 				printPoseData(tagWorldPose);
-			
+
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
