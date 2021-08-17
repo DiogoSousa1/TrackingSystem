@@ -118,7 +118,12 @@ int main()
 
 				PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix; //* rotateX(degreesToRadians(90.0f));
+				cout << "Tag pose in camera:\n";
+				printPoseData(tagCameraPose);
+				cout << "--------------------------\n\nTag pose in world:\n";
+				printPoseData(tagWorldPose);
+				//CameraRotation ?
+				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				enginePose.position.z *= -1.0f;
@@ -126,7 +131,7 @@ int main()
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 
-				cout << "Sending to engine:\n";
+				cout << "------------------------------\n\nSending to engine:\n";
 				printPoseData(enginePose);
 
 				client.sendToEngine(enginePose);

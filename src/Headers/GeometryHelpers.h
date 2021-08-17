@@ -14,27 +14,39 @@
 #include "TrackingStructures.h"
 #include <math.h>
 
-static EulerAngles convertMatrixToEuler(Matrix3 matrixToEuler)
+const double RadiansInDegrees = 57.295779513;
+
+static EulerAngles convertMatrixToEuler(Matrix3 m)
 {
     EulerAngles euler = {0};
-    float sy = sqrt(matrixToEuler.m11 * matrixToEuler.m11 + matrixToEuler.m21 * matrixToEuler.m21);
-    bool singular = sy < 1e-6;
-    float x, y, z;
-    if (!singular)
-    {
-        x = atan2(matrixToEuler.m32, matrixToEuler.m33);
-        y = atan2(-matrixToEuler.m31, sy);
-        z = atan2(matrixToEuler.m21, matrixToEuler.m11);
+    float heading, attitude, bank;
+    if (m.m21 > 0.998)
+    { // singularity at north pole
+        heading = atan2(m.m13, m.m33);
+        attitude = PI / 2;
+        bank = 0;
+        euler.tilt = bank;
+        euler.pan = heading * static_cast<float>(RadiansInDegrees);
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees); 
+        return euler;
     }
-    else
-    {
-        x = atan2(-matrixToEuler.m22, matrixToEuler.m21);
-        y = atan2(-matrixToEuler.m31, sy);
-        z = 0;
+    if (m.m21 < -0.998)
+    { // singularity at south pole
+        heading = atan2(m.m13, m.m33);
+        attitude = -PI / 2;
+        bank = 0;
+        euler.tilt = bank;
+        euler.pan = heading * static_cast<float>(RadiansInDegrees);
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees); 
+        
+        return euler;
     }
-    euler.tilt = x;
-    euler.pan = y;
-    euler.roll = z;
+    heading = atan2(-m.m31, m.m11);
+    bank = atan2(-m.m12, m.m11);
+    attitude = asin(m.m21);
+    euler.tilt = bank * static_cast<float>(RadiansInDegrees);
+    euler.pan = heading * static_cast<float>(RadiansInDegrees);
+    euler.roll = attitude * static_cast<float>(RadiansInDegrees);
     return euler;
 }
 
