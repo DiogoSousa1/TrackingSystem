@@ -27,7 +27,7 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         bank = 0;
         euler.tilt = bank;
         euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees); 
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
         return euler;
     }
     if (m.m21 < -0.998)
@@ -37,8 +37,8 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         bank = 0;
         euler.tilt = bank;
         euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees); 
-        
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+
         return euler;
     }
     heading = atan2(-m.m31, m.m11);
@@ -48,68 +48,6 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
     euler.pan = heading * static_cast<float>(RadiansInDegrees);
     euler.roll = attitude * static_cast<float>(RadiansInDegrees);
     return euler;
-}
-
-static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
-{
-    PoseData result;
-    result.rotationMatrix.m11 = rotation[0];
-    result.rotationMatrix.m12 = rotation[1];
-    result.rotationMatrix.m13 = rotation[2];
-    result.rotationMatrix.m21 = rotation[3];
-    result.rotationMatrix.m22 = rotation[4];
-    result.rotationMatrix.m23 = rotation[5];
-    result.rotationMatrix.m31 = rotation[6];
-    result.rotationMatrix.m32 = rotation[7];
-    result.rotationMatrix.m33 = rotation[8];
-
-    result.position.x = translation[0];
-    result.position.y = translation[1];
-    result.position.z = translation[2];
-
-    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
-    return result;
-}
-
-static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
-{
-    PoseData result;
-
-    result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
-    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
-    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
-    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
-    result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
-    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
-    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
-    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
-    result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
-
-    result.position.x = static_cast<float>(translation[0]);
-    result.position.y = static_cast<float>(translation[1]);
-    result.position.z = static_cast<float>(translation[2]);
-
-    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
-
-    return result;
-}
-
-static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
-{
-    PoseData tf;
-    tf.rotationMatrix.m11 = quaternion.w * quaternion.w + quaternion.x * quaternion.x - quaternion.y * quaternion.y - quaternion.z * quaternion.z;
-    tf.rotationMatrix.m12 = 2 * (quaternion.x * quaternion.y - quaternion.w * quaternion.z);
-    tf.rotationMatrix.m13 = 2 * (quaternion.x * quaternion.z + quaternion.w * quaternion.y);
-    tf.rotationMatrix.m21 = 2 * (quaternion.x * quaternion.y + quaternion.w * quaternion.z);
-    tf.rotationMatrix.m22 = quaternion.w * quaternion.w - quaternion.x * quaternion.x + quaternion.y * quaternion.y - quaternion.z * quaternion.z;
-    tf.rotationMatrix.m23 = 2 * (quaternion.y * quaternion.z - quaternion.w * quaternion.x);
-    tf.rotationMatrix.m31 = 2 * (quaternion.x * quaternion.z - quaternion.w * quaternion.y);
-    tf.rotationMatrix.m32 = 2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x);
-    tf.rotationMatrix.m33 = quaternion.w * quaternion.w - quaternion.x * quaternion.x - quaternion.y * quaternion.y + quaternion.z * quaternion.z;
-    tf.position.x = translation.x;
-    tf.position.y = translation.y;
-    tf.position.z = translation.z;
-    return tf;
 }
 
 //Vector3 operators
@@ -257,8 +195,67 @@ static PoseData operator*(PoseData left, PoseData right)
 
     PoseData result;
     result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
-    result.position = transform(right.position, left.rotationMatrix) + left.position;
+
+    //based on TransformCoordinate Vector3 function SharpDX
+    result.position.x = left.rotationMatrix.m11 * right.position.x + left.rotationMatrix.m12 * right.position.y + left.rotationMatrix.m13 * right.position.z + left.position.x;
+    result.position.y = left.rotationMatrix.m21 * right.position.x + left.rotationMatrix.m22 * right.position.y + left.rotationMatrix.m23 * right.position.z + left.position.y;
+    result.position.z = left.rotationMatrix.m31 * right.position.x + left.rotationMatrix.m32 * right.position.y + left.rotationMatrix.m33 * right.position.z + left.position.z;
+
     return result;
+}
+
+static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
+{
+    PoseData result;
+    result.rotationMatrix.m11 = rotation[0];
+    result.rotationMatrix.m12 = rotation[1];
+    result.rotationMatrix.m13 = rotation[2];
+    result.rotationMatrix.m21 = rotation[3];
+    result.rotationMatrix.m22 = rotation[4];
+    result.rotationMatrix.m23 = rotation[5];
+    result.rotationMatrix.m31 = rotation[6];
+    result.rotationMatrix.m32 = rotation[7];
+    result.rotationMatrix.m33 = rotation[8];
+
+    result.position.x = translation[0];
+    result.position.y = translation[1];
+    result.position.z = translation[2];
+
+    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
+    return result;
+}
+
+static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
+{
+    PoseData result;
+
+    result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
+    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
+    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
+    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
+    result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
+    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
+    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
+    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
+    result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
+
+    result.position.x = static_cast<float>(translation[0]);
+    result.position.y = static_cast<float>(translation[1]);
+    result.position.z = static_cast<float>(translation[2]);
+
+    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
+
+    return result;
+}
+
+static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
+{
+    PoseData tf;
+    tf.rotationMatrix = quaternionToMatrix(quaternion);
+    tf.position.x = translation.x;
+    tf.position.y = translation.y;
+    tf.position.z = translation.z;
+    return tf;
 }
 
 #endif

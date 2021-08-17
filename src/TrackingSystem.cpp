@@ -121,8 +121,9 @@ int main()
 				cout << "Tag pose in camera:\n";
 				printPoseData(tagCameraPose);
 				cout << "--------------------------\n\nTag pose in world:\n";
+
 				printPoseData(tagWorldPose);
-				//CameraRotation ?
+			
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);

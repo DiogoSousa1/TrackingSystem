@@ -47,27 +47,28 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
     apriltag_detection *dataDetection;
     apriltag_pose_t rawPose;
     PoseData cameraCoordinatesPosition;
-    auto info_ = info;
 
     //right now only one tag is important
     for (int actualTag = 0; actualTag < totalTagsDetected; actualTag++)
     {
         zarray_get(detection, actualTag, &dataDetection);
-        info_.det = dataDetection;
+        info.det = dataDetection;
         undistort(*dataDetection, camera_intrinsics);
 
-        estimate_pose_for_tag_homography(&info_, &rawPose);
+        estimate_pose_for_tag_homography(&info, &rawPose);
 
         for (int c : {1, 2, 4, 5, 7, 8})
         {
             rawPose.R->data[c] *= -1;
         }
+
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
 
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
 
         allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
     }
+    
     apriltag_detection_destroy(dataDetection);
 
     return true;
