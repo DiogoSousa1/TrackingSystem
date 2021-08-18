@@ -23,7 +23,7 @@
 #define DEFAULT_LOG_FILE "out.log"
 #define concat(first, second) first second
 
-#define DEFAULT_IP "192.168.5.199"
+#define DEFAULT_IP "192.168.1.70"
 #define DEFAULT_PORT "6301"
 
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
@@ -46,7 +46,7 @@ static void readInput(int pipe)
 //entry point for tracking application
 int main()
 {
-	//? create fork to read input and use pipe ?
+	//pipe for reading input
 	int p[2];
 	if (pipe(p) == 0)
 	{
@@ -129,9 +129,9 @@ int main()
 
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
-				enginePose.position = transform((lastPose.translation - tagWorldPose.position), coordinateTransform);
+				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				enginePose.position.z *= -1.0f;
-				Matrix3 cameraRotation = Invert(coordinateTransform) * quaternionToMatrix(lastPose.rotation);
+				Matrix3 cameraRotation = Invert(tagWorldPose.rotationMatrix) * quaternionToMatrix(lastPose.rotation);
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 

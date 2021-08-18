@@ -150,42 +150,43 @@ static Matrix3 operator*(Matrix3 left, Matrix3 right)
     return multiplyMatrices(left, right);
 }
 
-static Vector3 transform(Vector3 vector, Matrix3 transform)
-{
-    Vector3 result;
-    result.x = (vector.x * transform.m11) + (vector.y * transform.m21) + (vector.z * transform.m31);
-    result.y = (vector.x * transform.m12) + (vector.y * transform.m22) + (vector.z * transform.m32);
-    result.z = (vector.x * transform.m13) + (vector.y * transform.m23) + (vector.z * transform.m33);
-    return result;
-}
-
 static Matrix3 quaternionToMatrix(Quaternion q)
 {
-    Matrix3 result = {0};
-    float sqw = q.w * q.w;
-    float sqx = q.x * q.x;
-    float sqy = q.y * q.y;
-    float sqz = q.z * q.z;
-    float inverse = 1 / (sqx + sqy + sqz + sqw);
-    result.m11 = (sqx - sqy - sqz + sqw) * inverse;
-    result.m22 = (-sqx + sqy - sqz + sqw) * inverse;
-    result.m33 = (-sqx - sqy + sqz + sqw) * inverse;
+    float xx = q.x * q.x;
+    float yy = q.y * q.y;
+    float zz = q.z * q.z;
+    float xy = q.x * q.y;
+    float zw = q.z * q.w;
+    float zx = q.z * q.x;
+    float yw = q.y * q.w;
+    float yz = q.y * q.z;
+    float xw = q.x * q.w;
 
-    float tmp1 = q.x * q.y;
-    float tmp2 = q.z * q.w;
-    result.m21 = 2.0f * (tmp1 + tmp2) * inverse;
-    result.m12 = 2.0f * (tmp1 - tmp2) * inverse;
-
-    tmp1 = q.x * q.z;
-    tmp2 = q.y * q.w;
-    result.m31 = 2.0f * (tmp1 - tmp2) * inverse;
-    result.m13 = 2.0f * (tmp1 + tmp2) * inverse;
-
-    tmp1 = q.y * q.z;
-    tmp2 = q.x * q.w;
-    result.m32 = 2.0f * (tmp1 + tmp2) * inverse;
-    result.m23 = 2.0f * (tmp1 - tmp2) * inverse;
-
+    Matrix3 result = IdentityMatrix();
+    result.m11 = 1.0f - (2.0f * (yy + zz));
+    result.m12 = 2.0f * (xy + zw);
+    result.m13 = 2.0f * (zx - yw);
+    result.m21 = 2.0f * (xy - zw);
+    result.m22 = 1.0f - (2.0f * (zz + xx));
+    result.m23 = 2.0f * (yz + xw);
+    result.m31 = 2.0f * (zx + yw);
+    result.m32 = 2.0f * (yz - xw);
+    result.m33 = 1.0f - (2.0f * (yy + xx));
+    return result;
+}
+/**
+ * @brief 
+ * 
+ * @param vector 
+ * @param transform 
+ * @return Vector3 
+ */
+static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
+{
+    Vector3 result = {0};
+    result.x = vector.x * transform.m11 + vector.y * transform.m21 + vector.z * transform.m31;
+    result.y = vector.x * transform.m12 + vector.y * transform.m22 + vector.z * transform.m32;
+    result.z = vector.x * transform.m13 + vector.y * transform.m23 + vector.z * transform.m33;
     return result;
 }
 
@@ -196,11 +197,7 @@ static PoseData operator*(PoseData left, PoseData right)
     PoseData result;
     result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
 
-    //based on TransformCoordinate Vector3 function SharpDX
-    result.position.x = left.rotationMatrix.m11 * right.position.x + left.rotationMatrix.m12 * right.position.y + left.rotationMatrix.m13 * right.position.z + left.position.x;
-    result.position.y = left.rotationMatrix.m21 * right.position.x + left.rotationMatrix.m22 * right.position.y + left.rotationMatrix.m23 * right.position.z + left.position.y;
-    result.position.z = left.rotationMatrix.m31 * right.position.x + left.rotationMatrix.m32 * right.position.y + left.rotationMatrix.m33 * right.position.z + left.position.z;
-
+    result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
 
@@ -208,13 +205,13 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
 {
     PoseData result;
     result.rotationMatrix.m11 = rotation[0];
-    result.rotationMatrix.m12 = rotation[1];
-    result.rotationMatrix.m13 = rotation[2];
-    result.rotationMatrix.m21 = rotation[3];
+    result.rotationMatrix.m21 = rotation[1];
+    result.rotationMatrix.m31 = rotation[2];
+    result.rotationMatrix.m12 = rotation[3];
     result.rotationMatrix.m22 = rotation[4];
-    result.rotationMatrix.m23 = rotation[5];
-    result.rotationMatrix.m31 = rotation[6];
-    result.rotationMatrix.m32 = rotation[7];
+    result.rotationMatrix.m32 = rotation[5];
+    result.rotationMatrix.m13 = rotation[6];
+    result.rotationMatrix.m23 = rotation[7];
     result.rotationMatrix.m33 = rotation[8];
 
     result.position.x = translation[0];
@@ -230,13 +227,13 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     PoseData result;
 
     result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
-    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
-    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
-    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
+    result.rotationMatrix.m21 = static_cast<float>(rotation[1]);
+    result.rotationMatrix.m31 = static_cast<float>(rotation[2]);
+    result.rotationMatrix.m12 = static_cast<float>(rotation[3]);
     result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
-    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
-    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
-    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
+    result.rotationMatrix.m32 = static_cast<float>(rotation[5]);
+    result.rotationMatrix.m13 = static_cast<float>(rotation[6]);
+    result.rotationMatrix.m23 = static_cast<float>(rotation[7]);
     result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
 
     result.position.x = static_cast<float>(translation[0]);
