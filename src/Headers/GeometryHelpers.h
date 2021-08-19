@@ -147,7 +147,7 @@ static Matrix3 rotateX(float angle)
 
 static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
-    return multiplyMatrices(left, right);
+    return multiplyMatrices(right, left);
 }
 
 
@@ -167,7 +167,7 @@ static Matrix3 quaternionToMatrix(Quaternion q)
 
     float tmp1 = q.x * q.y;
     float tmp2 = q.z * q.w;
-    
+
     result.m21 = 2.0f * (tmp1 + tmp2) * invs;
     result.m12 = 2.0f * (tmp1 - tmp2) * invs;
 
@@ -212,7 +212,7 @@ static PoseData operator*(PoseData left, PoseData right)
 {
 
     PoseData result;
-    result.rotationMatrix = right.rotationMatrix * left.rotationMatrix;
+    result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
     result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
