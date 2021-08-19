@@ -127,12 +127,13 @@ int main()
 				cout << "--------------------------\n\nTag pose in world:\n";
 
 				printPoseData(tagWorldPose);
+				printMatrix3(tagWorldPose.rotationMatrix);
 				//need x rotation because y axis is not aligned with tags normal
 				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				enginePose.position.y *= -1.0f;
-				Matrix3 cameraRotation = transpose(coordinateTransform) * transpose(quaternionToMatrix(lastPose.rotation));
+				Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * coordinateTransform;
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 
