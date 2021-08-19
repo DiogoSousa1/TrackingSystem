@@ -69,7 +69,7 @@ static Vector3 operator-(Vector3 left, Vector3 right)
     return result;
 }
 
-//Matrix operators
+//Matrix operators------------------------------
 
 static Matrix3 IdentityMatrix()
 {
@@ -145,11 +145,34 @@ static Matrix3 rotateX(float angle)
     return result;
 }
 
+static Matrix3 rotateZ(float angle)
+{
+    Matrix3 result = IdentityMatrix();
+    float cosVal = cos(angle);
+    float sinVal = sin(angle);
+    result.m11 = cosVal;
+    result.m12 = sinVal;
+    result.m21 = -sinVal;
+    result.m22 = cosVal;
+    return result;
+}
+
+static Matrix3 rotateY(float angle)
+{
+    Matrix3 result = IdentityMatrix();
+    float cosVal = cos(angle);
+    float sinVal = sin(angle);
+    result.m11 = cosVal;
+    result.m13 = -sinVal;
+    result.m31 = sinVal;
+    result.m33 = cosVal;
+    return result;
+}
+
 static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
     return multiplyMatrices(right, left);
 }
-
 
 static Matrix3 quaternionToMatrix(Quaternion q)
 {
@@ -237,7 +260,6 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
     return result;
 }
-
 
 static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
 {

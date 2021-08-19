@@ -128,11 +128,12 @@ int main()
 
 				printPoseData(tagWorldPose);
 				printMatrix3(tagWorldPose.rotationMatrix);
-				//need x rotation because y axis is not aligned with tags normal
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
+				//need rotations to align y with tags normal
+				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f)); //* coordinateTransform;
+				coordinateTransform.m22 = -coordinateTransform.m22;
+				coordinateTransform.m32 = -coordinateTransform.m32;
 				PoseData enginePose = {0};
 				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-				enginePose.position.y *= -1.0f;
 				Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * coordinateTransform;
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
