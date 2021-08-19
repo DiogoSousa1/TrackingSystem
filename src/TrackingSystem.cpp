@@ -128,8 +128,11 @@ int main()
 
 				printPoseData(tagWorldPose);
 				printMatrix3(tagWorldPose.rotationMatrix);
+
 				//need rotations to align y with tags normal
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f)); //* coordinateTransform;
+				//? why coordinate system not stable when using only tagWorldPose.rotationMatrix without any rotation applied ?
+				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
+				//invert y axis
 				coordinateTransform.m22 = -coordinateTransform.m22;
 				coordinateTransform.m32 = -coordinateTransform.m32;
 				PoseData enginePose = {0};

@@ -132,7 +132,12 @@ static Matrix3 transpose(Matrix3 value)
     result.m33 = value.m33;
     return result;
 }
-
+/**
+ * @brief Rotate around x axis clockwise
+ * 
+ * @param angle 
+ * @return Matrix3 
+ */
 static Matrix3 rotateX(float angle)
 {
     Matrix3 result = IdentityMatrix();
@@ -144,7 +149,12 @@ static Matrix3 rotateX(float angle)
     result.m33 = cosVal;
     return result;
 }
-
+/**
+ * @brief Rotate around z axis clockwise
+ * 
+ * @param angle 
+ * @return Matrix3 
+ */
 static Matrix3 rotateZ(float angle)
 {
     Matrix3 result = IdentityMatrix();
@@ -157,6 +167,12 @@ static Matrix3 rotateZ(float angle)
     return result;
 }
 
+/**
+ * @brief Rotate around y axis clockwise
+ * 
+ * @param angle 
+ * @return Matrix3 
+ */
 static Matrix3 rotateY(float angle)
 {
     Matrix3 result = IdentityMatrix();
@@ -169,6 +185,13 @@ static Matrix3 rotateY(float angle)
     return result;
 }
 
+/**
+ * @brief Multiplies two matrices using convention right * left
+ * 
+ * @param left 
+ * @param right 
+ * @return Matrix3 
+ */
 static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
     return multiplyMatrices(right, left);
@@ -206,8 +229,9 @@ static Matrix3 quaternionToMatrix(Quaternion q)
 
     return result;
 }
+
 /**
- * @brief 
+ * @brief transform vector point to new coordinate system
  * 
  * @param vector 
  * @param transform 
@@ -222,7 +246,7 @@ static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
     return result;
 }
 
-//Pose operators---------------------------------------------
+//Pose operators--------------------------------------------------
 
 /**
  * @brief Operator to change coordinate systems
