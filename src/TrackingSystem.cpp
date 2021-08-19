@@ -100,6 +100,7 @@ int main()
 			rs2_pose cameraLastKnownPose;
 			rs2::pose_frame poseFrame = frame.get_pose_frame();
 			rs2_pose lastPose = poseFrame.get_pose_data();
+
 			cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
 			//only do tag detector between 6 frames
 			if (frame_Number % 6 == 0)
@@ -126,12 +127,12 @@ int main()
 				cout << "--------------------------\n\nTag pose in world:\n";
 
 				printPoseData(tagWorldPose);
-
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(90.0f));
+				//need x rotation because y axis is not aligned with tags normal 
+				Matrix3 coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(90.0f));
 				PoseData enginePose = {0};
 				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 				enginePose.position.z *= -1.0f;
-				Matrix3 cameraRotation = Invert(tagWorldPose.rotationMatrix) * quaternionToMatrix(lastPose.rotation);
+				Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * Invert(tagWorldPose.rotationMatrix);
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 

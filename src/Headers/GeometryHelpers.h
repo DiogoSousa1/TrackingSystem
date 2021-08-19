@@ -150,28 +150,37 @@ static Matrix3 operator*(Matrix3 left, Matrix3 right)
     return multiplyMatrices(left, right);
 }
 
+
 static Matrix3 quaternionToMatrix(Quaternion q)
 {
-    float xx = q.x * q.x;
-    float yy = q.y * q.y;
-    float zz = q.z * q.z;
-    float xy = q.x * q.y;
-    float zw = q.z * q.w;
-    float zx = q.z * q.x;
-    float yw = q.y * q.w;
-    float yz = q.y * q.z;
-    float xw = q.x * q.w;
+    Matrix3 result = {0};
+    float sqw = q.w * q.w;
+    float sqx = q.x * q.x;
+    float sqy = q.y * q.y;
+    float sqz = q.z * q.z;
 
-    Matrix3 result = IdentityMatrix();
-    result.m11 = 1.0f - (2.0f * (yy + zz));
-    result.m12 = 2.0f * (xy + zw);
-    result.m13 = 2.0f * (zx - yw);
-    result.m21 = 2.0f * (xy - zw);
-    result.m22 = 1.0f - (2.0f * (zz + xx));
-    result.m23 = 2.0f * (yz + xw);
-    result.m31 = 2.0f * (zx + yw);
-    result.m32 = 2.0f * (yz - xw);
-    result.m33 = 1.0f - (2.0f * (yy + xx));
+    float invs = 1.0f / (sqx + sqy + sqz + sqw);
+
+    result.m11 = (sqx - sqy - sqz + sqw) * invs;
+    result.m22 = (-sqx + sqy - sqz + sqw) * invs;
+    result.m33 = (-sqx - sqy + sqz + sqw) * invs;
+
+    float tmp1 = q.x * q.y;
+    float tmp2 = q.z * q.w;
+    
+    result.m21 = 2.0f * (tmp1 + tmp2) * invs;
+    result.m12 = 2.0f * (tmp1 - tmp2) * invs;
+
+    tmp1 = q.x * q.z;
+    tmp2 = q.y * q.w;
+    result.m31 = 2.0f * (tmp1 - tmp2) * invs;
+    result.m13 = 2.0f * (tmp1 + tmp2) * invs;
+
+    tmp1 = q.y * q.z;
+    tmp2 = q.x * q.w;
+    result.m32 = 2.0f * (tmp1 + tmp2) * invs;
+    result.m23 = 2.0f * (tmp1 - tmp2) * invs;
+
     return result;
 }
 /**
@@ -190,13 +199,20 @@ static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
     return result;
 }
 
-//Pose operators
+//Pose operators---------------------------------------------
+
+/**
+ * @brief Operator to change coordinate systems
+ * 
+ * @param left 
+ * @param right 
+ * @return PoseData 
+ */
 static PoseData operator*(PoseData left, PoseData right)
 {
 
     PoseData result;
-    result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
-
+    result.rotationMatrix = right.rotationMatrix * left.rotationMatrix;
     result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
@@ -222,6 +238,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     return result;
 }
 
+
 static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
 {
     PoseData result;
@@ -245,10 +262,20 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     return result;
 }
 
+/**
+ * @brief Transforms rs2_pose data to PoseData structure
+ * WARNING: Transpose matrix after quaternion conversion based on https://github.com/IntelRealSense/librealsense/blob/master/examples/pose-apriltag/rs-pose-apriltag.cpp
+ * @param quaternion 
+ * @param translation 
+ * @return PoseData 
+ */
 static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
 {
     PoseData tf;
     tf.rotationMatrix = quaternionToMatrix(quaternion);
+
+    //? i dont even know why i need transposing based on intel example which uses transpose
+    tf.rotationMatrix = transpose(tf.rotationMatrix);
     tf.position.x = translation.x;
     tf.position.y = translation.y;
     tf.position.z = translation.z;
