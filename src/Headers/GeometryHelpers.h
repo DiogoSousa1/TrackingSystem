@@ -263,7 +263,13 @@ static PoseData operator*(PoseData left, PoseData right)
     result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
-
+/**
+ * @brief Transform to PoseData column-major matrix and translation
+ * 
+ * @param rotation 
+ * @param translation 
+ * @return PoseData 
+ */
 static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
 {
     PoseData result;
@@ -284,7 +290,13 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
     return result;
 }
-
+/**
+ * @brief Transform to PoseData 
+ * 
+ * @param rotation 
+ * @param translation 
+ * @return PoseData 
+ */
 static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
 {
     PoseData result;
