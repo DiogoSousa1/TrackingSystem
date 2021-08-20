@@ -31,7 +31,7 @@ using namespace std;
 
 static void readInput(int pipe)
 {
-	cout << "Receiving input here..." << endl;
+	cout << "Receiving input here...\nPress s to exit app!" << endl;
 	char command;
 	while (command != 's')
 	{

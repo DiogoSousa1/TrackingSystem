@@ -13,6 +13,10 @@
 #include <librealsense2/rsutil.h>
 #include <iostream>
 
+/**
+ * @brief Structure to store euler angles
+ * 
+ */
 struct EulerAngles
 {
     float tilt;
@@ -45,19 +49,28 @@ struct Matrix3
 typedef rs2_vector Vector3;
 typedef rs2_quaternion Quaternion;
 
+/**
+ * @brief Structure to store all the pose data from an object
+ * 
+ */
 struct PoseData
 {
     Matrix3 rotationMatrix;
     Vector3 position;
     EulerAngles eulerRotation;
 };
-
+/**
+ * @brief Structure to keep all tag data
+ * 
+ */
 struct TagStructure
 {
     PoseData *tagsCameraPositions;
     PoseData *tagsWorldPositions;
     int totalTagsDetected;
 };
+
+//Debug prints-----------------------------------------
 
 static void printEulers(EulerAngles angles)
 {

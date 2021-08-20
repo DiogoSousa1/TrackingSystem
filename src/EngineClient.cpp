@@ -16,9 +16,6 @@ EngineClient::EngineClient(string ip, string port)
 }
 bool EngineClient::sendToEngine(PoseData dataToSend)
 {
-    /*std::cout << "Sending to engine...\n";
-    std::cout << "Position: x:" << dataToSend.position.x <<" y:"<< dataToSend.position.y << " z:" << dataToSend.position.z << std::endl;
-*/
     CameraData data;
     data.Header = 0xD1;
     data.Checksum = 1;
@@ -28,7 +25,7 @@ bool EngineClient::sendToEngine(PoseData dataToSend)
     if (sendto(socketDescriptor, (char *)&data, sizeof(data), 0, (struct sockaddr *)&address, sizeof(address)) == -1)
     {
 
-        std::cout << "Could not send data to engine\n";
+        cerr << "Could not send data to engine\n";
         return false;
     };
     return true;
