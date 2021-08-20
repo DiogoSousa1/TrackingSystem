@@ -90,6 +90,7 @@ static Matrix3 IdentityMatrix()
     identity.m33 = 1.0f;
     return identity;
 }
+
 /**
  * @brief Multiply matrices using left(rows) * right(columns) convention
  * 
@@ -111,6 +112,7 @@ static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
     result.m33 = (left.m31 * right.m13) + (left.m32 * right.m23) + (left.m33 * right.m33);
     return result;
 }
+
 /**
  * @brief Inverts a matrix3
  * 
@@ -139,6 +141,7 @@ static Matrix3 Invert(Matrix3 value)
     result.m33 = (value.m11 * value.m22 - value.m21 * value.m12) * inverseDet;
     return result;
 }
+
 /**
  * @brief Transpose a matrix3
  * 
