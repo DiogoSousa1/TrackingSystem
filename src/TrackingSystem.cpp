@@ -137,7 +137,7 @@ int main()
 				coordinateTransform.m32 = -coordinateTransform.m32;
 				PoseData enginePose = {0};
 				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-				Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * coordinateTransform;
+				Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * transpose(coordinateTransform);
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 
