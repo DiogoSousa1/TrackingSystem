@@ -16,6 +16,12 @@
 
 const double RadiansInDegrees = 57.295779513;
 
+/**
+ * @brief Converts matrix3 to euler angles tilt pan and roll
+ * 
+ * @param m 
+ * @return EulerAngles 
+ */
 static EulerAngles convertMatrixToEuler(Matrix3 m)
 {
     EulerAngles euler = {0};
@@ -50,7 +56,7 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
     return euler;
 }
 
-//Vector3 operators
+//Vector3 operators------------------------------------------------------
 static Vector3 operator+(Vector3 left, Vector3 right)
 {
     Vector3 result;
@@ -71,6 +77,11 @@ static Vector3 operator-(Vector3 left, Vector3 right)
 
 //Matrix operators------------------------------
 
+/**
+ * @brief creates an identity matrix
+ * 
+ * @return Matrix3 
+ */
 static Matrix3 IdentityMatrix()
 {
     Matrix3 identity = {0};
@@ -79,7 +90,13 @@ static Matrix3 IdentityMatrix()
     identity.m33 = 1.0f;
     return identity;
 }
-
+/**
+ * @brief Multiply matrices using left(rows) * right(columns) convention
+ * 
+ * @param left 
+ * @param right 
+ * @return Matrix3 
+ */
 static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
 {
     Matrix3 result;
@@ -94,7 +111,12 @@ static Matrix3 multiplyMatrices(Matrix3 left, Matrix3 right)
     result.m33 = (left.m31 * right.m13) + (left.m32 * right.m23) + (left.m33 * right.m33);
     return result;
 }
-
+/**
+ * @brief Inverts a matrix3
+ * 
+ * @param value 
+ * @return Matrix3 
+ */
 static Matrix3 Invert(Matrix3 value)
 {
     Matrix3 result = {0};
@@ -117,7 +139,12 @@ static Matrix3 Invert(Matrix3 value)
     result.m33 = (value.m11 * value.m22 - value.m21 * value.m12) * inverseDet;
     return result;
 }
-
+/**
+ * @brief Transpose a matrix3
+ * 
+ * @param value 
+ * @return Matrix3 
+ */
 static Matrix3 transpose(Matrix3 value)
 {
     Matrix3 result = {0};
@@ -196,7 +223,12 @@ static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
     return multiplyMatrices(right, left);
 }
-
+/**
+ * @brief Transforms quaternion to matrix
+ * 
+ * @param q 
+ * @return Matrix3 
+ */
 static Matrix3 quaternionToMatrix(Quaternion q)
 {
     Matrix3 result = {0};
@@ -333,6 +365,7 @@ static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const
     tf.rotationMatrix = quaternionToMatrix(quaternion);
 
     //? i dont even know why i need transposing based on intel example which uses transpose
+    //TODO: try remove this transpose and the for in tag detection
     tf.rotationMatrix = transpose(tf.rotationMatrix);
     tf.position.x = translation.x;
     tf.position.y = translation.y;
