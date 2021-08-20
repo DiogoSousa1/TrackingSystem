@@ -335,13 +335,13 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     PoseData result;
 
     result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
-    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
-    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
-    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
+    result.rotationMatrix.m21 = static_cast<float>(rotation[1]);
+    result.rotationMatrix.m31 = static_cast<float>(rotation[2]);
+    result.rotationMatrix.m12 = static_cast<float>(rotation[3]);
     result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
-    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
-    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
-    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
+    result.rotationMatrix.m32 = static_cast<float>(rotation[5]);
+    result.rotationMatrix.m13 = static_cast<float>(rotation[6]);
+    result.rotationMatrix.m23 = static_cast<float>(rotation[7]);
     result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
 
     result.position.x = static_cast<float>(translation[0]);
