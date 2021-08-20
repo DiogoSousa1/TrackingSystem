@@ -56,20 +56,22 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
         undistort(*dataDetection, camera_intrinsics);
 
         estimate_pose_for_tag_homography(&info, &rawPose);
-        
+
         //? why this??
+        PoseData aux = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
+
+        //? inverting tilt?
         for (int c : {1, 2, 4, 5, 7, 8})
         {
             rawPose.R->data[c] *= -1;
         }
-
+        //transpose rawPose.R to get rotation from camera to tag (or tag to camera?)
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
-
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
 
         allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
     }
-    
+
     apriltag_detection_destroy(dataDetection);
 
     return true;
@@ -78,7 +80,7 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
 PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs2_pose &camera_world_pose)
 {
     PoseData worldTagData = {0};
-    PoseData world_to_body = transformToPosestructure(camera_world_pose.rotation, camera_world_pose.translation);
+    PoseData world_to_body = transformToPosestructure(camera_world_pose);
     worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
     worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
     return worldTagData;

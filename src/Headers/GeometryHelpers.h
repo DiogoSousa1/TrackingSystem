@@ -295,6 +295,7 @@ static PoseData operator*(PoseData left, PoseData right)
     result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
+
 /**
  * @brief Transform to PoseData column-major matrix and translation
  * 
@@ -323,7 +324,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     return result;
 }
 /**
- * @brief Transform to PoseData 
+ * @brief Transform to PoseData from rotation column major matrix
  * 
  * @param rotation 
  * @param translation 
@@ -334,13 +335,13 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     PoseData result;
 
     result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
-    result.rotationMatrix.m21 = static_cast<float>(rotation[1]);
-    result.rotationMatrix.m31 = static_cast<float>(rotation[2]);
-    result.rotationMatrix.m12 = static_cast<float>(rotation[3]);
+    result.rotationMatrix.m12 = static_cast<float>(rotation[1]);
+    result.rotationMatrix.m13 = static_cast<float>(rotation[2]);
+    result.rotationMatrix.m21 = static_cast<float>(rotation[3]);
     result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
-    result.rotationMatrix.m32 = static_cast<float>(rotation[5]);
-    result.rotationMatrix.m13 = static_cast<float>(rotation[6]);
-    result.rotationMatrix.m23 = static_cast<float>(rotation[7]);
+    result.rotationMatrix.m23 = static_cast<float>(rotation[5]);
+    result.rotationMatrix.m31 = static_cast<float>(rotation[6]);
+    result.rotationMatrix.m32 = static_cast<float>(rotation[7]);
     result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
 
     result.position.x = static_cast<float>(translation[0]);
@@ -353,23 +354,22 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 }
 
 /**
- * @brief Transforms rs2_pose data to PoseData structure
+ * @brief Transforms rs2_pose data to PoseData structure (transpose rotation to get rotation from camera to origin coord system)
  * WARNING: Transpose matrix after quaternion conversion based on https://github.com/IntelRealSense/librealsense/blob/master/examples/pose-apriltag/rs-pose-apriltag.cpp
  * @param quaternion 
  * @param translation 
  * @return PoseData 
  */
-static PoseData transformToPosestructure(const rs2_quaternion &quaternion, const rs2_vector &translation)
+static PoseData transformToPosestructure(const rs2_pose &pose)
 {
     PoseData tf;
-    tf.rotationMatrix = quaternionToMatrix(quaternion);
+    tf.rotationMatrix = quaternionToMatrix(pose.rotation);
 
-    //? i dont even know why i need transposing based on intel example which uses transpose
-    //TODO: try remove this transpose and the for in tag detection
+    //? get rotation to original coordinate system not the actual rotation of camera
     tf.rotationMatrix = transpose(tf.rotationMatrix);
-    tf.position.x = translation.x;
-    tf.position.y = translation.y;
-    tf.position.z = translation.z;
+    tf.position.x = pose.translation.x;
+    tf.position.y = pose.translation.y;
+    tf.position.z = pose.translation.z;
     return tf;
 }
 
