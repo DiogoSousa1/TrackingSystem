@@ -56,13 +56,11 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
         undistort(*dataDetection, camera_intrinsics);
 
         estimate_pose_for_tag_homography(&info, &rawPose);
-
-        //? why this??
-        //? inverting tilt?
-        for (int c : {1, 2, 4, 5, 7, 8})
+        //invert tilt
+       /* for (int c : {1, 2, 4, 5, 7, 8})
         {
             rawPose.R->data[c] *= -1;
-        }
+        }*/
 
         //transpose rawPose.R to get rotation from camera to tag (or tag to camera?)
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);

@@ -125,21 +125,23 @@ int main()
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
 				cout << "Tag pose in camera:\n";
 				printPoseData(tagCameraPose);
-				cout << "--------------------------\n\nTag pose in world:\n";
 
+				cout << "--------------------------\n\nTag pose in world:\n";
 				printPoseData(tagWorldPose);
 				printMatrix3(tagWorldPose.rotationMatrix);
 
 				//need rotations to align y with tags normal
-				//? why coordinate system not stable when using only tagWorldPose.rotationMatrix without any rotation applied ?
-				//transpose added ??
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix; //* rotateX(degreesToRadians(90.0f));
+				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(-90.0f));
 				//invert y axis
-				//coordinateTransform.m22 = -coordinateTransform.m22;
-				//coordinateTransform.m32 = -coordinateTransform.m32;
+				coordinateTransform.m22 = -coordinateTransform.m22;
+				coordinateTransform.m32 = -coordinateTransform.m32;
+				
+				cout << "World coordinate transformation:\n";
+				printMatrix3(coordinateTransform);
+				printEulers(convertMatrixToEuler(coordinateTransform));
 				PoseData enginePose = {0};
 				enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-				Matrix3 cameraRotation = transpose(coordinateTransform) * quaternionToMatrix(lastPose.rotation);
+				Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
 

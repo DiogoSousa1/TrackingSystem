@@ -48,7 +48,7 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         return euler;
     }
     heading = atan2(-m.m31, m.m11);
-    bank = atan2(-m.m12, m.m11);
+    bank = atan2(-m.m23, m.m22);
     attitude = asin(m.m21);
     euler.tilt = bank * static_cast<float>(RadiansInDegrees);
     euler.pan = heading * static_cast<float>(RadiansInDegrees);
@@ -215,8 +215,71 @@ static Matrix3 rotateY(float angle)
     return result;
 }
 
+static Matrix3 convertArrayToMatrix3(const float vector[9], bool isColumnMajor)
+{
+    Matrix3 result = {0};
+    if (isColumnMajor)
+    {
+        result.m11 = vector[0];
+        result.m21 = vector[1];
+        result.m31 = vector[2];
+        result.m12 = vector[3];
+        result.m22 = vector[4];
+        result.m32 = vector[5];
+        result.m13 = vector[6];
+        result.m23 = vector[7];
+        result.m33 = vector[8];
+    }
+    else
+    {
+
+        result.m11 = vector[0];
+        result.m12 = vector[1];
+        result.m13 = vector[2];
+        result.m21 = vector[3];
+        result.m22 = vector[4];
+        result.m23 = vector[5];
+        result.m31 = vector[6];
+        result.m32 = vector[7];
+        result.m33 = vector[8];
+    }
+
+    return result;
+}
+
+static Matrix3 convertArrayToMatrix3(const double vector[9], bool isColumnMajor)
+{
+    Matrix3 result = {0};
+    if (isColumnMajor)
+    {
+        result.m11 = static_cast<float>(vector[0]);
+        result.m21 = static_cast<float>(vector[1]);
+        result.m31 = static_cast<float>(vector[2]);
+        result.m12 = static_cast<float>(vector[3]);
+        result.m22 = static_cast<float>(vector[4]);
+        result.m32 = static_cast<float>(vector[5]);
+        result.m13 = static_cast<float>(vector[6]);
+        result.m23 = static_cast<float>(vector[7]);
+        result.m33 = static_cast<float>(vector[8]);
+    }
+    else
+    {
+
+        result.m11 = static_cast<float>(vector[0]);
+        result.m12 = static_cast<float>(vector[1]);
+        result.m13 = static_cast<float>(vector[2]);
+        result.m21 = static_cast<float>(vector[3]);
+        result.m22 = static_cast<float>(vector[4]);
+        result.m23 = static_cast<float>(vector[5]);
+        result.m31 = static_cast<float>(vector[6]);
+        result.m32 = static_cast<float>(vector[7]);
+        result.m33 = static_cast<float>(vector[8]);
+    }
+    return result;
+}
+
 /**
- * @brief Multiplies two matrices using convention right * left
+ * @brief Multiplies two matrices using convention right applied first
  * 
  * @param left 
  * @param right 
@@ -229,7 +292,7 @@ static Matrix3 operator*(Matrix3 left, Matrix3 right)
 /**
  * @brief Transforms quaternion to matrix
  * 
- * @param q 
+ * @param q rotationMatrix
  * @return Matrix3 
  */
 static Matrix3 quaternionToMatrix(Quaternion q)
@@ -309,15 +372,7 @@ static PoseData operator*(PoseData left, PoseData right)
 static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
 {
     PoseData result;
-    result.rotationMatrix.m11 = rotation[0];
-    result.rotationMatrix.m21 = rotation[1];
-    result.rotationMatrix.m31 = rotation[2];
-    result.rotationMatrix.m12 = rotation[3];
-    result.rotationMatrix.m22 = rotation[4];
-    result.rotationMatrix.m32 = rotation[5];
-    result.rotationMatrix.m13 = rotation[6];
-    result.rotationMatrix.m23 = rotation[7];
-    result.rotationMatrix.m33 = rotation[8];
+    result.rotationMatrix = convertArrayToMatrix3(rotation, true);
 
     result.position.x = translation[0];
     result.position.y = translation[1];
@@ -337,15 +392,7 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 {
     PoseData result;
 
-    result.rotationMatrix.m11 = static_cast<float>(rotation[0]);
-    result.rotationMatrix.m21 = static_cast<float>(rotation[1]);
-    result.rotationMatrix.m31 = static_cast<float>(rotation[2]);
-    result.rotationMatrix.m12 = static_cast<float>(rotation[3]);
-    result.rotationMatrix.m22 = static_cast<float>(rotation[4]);
-    result.rotationMatrix.m32 = static_cast<float>(rotation[5]);
-    result.rotationMatrix.m13 = static_cast<float>(rotation[6]);
-    result.rotationMatrix.m23 = static_cast<float>(rotation[7]);
-    result.rotationMatrix.m33 = static_cast<float>(rotation[8]);
+    result.rotationMatrix = convertArrayToMatrix3(rotation, true);
 
     result.position.x = static_cast<float>(translation[0]);
     result.position.y = static_cast<float>(translation[1]);
