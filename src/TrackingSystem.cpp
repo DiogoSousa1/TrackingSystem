@@ -8,8 +8,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <apriltag/apriltag.h>
-#include <unistd.h>
 #include <fcntl.h>
 #include <thread>
 
@@ -26,6 +24,7 @@
 #define DEFAULT_PORT "6301"
 
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
+
 using namespace std;
 
 static void readInput(int pipe)
@@ -59,7 +58,8 @@ int main()
 	int curFileOffset;
 	EngineClient client = EngineClient(ip, port);
 	TrackingDevice device = TrackingDevice(client);
-	//this thread shouldnt be this way
+
+	//thread shouldnt be this way
 	thread t([&device]
 			 {
 				 const float tagSize = 0.144f;
@@ -82,6 +82,5 @@ int main()
 	t.join();
 	dup2(sout, 1);
 	cout << "Closing App..." << endl;
-
 	return 0;
 }

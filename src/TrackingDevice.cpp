@@ -4,6 +4,9 @@ TrackingDevice::TrackingDevice(EngineClient &engine_client) : client(engine_clie
 {
     stop = false;
 }
+TrackingDevice::~TrackingDevice()
+{
+}
 
 void TrackingDevice::startTracking(const float tagSize)
 {
@@ -68,9 +71,10 @@ void TrackingDevice::startTracking(const float tagSize)
             printEulers(convertMatrixToEuler(coordinateTransform));
             PoseData enginePose = {0};
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-            
+
             Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
             enginePose.rotationMatrix = cameraRotation;
+
             enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
             enginePose.eulerRotation.tilt *= -1.0f;
             cout << "------------------------------\n\nSending to engine:\n";
@@ -82,6 +86,7 @@ void TrackingDevice::startTracking(const float tagSize)
         {
             cout << "Waiting for tag detection..." << endl;
         }
+
         lseek(1, 0, SEEK_SET);
     }
 

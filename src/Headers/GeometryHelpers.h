@@ -16,47 +16,8 @@
 
 const double RadiansInDegrees = 57.295779513;
 
-/**
- * @brief Converts matrix3 to euler angles tilt pan and roll
- * 
- * @param m 
- * @return EulerAngles 
- */
-static EulerAngles convertMatrixToEuler(Matrix3 m)
-{
-    EulerAngles euler = {0};
-    float heading, attitude, bank;
-    if (m.m21 > 0.998)
-    { // singularity at north pole
-        heading = atan2(m.m13, m.m33);
-        attitude = PI / 2;
-        bank = 0;
-        euler.tilt = bank;
-        euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
-        return euler;
-    }
-    if (m.m21 < -0.998)
-    { // singularity at south pole
-        heading = atan2(m.m13, m.m33);
-        attitude = -PI / 2;
-        bank = 0;
-        euler.tilt = bank;
-        euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
-
-        return euler;
-    }
-    heading = atan2(-m.m31, m.m11);
-    bank = atan2(-m.m23, m.m22);
-    attitude = asin(m.m21);
-    euler.tilt = bank * static_cast<float>(RadiansInDegrees);
-    euler.pan = heading * static_cast<float>(RadiansInDegrees);
-    euler.roll = attitude * static_cast<float>(RadiansInDegrees);
-    return euler;
-}
-
 //Vector3 operators------------------------------------------------------
+
 static Vector3 operator+(Vector3 left, Vector3 right)
 {
     Vector3 result;
@@ -342,6 +303,46 @@ static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
     result.y = vector.x * transform.m12 + vector.y * transform.m22 + vector.z * transform.m32;
     result.z = vector.x * transform.m13 + vector.y * transform.m23 + vector.z * transform.m33;
     return result;
+}
+
+/**
+ * @brief Converts matrix3 to euler angles tilt pan and roll
+ * 
+ * @param m 
+ * @return EulerAngles 
+ */
+static EulerAngles convertMatrixToEuler(Matrix3 m)
+{
+    EulerAngles euler = {0};
+    float heading, attitude, bank;
+    if (m.m21 > 0.998)
+    { // singularity at north pole
+        heading = atan2(m.m13, m.m33);
+        attitude = PI / 2;
+        bank = 0;
+        euler.tilt = bank;
+        euler.pan = heading * static_cast<float>(RadiansInDegrees);
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+        return euler;
+    }
+    if (m.m21 < -0.998)
+    { // singularity at south pole
+        heading = atan2(m.m13, m.m33);
+        attitude = -PI / 2;
+        bank = 0;
+        euler.tilt = bank;
+        euler.pan = heading * static_cast<float>(RadiansInDegrees);
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+
+        return euler;
+    }
+    heading = atan2(-m.m31, m.m11);
+    bank = atan2(-m.m23, m.m22);
+    attitude = asin(m.m21);
+    euler.tilt = bank * static_cast<float>(RadiansInDegrees);
+    euler.pan = heading * static_cast<float>(RadiansInDegrees);
+    euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+    return euler;
 }
 
 //Pose operators--------------------------------------------------

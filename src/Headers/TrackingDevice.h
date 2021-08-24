@@ -25,6 +25,7 @@ class TrackingDevice
 public:
     //Constructors and destructors
     TrackingDevice(EngineClient& engine_client);
+    ~TrackingDevice();
     void startTracking(const float tagSize);
     void stopTracking();
 
