@@ -17,6 +17,6 @@ This system is being created for wTVision and this rep should be deleted soon!
 <ul>
 <li>Receive tag and rotation and apply to all the points given by camera ✅</li>
 <li>World tag rotation not giving stable coordinate system when using natively ✅</li>
-<li>ASAP linux support for this project in wTVision - AprilTag library build in windows?</li>
+<li>Windows support for this project in wTVision - AprilTag library build</li>
 <li>Connect socket to engine ✅</li>
 </ul>
