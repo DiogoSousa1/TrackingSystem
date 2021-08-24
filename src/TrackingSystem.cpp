@@ -118,8 +118,6 @@ int main()
 			if (tagManager.allTagsDetected.totalTagsDetected > 0)
 			{
 
-				//TODO: calculate new position and rotation of the camera based on the position and rotation of april tag detected
-				//! rotation not implemented
 
 				PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 				PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
@@ -131,16 +129,13 @@ int main()
 				printMatrix3(tagWorldPose.rotationMatrix);
 
 				//need rotations to align y with tags normal
-				//TODO: test transpose of rotation matrix with no tilt inversion in detect
 				Matrix3 coordinateTransform =  rotateX(degreesToRadians(-90.0f)) *transpose(tagWorldPose.rotationMatrix);
-				//invert y axis
-				//coordinateTransform.m12 = -coordinateTransform.m12;
-				//coordinateTransform.m22 = -coordinateTransform.m22;
-				//coordinateTransform.m32 = -coordinateTransform.m32;
-				//invert z
+				
+				//invert z to left hand coord system
 				coordinateTransform.m13 = -coordinateTransform.m13;
 				coordinateTransform.m23 = -coordinateTransform.m23;
 				coordinateTransform.m33 = -coordinateTransform.m33;
+				
 				cout << "World coordinate transformation:\n";
 				printMatrix3(coordinateTransform);
 				printEulers(convertMatrixToEuler(coordinateTransform));
