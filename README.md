@@ -19,4 +19,5 @@ This system is being created for wTVision and this rep should be deleted soon!
 <li>World tag rotation not giving stable coordinate system when using natively ✅</li>
 <li>Windows support for this project in wTVision - AprilTag library build</li>
 <li>Connect socket to engine ✅</li>
+<li>Increase extensibility of the program</li>
 </ul>
