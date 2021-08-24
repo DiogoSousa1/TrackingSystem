@@ -50,7 +50,7 @@ int main()
 	string port = DEFAULT_PORT;
 	cout << "Receiving input here...\nPress s to shutdown app!" << endl;
 
-	//write standard output to out.txt file
+	//write standard output to out.log file
 	remove(FULL_PATH_OUT_LOG);
 	int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
 	int sout = dup(1);
@@ -59,6 +59,7 @@ int main()
 	int curFileOffset;
 	EngineClient client = EngineClient(ip, port);
 	TrackingDevice device = TrackingDevice(client);
+	//this thread shouldnt be this way
 	thread t([&device]
 			 {
 				 const float tagSize = 0.144f;

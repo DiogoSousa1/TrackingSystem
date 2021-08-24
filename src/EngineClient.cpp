@@ -5,7 +5,7 @@ EngineClient::EngineClient(string ip, string port)
     socketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
     if (socketDescriptor == -1)
     {
-        std::cout << "Could not create socket\n";
+        std::cerr << "Could not create socket" << endl;
     }
     address = {0};
     address.sin_family = AF_INET;

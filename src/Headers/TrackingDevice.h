@@ -1,7 +1,7 @@
 /**
  * @file TrackingDevice.h
  * @author Diogo Sousa (diogo.sousa@wtvision.com)
- * @brief 
+ * @brief Represents a t265 intel tracking device with tag detection properties
  * @version 1.0
  * @date 2021-08-24
  * 

@@ -19,6 +19,7 @@ void TrackingDevice::startTracking(const float tagSize)
     rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
 
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
+
     while (!stop)
     {
 
@@ -67,6 +68,7 @@ void TrackingDevice::startTracking(const float tagSize)
             printEulers(convertMatrixToEuler(coordinateTransform));
             PoseData enginePose = {0};
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
+            
             Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
             enginePose.rotationMatrix = cameraRotation;
             enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
