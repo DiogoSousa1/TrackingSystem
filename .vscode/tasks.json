@@ -10,7 +10,7 @@
 				"${fileWorkspaceFolder}/src/*.cpp",
 				"-o",
 				"${fileWorkspaceFolder}/bin/TrackingSystem",
-				"-lrealsense2", "-lapriltag"
+				"-lrealsense2", "-lapriltag", "-lpthread"
 			],
 			"options": {
 				"cwd": "${fileDirname}"
