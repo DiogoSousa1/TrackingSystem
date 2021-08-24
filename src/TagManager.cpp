@@ -78,6 +78,7 @@ PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs
 {
     PoseData worldTagData = {0};
     PoseData world_to_body = transformToPosestructure(camera_world_pose);
+    //compute tag rotation and translation from world coord system to tag
     worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
     worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
     return worldTagData;
