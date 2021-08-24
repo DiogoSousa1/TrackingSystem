@@ -149,7 +149,7 @@ int main()
 				Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
 				enginePose.rotationMatrix = cameraRotation;
 				enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
-
+				enginePose.eulerRotation.tilt *= -1.0f;
 				cout << "------------------------------\n\nSending to engine:\n";
 				printPoseData(enginePose);
 
