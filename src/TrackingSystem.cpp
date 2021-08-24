@@ -131,11 +131,16 @@ int main()
 				printMatrix3(tagWorldPose.rotationMatrix);
 
 				//need rotations to align y with tags normal
-				Matrix3 coordinateTransform = tagWorldPose.rotationMatrix * rotateX(degreesToRadians(-90.0f));
+				//TODO: test transpose of rotation matrix with no tilt inversion in detect
+				Matrix3 coordinateTransform =  rotateX(degreesToRadians(-90.0f)) *transpose(tagWorldPose.rotationMatrix);
 				//invert y axis
-				coordinateTransform.m22 = -coordinateTransform.m22;
-				coordinateTransform.m32 = -coordinateTransform.m32;
-				
+				//coordinateTransform.m12 = -coordinateTransform.m12;
+				//coordinateTransform.m22 = -coordinateTransform.m22;
+				//coordinateTransform.m32 = -coordinateTransform.m32;
+				//invert z
+				coordinateTransform.m13 = -coordinateTransform.m13;
+				coordinateTransform.m23 = -coordinateTransform.m23;
+				coordinateTransform.m33 = -coordinateTransform.m33;
 				cout << "World coordinate transformation:\n";
 				printMatrix3(coordinateTransform);
 				printEulers(convertMatrixToEuler(coordinateTransform));
