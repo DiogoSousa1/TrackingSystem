@@ -61,6 +61,7 @@ void TrackingDevice::startTracking(const float tagSize)
             printPoseData(tagWorldPose);
             printMatrix3(tagWorldPose.rotationMatrix);
 
+            //calculate the transformation between the camera and tags coord system
             //need rotations to align y with the tag's normal
             Matrix3 coordinateTransform = rotateX(degreesToRadians(-90.0f)) * transpose(tagWorldPose.rotationMatrix);
 
@@ -74,9 +75,10 @@ void TrackingDevice::startTracking(const float tagSize)
             printEulers(convertMatrixToEuler(coordinateTransform));
 
             PoseData enginePose = {0};
+            //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-
-            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
+            //compute camera in tag's world rotation
+            Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
             enginePose.rotationMatrix = cameraRotation;
 
             enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);

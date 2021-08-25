@@ -68,8 +68,6 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
 
         allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(cameraCoordinatesPosition, *camera_world_pose);
     }
-
-    apriltag_pose_destroy(&rawPose);
     apriltag_detection_destroy(dataDetection);
 
     return true;
