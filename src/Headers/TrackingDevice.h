@@ -11,7 +11,6 @@
 #ifndef TRACKINGDEVICE_H_
 #define TRACKINGDEVICE_H_
 
-
 #include <librealsense2/rs.hpp>
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
@@ -24,10 +23,21 @@ class TrackingDevice
 {
 public:
     //Constructors and destructors
-    TrackingDevice(EngineClient& engine_client);
+    TrackingDevice(EngineClient &engine_client);
     ~TrackingDevice();
+
+    /**
+     * @brief Starts the t265 pipeline and initializes tracking with tag detection 
+     * 
+     * @param tagSize tag size in meters
+     */
     void startTracking(const float tagSize);
+    /**
+     * @brief Sends a stop request
+     * 
+     */
     void stopTracking();
+
 
 private:
     EngineClient client;

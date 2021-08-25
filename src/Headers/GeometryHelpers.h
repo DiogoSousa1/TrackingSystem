@@ -370,10 +370,10 @@ static PoseData operator*(PoseData left, PoseData right)
  * @param translation 
  * @return PoseData 
  */
-static PoseData transformToPoseStructure(const float rotation[9], const float translation[3])
+static PoseData transformToPoseStructure(const float rotation[9], const float translation[3], bool isColumnMajor)
 {
     PoseData result;
-    result.rotationMatrix = convertArrayToMatrix3(rotation, true);
+    result.rotationMatrix = convertArrayToMatrix3(rotation, isColumnMajor);
 
     result.position.x = translation[0];
     result.position.y = translation[1];
@@ -387,13 +387,14 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
  * 
  * @param rotation 
  * @param translation 
+ * @param isColumnMajor 
  * @return PoseData 
  */
-static PoseData transformToPoseStructure(const double rotation[9], const double translation[3])
+static PoseData transformToPoseStructure(const double rotation[9], const double translation[3], bool isColumnMajor)
 {
     PoseData result;
 
-    result.rotationMatrix = convertArrayToMatrix3(rotation, true);
+    result.rotationMatrix = convertArrayToMatrix3(rotation, isColumnMajor);
 
     result.position.x = static_cast<float>(translation[0]);
     result.position.y = static_cast<float>(translation[1]);
@@ -411,13 +412,18 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
  * @param translation 
  * @return PoseData 
  */
-static PoseData transformToPosestructure(const rs2_pose &pose)
+static PoseData transformToPosestructure(const rs2_pose &pose, bool isColumnMajor)
 {
     PoseData tf;
     tf.rotationMatrix = quaternionToMatrix(pose.rotation);
 
     //? get rotation to original coordinate system not the actual rotation of camera
-    tf.rotationMatrix = transpose(tf.rotationMatrix);
+    if (isColumnMajor)
+    {
+
+        tf.rotationMatrix = transpose(tf.rotationMatrix);
+    }
+
     tf.position.x = pose.translation.x;
     tf.position.y = pose.translation.y;
     tf.position.z = pose.translation.z;

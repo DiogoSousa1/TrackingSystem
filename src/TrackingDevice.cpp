@@ -10,6 +10,7 @@ TrackingDevice::~TrackingDevice()
 
 void TrackingDevice::startTracking(const float tagSize)
 {
+    //Initialization of t265 pipeline
     rs2::pipeline camPipeline;
     rs2::config cfg;
     cfg.enable_all_streams();
@@ -18,9 +19,11 @@ void TrackingDevice::startTracking(const float tagSize)
     rs2::pipeline_profile profile = camPipeline.start(cfg);
     rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
     rs2_extrinsics tagPose = {0};
+    //get intrinsics and extrinsics for coordinate transformations between t265 pose and fisheye lens coord system
     rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
     rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
 
+    //creates new tag manager to use during tracking
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 
     while (!stop)
@@ -46,6 +49,7 @@ void TrackingDevice::startTracking(const float tagSize)
             }
         }
 
+        //if already detected a tag
         if (tagManager.allTagsDetected.totalTagsDetected > 0)
         {
 
@@ -58,7 +62,7 @@ void TrackingDevice::startTracking(const float tagSize)
             printPoseData(tagWorldPose);
             printMatrix3(tagWorldPose.rotationMatrix);
 
-            //need rotations to align y with tags normal
+            //need rotations to align y with the tag's normal
             Matrix3 coordinateTransform = rotateX(degreesToRadians(-90.0f)) * transpose(tagWorldPose.rotationMatrix);
 
             //invert z to left hand coord system
@@ -69,10 +73,11 @@ void TrackingDevice::startTracking(const float tagSize)
             cout << "World coordinate transformation:\n";
             printMatrix3(coordinateTransform);
             printEulers(convertMatrixToEuler(coordinateTransform));
+
             PoseData enginePose = {0};
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-
-            Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
+            //TODO: pan and roll switched when tag is in vertical
+            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             enginePose.rotationMatrix = cameraRotation;
 
             enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
@@ -86,7 +91,7 @@ void TrackingDevice::startTracking(const float tagSize)
         {
             cout << "Waiting for tag detection..." << endl;
         }
-
+        //keep out file compact
         lseek(1, 0, SEEK_SET);
     }
 

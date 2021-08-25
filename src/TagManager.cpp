@@ -15,7 +15,7 @@ Tag_Manager::Tag_Manager(const rs2_extrinsics extrinsics, const rs2_intrinsics &
     info.tagsize = tagSize;
     info.fx = info.fy = 1;
     info.cx = info.cy = 0;
-    body_to_Fisheye_data = transformToPoseStructure(extrinsics.rotation, extrinsics.translation);
+    body_to_Fisheye_data = transformToPoseStructure(extrinsics.rotation, extrinsics.translation, true);
 }
 
 Tag_Manager::~Tag_Manager()
@@ -57,18 +57,19 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
 
         estimate_pose_for_tag_homography(&info, &rawPose);
         //invert tilt
-       /* for (int c : {1, 2, 4, 5, 7, 8})
+        /* for (int c : {1, 2, 4, 5, 7, 8})
         {
             rawPose.R->data[c] *= -1;
         }*/
 
-        //transpose rawPose.R to get rotation from camera to tag (or tag to camera?)
-        cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data);
+        //transpose rawPose.R to get rotation from tag to camera
+        cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data, true);
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
 
-        allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(allTagsDetected.tagsCameraPositions[actualTag], *camera_world_pose);
+        allTagsDetected.tagsWorldPositions[actualTag] = compute_tag_pose_in_world(cameraCoordinatesPosition, *camera_world_pose);
     }
 
+    apriltag_pose_destroy(&rawPose);
     apriltag_detection_destroy(dataDetection);
 
     return true;
@@ -77,7 +78,7 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
 PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs2_pose &camera_world_pose)
 {
     PoseData worldTagData = {0};
-    PoseData world_to_body = transformToPosestructure(camera_world_pose);
+    PoseData world_to_body = transformToPosestructure(camera_world_pose, true);
     //compute tag rotation and translation from world coord system to tag
     worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
     worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
