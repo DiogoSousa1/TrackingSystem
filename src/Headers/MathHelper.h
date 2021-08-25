@@ -198,5 +198,4 @@ static float degreesToRadians(float degrees)
     return (PI * degrees) / 180;
 }
 
-
 #endif

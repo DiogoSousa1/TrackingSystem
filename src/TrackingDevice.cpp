@@ -79,6 +79,7 @@ void TrackingDevice::startTracking(const float tagSize)
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
             //compute camera in tag's world rotation
             //TODO: rotation bugged in roll when tag in vertical
+            //TODO: changed matrix operator for correct use
             Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * transpose(coordinateTransform);
             enginePose.rotationMatrix = cameraRotation;
 
