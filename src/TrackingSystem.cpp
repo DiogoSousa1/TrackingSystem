@@ -27,20 +27,6 @@
 
 using namespace std;
 
-static void readInput(int pipe)
-{
-	cout << "Receiving input here...\nPress s to exit app!" << endl;
-	char command;
-	while (command != 's')
-	{
-		command = getchar();
-		//read \n after char
-		getchar();
-		write(pipe, &command, sizeof(char));
-	}
-	cout << "Closing app..." << endl;
-}
-
 //entry point for tracking application
 int main()
 {
