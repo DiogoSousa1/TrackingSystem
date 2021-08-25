@@ -18,7 +18,6 @@ void TrackingDevice::startTracking(const float tagSize)
     const int fisheye_sensor_idx = 1;
     rs2::pipeline_profile profile = camPipeline.start(cfg);
     rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
-    rs2_extrinsics tagPose = {0};
     //get intrinsics and extrinsics for coordinate transformations between t265 pose and fisheye lens coord system
     rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
     rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));

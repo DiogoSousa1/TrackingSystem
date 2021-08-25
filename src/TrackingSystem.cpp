@@ -41,7 +41,6 @@ int main()
 	int sout = dup(1);
 	dup2(out, 1);
 
-	int curFileOffset;
 	EngineClient client = EngineClient(ip, port);
 	TrackingDevice device = TrackingDevice(client);
 
