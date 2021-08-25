@@ -59,7 +59,6 @@ int main()
 	EngineClient client = EngineClient(ip, port);
 	TrackingDevice device = TrackingDevice(client);
 
-	//thread shouldnt be this way
 	thread t([&device]
 			 {
 				 const float tagSize = 0.144f;

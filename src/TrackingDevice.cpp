@@ -76,7 +76,7 @@ void TrackingDevice::startTracking(const float tagSize)
 
             PoseData enginePose = {0};
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-            //TODO: pan and roll switched when tag is in vertical
+
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             enginePose.rotationMatrix = cameraRotation;
 

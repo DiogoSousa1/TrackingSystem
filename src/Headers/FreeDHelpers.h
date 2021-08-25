@@ -10,7 +10,6 @@
  */
 #ifndef FREEDSTRUCTURES_H
 #define FREEDSTRUCTURES_H
-#include <cstring>
 #include "TrackingStructures.h"
 
 struct FreeDOperators

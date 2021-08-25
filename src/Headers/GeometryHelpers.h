@@ -383,7 +383,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     return result;
 }
 /**
- * @brief Transform to PoseData from rotation column major matrix
+ * @brief Transform to PoseData from rotation and translation
  * 
  * @param rotation 
  * @param translation 

@@ -18,7 +18,6 @@
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
 #include <memory>
-
 #include <iostream>
 
 //My headers
@@ -42,6 +41,7 @@ public:
 	 * @return false if no tag was detected
 	 */
 	bool detect(unsigned char *grayImage, const rs2_pose *camera_world_pose);
+
 
 	static void apriltag_pose_destroy(apriltag_pose_t *p)
 	{

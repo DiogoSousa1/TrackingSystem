@@ -14,6 +14,8 @@
 #include <math.h>
 #include <librealsense2/rsutil.h>
 #include <apriltag/apriltag.h>
+
+//My headers
 #include "TrackingStructures.h"
 
 #define PI 3.1415926535

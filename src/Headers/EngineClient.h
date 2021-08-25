@@ -10,13 +10,15 @@
  */
 #ifndef ENGINECLIENT_H
 #define ENGINECLIENT_H
-#include "TrackingStructures.h"
 #include <sys/socket.h>
 #include <iostream>
 #include <netinet/in.h>
-#include "FreeDHelpers.h"
 #include <arpa/inet.h>
 #include <unistd.h>
+
+//My headers
+#include "TrackingStructures.h"
+#include "FreeDHelpers.h"
 
 using namespace std;
 
