@@ -78,7 +78,7 @@ void TrackingDevice::startTracking(const float tagSize)
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
             //compute camera in tag's world rotation
-            Matrix3 cameraRotation = coordinateTransform * transpose(quaternionToMatrix(lastPose.rotation));
+            Matrix3 cameraRotation = quaternionToMatrix(lastPose.rotation) * transpose(coordinateTransform);
             enginePose.rotationMatrix = cameraRotation;
 
             enginePose.eulerRotation = convertMatrixToEuler(enginePose.rotationMatrix);
