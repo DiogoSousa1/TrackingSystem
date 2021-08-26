@@ -20,6 +20,8 @@
 
 #define PI 3.1415926535
 
+#define RadiansInDegrees 57.295779513
+
 static void deproject(double point[2], const rs2_intrinsics &intrinsics, const double px[2])
 {
     float fpt[3], fpx[2] = {(float)px[0], (float)px[1]};

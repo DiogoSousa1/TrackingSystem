@@ -107,6 +107,11 @@ static void printMatrix3(Matrix3 matrix)
     std::cout << "31: " << matrix.m31 << "  32: " << matrix.m32 << "  33: " << matrix.m33 << "\n";
     std::cout << "-------------------------------------------------------" << std::endl;
 }
+static void printQuaternion(Quaternion q)
+{
+    std::cout << "--------------Quaternion with values------------------------\n";
+    std::cout << "x: " << q.x << " y: " << q.y << " z: " << q.z << " w: " << q.w << std::endl;
+}
 
 static void printApriltagRawData(apriltag_pose_t &pose)
 {
