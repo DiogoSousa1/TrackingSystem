@@ -176,6 +176,33 @@ static Matrix3 rotateY(float angle)
     return result;
 }
 
+static Matrix3 reflectX()
+{
+    Matrix3 result = IdentityMatrix();
+    result.m11 = -1.0f;
+    return result;
+}
+static Matrix3 reflectY()
+{
+    Matrix3 result = IdentityMatrix();
+    result.m22 = -1.0f;
+    return result;
+}
+
+static Matrix3 reflectZ()
+{
+    Matrix3 result = IdentityMatrix();
+    result.m33 = -1.0f;
+    return result;
+}
+
+/**
+ * @brief Convert array of floats to matrix3
+ * 
+ * @param vector 
+ * @param isColumnMajor 
+ * @return Matrix3 
+ */
 static Matrix3 convertArrayToMatrix3(const float vector[9], bool isColumnMajor)
 {
     Matrix3 result = {0};
@@ -207,7 +234,13 @@ static Matrix3 convertArrayToMatrix3(const float vector[9], bool isColumnMajor)
 
     return result;
 }
-
+/**
+ * @brief Convert array of doubles to matrix3 
+ * 
+ * @param vector 
+ * @param isColumnMajor 
+ * @return Matrix3 
+ */
 static Matrix3 convertArrayToMatrix3(const double vector[9], bool isColumnMajor)
 {
     Matrix3 result = {0};
@@ -248,7 +281,7 @@ static Matrix3 convertArrayToMatrix3(const double vector[9], bool isColumnMajor)
  */
 static Matrix3 operator*(Matrix3 left, Matrix3 right)
 {
-    return multiplyMatrices(right, left);
+    return multiplyMatrices(left, right);
 }
 /**
  * @brief Transforms quaternion to matrix
@@ -345,6 +378,62 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
     return euler;
 }
 
+//Quaternion operators---------------------------------------------
+/**
+ * @brief 
+ * @pre Matrix is represents pure rotation
+ * @param m  
+ * @return Quaternion 
+ */
+static Quaternion convertMatrix3ToQuaternion(Matrix3 matrix)
+{
+    float squareroot;
+    float half;
+    float scale = matrix.m11 + matrix.m22 + matrix.m33;
+    Quaternion result = {0};
+    if (scale > 0.0f)
+    {
+        squareroot = sqrt(scale + 1.0f);
+        result.w = squareroot * 0.5f;
+        squareroot = 0.5f / squareroot;
+
+        result.x = (matrix.m23 - matrix.m32) * squareroot;
+        result.y = (matrix.m31 - matrix.m13) * squareroot;
+        result.z = (matrix.m12 - matrix.m21) * squareroot;
+    }
+    else if ((matrix.m11 >= matrix.m22) && (matrix.m11 >= matrix.m33))
+    {
+        squareroot = sqrt(1.0f + matrix.m11 - matrix.m22 - matrix.m33);
+        half = 0.5f / squareroot;
+
+        result.x = 0.5f * squareroot;
+        result.y = (matrix.m12 + matrix.m21) * half;
+        result.z = (matrix.m13 + matrix.m31) * half;
+        result.w = (matrix.m23 - matrix.m32) * half;
+    }
+    else if (matrix.m22 > matrix.m33)
+    {
+        squareroot = sqrt(1.0f + matrix.m22 - matrix.m11 - matrix.m33);
+        half = 0.5f / squareroot;
+
+        result.x = (matrix.m21 + matrix.m12) * half;
+        result.y = 0.5f * squareroot;
+        result.z = (matrix.m32 + matrix.m23) * half;
+        result.w = (matrix.m31 - matrix.m13) * half;
+    }
+    else
+    {
+        squareroot = sqrt(1.0f + matrix.m33 - matrix.m11 - matrix.m22);
+        half = 0.5f / squareroot;
+
+        result.x = (matrix.m31 + matrix.m13) * half;
+        result.y = (matrix.m32 + matrix.m23) * half;
+        result.z = 0.5f * squareroot;
+        result.w = (matrix.m12 - matrix.m21) * half;
+    }
+    return result;
+}
+
 //Pose operators--------------------------------------------------
 
 /**
@@ -358,7 +447,7 @@ static PoseData operator*(PoseData left, PoseData right)
 {
 
     PoseData result;
-    result.rotationMatrix = left.rotationMatrix * right.rotationMatrix;
+    result.rotationMatrix = right.rotationMatrix * left.rotationMatrix;
     result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
     return result;
 }
