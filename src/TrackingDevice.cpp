@@ -63,13 +63,15 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //calculate the transformation between the camera world and tags coord system
             //need rotations to align y with the tag's normal
-            Matrix3 coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(-90.0f));
+            Matrix3 coordinateTransform = rotateX(degreesToRadians(-90.0f)) * tagWorldPose.rotationMatrix;
 
             //invert z to left hand coord system
-            coordinateTransform.m13 = -coordinateTransform.m13;
+           /* coordinateTransform.m13 = -coordinateTransform.m13;
             coordinateTransform.m23 = -coordinateTransform.m23;
-            coordinateTransform.m33 = -coordinateTransform.m33;
-
+            coordinateTransform.m33 = -coordinateTransform.m33;*/
+            coordinateTransform.m12 = -coordinateTransform.m12;
+            coordinateTransform.m22 = -coordinateTransform.m22;
+            coordinateTransform.m32 = -coordinateTransform.m32;
             cout << "World coordinate transformation:\n";
             printMatrix3(coordinateTransform);
             printEulers(convertMatrixToEuler(coordinateTransform));

@@ -36,6 +36,44 @@ static Vector3 operator-(Vector3 left, Vector3 right)
     return result;
 }
 
+/**
+ * @brief transform vector point to new coordinate system
+ * 
+ * @param vector 
+ * @param transform 
+ * @return Vector3 
+ */
+static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
+{
+    Vector3 result = {0};
+    result.x = vector.x * transform.m11 + vector.y * transform.m21 + vector.z * transform.m31;
+    result.y = vector.x * transform.m12 + vector.y * transform.m22 + vector.z * transform.m32;
+    result.z = vector.x * transform.m13 + vector.y * transform.m23 + vector.z * transform.m33;
+    return result;
+}
+
+static Vector3 rotateVector(Vector3 vector, Quaternion rotation)
+{
+    Vector3 result = {0};
+    float x = rotation.x + rotation.x;
+    float y = rotation.y + rotation.y;
+    float z = rotation.z + rotation.z;
+    float wx = rotation.w * x;
+    float wy = rotation.w * y;
+    float wz = rotation.w * z;
+    float xx = rotation.x * x;
+    float xy = rotation.x * y;
+    float xz = rotation.x * z;
+    float yy = rotation.y * y;
+    float yz = rotation.y * z;
+    float zz = rotation.z * z;
+
+    result.x = ((vector.x * ((1.0f - yy) - zz)) + (vector.y * (xy - wz))) + (vector.z * (xz + wy));
+    result.y = ((vector.x * (xy + wz)) + (vector.y * ((1.0f - xx) - zz))) + (vector.z * (yz - wx));
+    result.z = ((vector.x * (xz - wy)) + (vector.y * (yz + wx))) + (vector.z * ((1.0f - xx) - yy));
+    return result;
+}
+
 //Matrix operators------------------------------
 
 /**
@@ -323,22 +361,6 @@ static Matrix3 quaternionToMatrix(Quaternion q)
 }
 
 /**
- * @brief transform vector point to new coordinate system
- * 
- * @param vector 
- * @param transform 
- * @return Vector3 
- */
-static Vector3 transformCoordinate(Vector3 vector, Matrix3 transform)
-{
-    Vector3 result = {0};
-    result.x = vector.x * transform.m11 + vector.y * transform.m21 + vector.z * transform.m31;
-    result.y = vector.x * transform.m12 + vector.y * transform.m22 + vector.z * transform.m32;
-    result.z = vector.x * transform.m13 + vector.y * transform.m23 + vector.z * transform.m33;
-    return result;
-}
-
-/**
  * @brief Converts matrix3 to euler angles tilt pan and roll
  * 
  * @param m 
@@ -430,6 +452,105 @@ static Quaternion convertMatrix3ToQuaternion(Matrix3 matrix)
         result.y = (matrix.m32 + matrix.m23) * half;
         result.z = 0.5f * squareroot;
         result.w = (matrix.m12 - matrix.m21) * half;
+    }
+    return result;
+}
+
+static Quaternion multiply(Quaternion left, Quaternion right)
+{
+
+    Quaternion result = {0};
+    float lx = left.x;
+    float ly = left.y;
+    float lz = left.z;
+    float lw = left.w;
+    float rx = right.x;
+    float ry = right.y;
+    float rz = right.z;
+    float rw = right.w;
+    float a = (ly * rz - lz * ry);
+    float b = (lz * rx - lx * rz);
+    float c = (lx * ry - ly * rx);
+    float d = (lx * rx + ly * ry + lz * rz);
+    result.x = (lx * rw + rx * lw) + a;
+    result.y = (ly * rw + ry * lw) + b;
+    result.z = (lz * rw + rz * lw) + c;
+    result.w = lw * rw - d;
+    return result;
+}
+
+static Quaternion rotateQuaternionX(float angle)
+{
+    Quaternion result = {0};
+    float half = angle * 0.5f;
+    float sinVal = sin(half);
+    float cosVal = cos(half);
+    result.x = 1.0f * sinVal;
+    result.y = 0;
+    result.z = 0;
+    result.w = cosVal;
+    return result;
+}
+
+static Quaternion rotateQuaternionY(float angle)
+{
+    Quaternion result = {0};
+    float half = angle * 0.5f;
+    float sinVal = sin(half);
+    float cosVal = cos(half);
+    result.x = 0;
+    result.y = 1.0f * sinVal;
+    result.z = 0;
+    result.w = cosVal;
+    return result;
+}
+
+static Quaternion rotateQuaternionZ(float angle)
+{
+    Quaternion result = {0};
+    float half = angle * 0.5f;
+    float sinVal = sin(half);
+    float cosVal = cos(half);
+    result.x = 0;
+    result.y = 0;
+    result.z = 1.0f * sinVal;
+    result.w = cosVal;
+    return result;
+}
+
+static Quaternion operator*(Quaternion left, Quaternion right)
+{
+    return multiply(left, right);
+}
+
+static float LengthSquareOfQuaternion(Quaternion q)
+{
+    return q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+}
+
+static float MagnitudeOfQuaternion(Quaternion q)
+{
+    return sqrt(LengthSquareOfQuaternion(q));
+}
+
+static Quaternion invert(Quaternion q)
+{
+    float lengthSq = LengthSquareOfQuaternion(q);
+    Quaternion result = {0};
+    if (abs(lengthSq) < 0.00001f)
+    {
+
+        lengthSq = 1.0f / lengthSq;
+
+        result.x = -q.x * lengthSq;
+        result.y = -q.y * lengthSq;
+        result.z = -q.z * lengthSq;
+        result.w = q.w * lengthSq;
+        return result;
+    }
+    else
+    {
+        fprintf(stderr, "Length of quaternion is 0!");
     }
     return result;
 }
