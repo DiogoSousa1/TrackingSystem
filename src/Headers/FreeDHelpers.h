@@ -10,6 +10,8 @@
  */
 #ifndef FREEDSTRUCTURES_H
 #define FREEDSTRUCTURES_H
+
+//My headers
 #include "TrackingStructures.h"
 
 struct FreeDOperators

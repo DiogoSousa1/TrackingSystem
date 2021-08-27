@@ -1,5 +1,17 @@
+/**
+ * @file QuaternionHelpers.h
+ * @author Diogo Sousa (diogo.sousa@wtvision.com)
+ * @brief 
+ * @version 1.0
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #ifndef QUATERNIONHELPERS_H_
 #define QUATERNIONHELPERS_H_
+
+//My headers
 #include "TrackingStructures.h"
 #include "MathHelper.h"
 
@@ -81,31 +93,27 @@ static Quaternion multiply(Quaternion left, Quaternion right)
     return result;
 }
 
-static Quaternion rotateQuaternionX(float angle)
+static Quaternion rotationPanTiltRoll(float pan, float tilt, float roll)
 {
     Quaternion result = {0};
-    float half = angle * 0.5f;
-    float sinVal = sin(half);
-    float cosVal = cos(half);
-    result.x = 1.0f * sinVal;
-    result.y = 0;
-    result.z = 0;
-    result.w = cosVal;
+    float halfRoll = roll * 0.5f;
+    float halfPitch = tilt * 0.5f;
+    float halfYaw = pan * 0.5f;
+
+    float sinRoll = sin(halfRoll);
+    float cosRoll = cos(halfRoll);
+    float sinPitch = sin(halfPitch);
+    float cosPitch = cos(halfPitch);
+    float sinYaw = sin(halfYaw);
+    float cosYaw = cos(halfYaw);
+
+    result.x = (cosYaw * sinPitch * cosRoll) + (sinYaw * cosPitch * sinRoll);
+    result.y = (sinYaw * cosPitch * cosRoll) - (cosYaw * sinPitch * sinRoll);
+    result.z = (cosYaw * cosPitch * sinRoll) - (sinYaw * sinPitch * cosRoll);
+    result.w = (cosYaw * cosPitch * cosRoll) + (sinYaw * sinPitch * sinRoll);
     return result;
 }
 
-static Quaternion rotateQuaternionY(float angle)
-{
-    Quaternion result = {0};
-    float half = angle * 0.5f;
-    float sinVal = sin(half);
-    float cosVal = cos(half);
-    result.x = 0;
-    result.y = 1.0f * sinVal;
-    result.z = 0;
-    result.w = cosVal;
-    return result;
-}
 static Quaternion IdentityQuaternion()
 {
     Quaternion result = {0};
@@ -113,6 +121,7 @@ static Quaternion IdentityQuaternion()
     result.w = 1.0f;
     return result;
 }
+
 static Quaternion rotateQuaternionZ(float angle)
 {
     Quaternion result = {0};

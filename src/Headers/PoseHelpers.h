@@ -1,5 +1,5 @@
 /**
- * @file GeometryHelpers.h
+ * @file PoseHelpers.h
  * @author Diogo Sousa
  * @brief Helpers for geometry stuff like matrix operations and euler angles conversion
  * @version 1.0
@@ -8,15 +8,16 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#ifndef GEOMETRYHELPER_H
-#define GEOMETRYHELPER_H
+#ifndef POSEHELPERS_H_
+#define POSEHELPERS_H_
 #include <librealsense2/rsutil.h>
 #include "TrackingStructures.h"
 #include <math.h>
+
+//My headers
 #include "MatrixHelpers.h"
 #include "QuaternionHelpers.h"
 #include "VectorHelpers.h"
-
 
 //Pose operators--------------------------------------------------
 

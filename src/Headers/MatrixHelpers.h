@@ -1,5 +1,17 @@
+/**
+ * @file MatrixHelpers.h
+ * @author Diogo Sousa (diogo.sousa@wtvision.com)
+ * @brief 
+ * @version 1.0
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #ifndef MATRIXHELPERS_H_
 #define MATRIXHELPERS_H_
+
+//My headers
 #include "TrackingStructures.h"
 #include "MathHelper.h"
 /**

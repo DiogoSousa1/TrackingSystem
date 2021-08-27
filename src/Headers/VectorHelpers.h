@@ -1,5 +1,17 @@
+/**
+ * @file VectorHelpers.h
+ * @author Diogo Sousa (diogo.sousa@wtvision.com)
+ * @brief 
+ * @version 1.0
+ * @date 2021-08-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #ifndef VECTORHELPERS_H_
 #define VECTORHELPERS_H_
+
+//My headers
 #include "TrackingStructures.h"
 
 static Vector3 operator+(Vector3 left, Vector3 right)
