@@ -70,4 +70,15 @@ static Vector3 rotateVector(Vector3 vector, Quaternion rotation)
     return result;
 }
 
+static void printVector3(Vector3 vector)
+{
+
+    std::cout << "--------------Vector with values-----------------------\nx: " << vector.x << "\n";
+    std::cout << "y: " << vector.y << "\n";
+    std::cout << "z: " << vector.z << "\n";
+    std::cout << "-------------------------------------------------------"
+              << std::endl;
+}
+
+
 #endif

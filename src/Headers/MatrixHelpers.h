@@ -338,4 +338,15 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
     return euler;
 }
 
+
+static void printMatrix3(Matrix3 matrix)
+{
+    std::cout << "--------------Matrix with values------------------------------\n";
+    std::cout << "11: " << matrix.m11 << "  12: " << matrix.m12 << "  13: " << matrix.m13 << "\n";
+    std::cout << "21: " << matrix.m21 << "  22: " << matrix.m22 << "  23: " << matrix.m23 << "\n";
+    std::cout << "31: " << matrix.m31 << "  32: " << matrix.m32 << "  33: " << matrix.m33 << "\n";
+    std::cout << "-------------------------------------------------------" << std::endl;
+}
+
+
 #endif

@@ -82,44 +82,7 @@ static void printEulers(EulerAngles angles)
               << std::endl;
 }
 
-static void printVector3(Vector3 vector)
-{
 
-    std::cout << "--------------Vector with values-----------------------\nx: " << vector.x << "\n";
-    std::cout << "y: " << vector.y << "\n";
-    std::cout << "z: " << vector.z << "\n";
-    std::cout << "-------------------------------------------------------"
-              << std::endl;
-}
 
-static void printPoseData(PoseData data)
-{
-    printVector3(data.position);
-    printEulers(data.eulerRotation);
-    //print of matrix is useless in terms of debug
-}
-
-static void printMatrix3(Matrix3 matrix)
-{
-    std::cout << "--------------Matrix with values------------------------------\n";
-    std::cout << "11: " << matrix.m11 << "  12: " << matrix.m12 << "  13: " << matrix.m13 << "\n";
-    std::cout << "21: " << matrix.m21 << "  22: " << matrix.m22 << "  23: " << matrix.m23 << "\n";
-    std::cout << "31: " << matrix.m31 << "  32: " << matrix.m32 << "  33: " << matrix.m33 << "\n";
-    std::cout << "-------------------------------------------------------" << std::endl;
-}
-static void printQuaternion(Quaternion q)
-{
-    std::cout << "--------------Quaternion with values------------------------\n";
-    std::cout << "x: " << q.x << " y: " << q.y << " z: " << q.z << " w: " << q.w << std::endl;
-}
-
-static void printApriltagRawData(apriltag_pose_t &pose)
-{
-    std::cout << "--------------------April tag pose raw------------------\nRotation:\n";
-    std::cout << "11: " << pose.R->data[0] << "  12: " << pose.R->data[1] << "  13: " << pose.R->data[2] << "\n";
-    std::cout << "21: " << pose.R->data[3] << "  22: " << pose.R->data[4] << "  23: " << pose.R->data[5] << "\n";
-    std::cout << "31: " << pose.R->data[6] << "  32: " << pose.R->data[7] << "  33: " << pose.R->data[8] << "\n";
-    std::cout << "Translation\nx: " << pose.t->data[0] << " y: " << pose.t->data[1] << " z: " << pose.t->data[0] << std::endl;
-}
 
 #endif

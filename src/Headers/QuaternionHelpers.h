@@ -205,4 +205,10 @@ static EulerAngles convertQuaternionToEuler(Quaternion q)
     return result;
 }
 
+static void printQuaternion(Quaternion q)
+{
+    std::cout << "--------------Quaternion with values------------------------\n";
+    std::cout << "x: " << q.x << " y: " << q.y << " z: " << q.z << " w: " << q.w << std::endl;
+}
+
 #endif
