@@ -32,8 +32,9 @@ static PoseData operator*(PoseData left, PoseData right)
 {
 
     PoseData result;
-    result.rotationMatrix = right.rotationMatrix * left.rotationMatrix;
-    result.position = transformCoordinate(right.position, left.rotationMatrix) + left.position;
+    //! inverted mult
+    result.rotation = right.rotation * left.rotation;
+    result.position = rotateVector(right.position, left.rotation) + left.position;
     return result;
 }
 
@@ -47,13 +48,13 @@ static PoseData operator*(PoseData left, PoseData right)
 static PoseData transformToPoseStructure(const float rotation[9], const float translation[3], bool isColumnMajor)
 {
     PoseData result;
-    result.rotationMatrix = convertArrayToMatrix3(rotation, isColumnMajor);
+    result.rotation = normalize(convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor)));
 
     result.position.x = translation[0];
     result.position.y = translation[1];
     result.position.z = translation[2];
 
-    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
+    result.eulerRotation = convertQuaternionToEuler(result.rotation);
     return result;
 }
 /**
@@ -68,13 +69,13 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 {
     PoseData result;
 
-    result.rotationMatrix = convertArrayToMatrix3(rotation, isColumnMajor);
+    result.rotation = normalize(convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor)));
 
     result.position.x = static_cast<float>(translation[0]);
     result.position.y = static_cast<float>(translation[1]);
     result.position.z = static_cast<float>(translation[2]);
 
-    result.eulerRotation = convertMatrixToEuler(result.rotationMatrix);
+    result.eulerRotation = convertQuaternionToEuler(result.rotation);
 
     return result;
 }
@@ -86,18 +87,18 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
  * @param translation 
  * @return PoseData 
  */
-static PoseData transformToPosestructure(const rs2_pose &pose, bool isColumnMajor)
+static PoseData transformToPosestructure(const rs2_pose &pose, bool toInvert)
 {
     PoseData tf;
-    tf.rotationMatrix = quaternionToMatrix(pose.rotation);
-
     //? get rotation to original coordinate system not the actual rotation of camera
-    if (isColumnMajor)
+    if (toInvert)
     {
-
-        tf.rotationMatrix = transpose(tf.rotationMatrix);
+        tf.rotation = normalize(invert(pose.rotation));
     }
-
+    else
+    {
+        tf.rotation = pose.rotation;
+    }
     tf.position.x = pose.translation.x;
     tf.position.y = pose.translation.y;
     tf.position.z = pose.translation.z;

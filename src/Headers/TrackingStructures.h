@@ -56,7 +56,7 @@ typedef rs2_quaternion Quaternion;
  */
 struct PoseData
 {
-    Matrix3 rotationMatrix;
+    Quaternion rotation;
     Vector3 position;
     EulerAngles eulerRotation;
 };

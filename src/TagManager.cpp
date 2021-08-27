@@ -57,13 +57,11 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
 
         estimate_pose_for_tag_homography(&info, &rawPose);
 
-        //printApriltagRawData(rawPose);
-
         for (int c : {1, 2, 4, 5, 7, 8})
         {
             rawPose.R->data[c] *= -1;
         }
-        //printApriltagRawData(rawPose);
+
         //transpose rawPose.R to get rotation from tag to camera
         cameraCoordinatesPosition = transformToPoseStructure(rawPose.R->data, rawPose.t->data, true);
         allTagsDetected.tagsCameraPositions[actualTag] = cameraCoordinatesPosition;
@@ -81,6 +79,6 @@ PoseData Tag_Manager::compute_tag_pose_in_world(PoseData cameraTagData, const rs
     PoseData world_to_body = transformToPosestructure(camera_world_pose, true);
     //compute tag rotation and translation from world coord system to tag
     worldTagData = world_to_body * body_to_Fisheye_data * cameraTagData;
-    worldTagData.eulerRotation = convertMatrixToEuler(worldTagData.rotationMatrix);
+    worldTagData.eulerRotation = convertQuaternionToEuler(worldTagData.rotation);
     return worldTagData;
 }

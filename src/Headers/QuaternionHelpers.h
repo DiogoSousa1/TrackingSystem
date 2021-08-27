@@ -149,7 +149,25 @@ static float MagnitudeOfQuaternion(Quaternion q)
 {
     return sqrt(LengthSquareOfQuaternion(q));
 }
+static Quaternion normalize(Quaternion q)
+{
 
+    float length = MagnitudeOfQuaternion(q);
+    Quaternion result = {0};
+    if (abs(length) > 0.00001f)
+    {
+        float inv = 1.0f / length;
+        result.x = q.x * inv;
+        result.y = q.y * inv;
+        result.z = q.z * inv;
+        result.w = q.w * inv;
+    }
+    else
+    {
+        fprintf(stderr, "Quaternion close to 0 length!");
+    }
+    return result;
+}
 static Quaternion invert(Quaternion q)
 {
     float lengthSq = LengthSquareOfQuaternion(q);
