@@ -93,11 +93,11 @@ static PoseData transformToPosestructure(const rs2_pose &pose, bool toInvert)
     //? get rotation to original coordinate system not the actual rotation of camera
     if (toInvert)
     {
-        tf.rotation = normalize(invert(pose.rotation));
+        tf.rotation = invert(pose.rotation);
     }
     else
     {
-        tf.rotation = pose.rotation;
+        tf.rotation = normalize(pose.rotation);
     }
     tf.position.x = pose.translation.x;
     tf.position.y = pose.translation.y;
