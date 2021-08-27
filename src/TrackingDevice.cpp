@@ -75,7 +75,7 @@ void TrackingDevice::startTracking(const float tagSize)
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
             enginePose.position.z *= -1.0f;
             //compute camera in tag's world rotation
-            //TODO: rotation bugged in roll when tag in vertical
+            //TODO: rotation locked in when tag in vertical
             Matrix3 cameraRotation = transpose(coordinateTransform) * quaternionToMatrix(lastPose.rotation);
             enginePose.eulerRotation = convertMatrixToEuler(cameraRotation);
             cout << "------------------------------\n\nSending to engine:\n";
