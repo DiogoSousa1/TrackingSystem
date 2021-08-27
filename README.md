@@ -20,5 +20,9 @@ This system is being created for wTVision and this rep should be deleted soon!
 <li>Windows support for this project in wTVision - AprilTag library build</li>
 <li>Connect socket to engine ✅</li>
 <li>Increase extensibility of the program</li>
-<li>Create matrix4 and add translation for better understanding of concatenations of the transformations</li>
+
+<h3>Working branches</h3>
+<p>Main branch uses matrix calculations for rotations with gimbal lock</p>
+<p>Quaternion branch uses only quaternion calculations to represent rotation (not working properly)</p>
+
 </ul>
