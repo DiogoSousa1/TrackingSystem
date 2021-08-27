@@ -1,7 +1,7 @@
 /**
  * @file VectorHelpers.h
  * @author Diogo Sousa (diogo.sousa@wtvision.com)
- * @brief 
+ * @brief All vector operators
  * @version 1.0
  * @date 2021-08-27
  * 

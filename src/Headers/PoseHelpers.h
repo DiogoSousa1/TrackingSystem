@@ -1,7 +1,7 @@
 /**
  * @file PoseHelpers.h
  * @author Diogo Sousa
- * @brief Helpers for geometry stuff like matrix operations and euler angles conversion
+ * @brief All pose structure operators
  * @version 1.0
  * @date 2021-08-09
  * 

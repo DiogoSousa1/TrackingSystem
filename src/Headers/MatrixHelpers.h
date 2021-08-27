@@ -1,7 +1,7 @@
 /**
  * @file MatrixHelpers.h
  * @author Diogo Sousa (diogo.sousa@wtvision.com)
- * @brief 
+ * @brief All matrix operators
  * @version 1.0
  * @date 2021-08-27
  * 
