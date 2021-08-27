@@ -117,7 +117,7 @@ static void printApriltagRawData(apriltag_pose_t &pose)
     std::cout << "11: " << pose.R->data[0] << "  12: " << pose.R->data[1] << "  13: " << pose.R->data[2] << "\n";
     std::cout << "21: " << pose.R->data[3] << "  22: " << pose.R->data[4] << "  23: " << pose.R->data[5] << "\n";
     std::cout << "31: " << pose.R->data[6] << "  32: " << pose.R->data[7] << "  33: " << pose.R->data[8] << "\n";
-    printEulers(convertMatrixToEuler(convertArrayToMatrix3(pose.R->data, true)));
+    printEulers(convertMatrixToEuler(convertArrayToMatrix3(pose.R->data, false)));
 
     std::cout << "Translation\nx: " << pose.t->data[0] << " y: " << pose.t->data[1] << " z: " << pose.t->data[0] << std::endl;
 }

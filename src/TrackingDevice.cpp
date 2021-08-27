@@ -54,21 +54,21 @@ void TrackingDevice::startTracking(const float tagSize)
 
             PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
             PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
-        //    cout << "Tag pose in camera:\n";
-        //    printPoseData(tagCameraPose);
-//
-        //    cout << "--------------------------\n\nTag pose in world:\n";
-        //    printPoseData(tagWorldPose);
-        //    printMatrix3(tagWorldPose.rotationMatrix);
+            cout << "Tag pose in camera:\n";
+            printPoseData(tagCameraPose);
+
+            cout << "--------------------------\n\nTag pose in world:\n";
+            printPoseData(tagWorldPose);
+            printMatrix3(tagWorldPose.rotationMatrix);
 
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
 
-            Quaternion coordinateTransform = rotationPanTiltRoll(0, degreesToRadians(-90.0f), 0) * invert(convertMatrix3ToQuaternion(tagWorldPose.rotationMatrix));
+            Quaternion coordinateTransform = rotationPanTiltRoll(0.0f, degreesToRadians(90.0f), 0) * invert(convertMatrix3ToQuaternion(tagWorldPose.rotationMatrix));
 
-          //  cout << "World coordinate transformation:\n";
+            cout << "World coordinate transformation:\n";
 
-           // printEulers(convertQuaternionToEuler(coordinateTransform));
+            printEulers(convertQuaternionToEuler(coordinateTransform));
 
             PoseData enginePose = {0};
             //transform the camera coordinate relative to tag's world with tag in origin
@@ -78,8 +78,8 @@ void TrackingDevice::startTracking(const float tagSize)
             //TODO: rotation bugged in roll when tag in vertical
             Quaternion cameraRotation = invert(lastPose.rotation) * invert(coordinateTransform);
             enginePose.eulerRotation = convertQuaternionToEuler(cameraRotation);
-         //   cout << "------------------------------\n\nSending to engine:\n";
-          //  printPoseData(enginePose);
+            cout << "------------------------------\n\nSending to engine:\n";
+            printPoseData(enginePose);
 
             client.sendToEngine(enginePose);
         }
