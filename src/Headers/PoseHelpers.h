@@ -32,7 +32,6 @@ static PoseData operator*(PoseData left, PoseData right)
 {
 
     PoseData result;
-    //! inverted mult
     result.rotation = right.rotation * left.rotation;
     result.position = rotateVector(right.position, left.rotation) + left.position;
     return result;
@@ -57,6 +56,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
     result.eulerRotation = convertQuaternionToEuler(result.rotation);
     return result;
 }
+
 /**
  * @brief Transform to PoseData from rotation and translation
  * 
