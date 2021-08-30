@@ -17,7 +17,7 @@
 
 /**
  * @brief 
- * @pre Matrix is represents pure rotation
+ * @pre Matrix which represents pure rotation
  * @param m  
  * @return Quaternion 
  */
