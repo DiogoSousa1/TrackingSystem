@@ -334,9 +334,9 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         bank = atan2(-m.m23, m.m22);
         attitude = asin(m.m21);
     }
-    euler.tilt = bank;
-    euler.pan = heading;
-    euler.roll = attitude;
+    euler.tilt = bank * static_cast<float>(RadiansInDegrees);
+    euler.pan = heading * static_cast<float>(RadiansInDegrees);
+    euler.roll = attitude * static_cast<float>(RadiansInDegrees);
     return euler;
 }
 
