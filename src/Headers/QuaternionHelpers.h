@@ -149,6 +149,7 @@ static float MagnitudeOfQuaternion(Quaternion q)
 {
     return sqrt(LengthSquareOfQuaternion(q));
 }
+
 static Quaternion normalize(Quaternion q)
 {
 
