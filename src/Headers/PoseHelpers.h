@@ -30,7 +30,6 @@
  */
 static PoseData operator*(PoseData left, PoseData right)
 {
-
     PoseData result;
     result.rotation = right.rotation * left.rotation;
     result.position = rotateVector(right.position, left.rotation) + left.position;
@@ -90,7 +89,7 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 static PoseData transformToPosestructure(const rs2_pose &pose, bool toInvert)
 {
     PoseData tf;
-    //? get rotation to original coordinate system not the actual rotation of camera
+
     if (toInvert)
     {
         tf.rotation = conjugate(pose.rotation);
