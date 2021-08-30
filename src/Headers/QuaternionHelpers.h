@@ -168,6 +168,7 @@ static Quaternion normalize(Quaternion q)
     }
     return result;
 }
+
 static Quaternion invert(Quaternion q)
 {
     float lengthSq = LengthSquareOfQuaternion(q);
@@ -187,6 +188,15 @@ static Quaternion invert(Quaternion q)
     {
         fprintf(stderr, "Length of quaternion is 0!");
     }
+    return result;
+}
+
+static Quaternion conjugate(Quaternion q) {
+    Quaternion result = {0};
+    result.x = -q.x;
+    result.y = -q.y;
+    result.z = -q.z;
+    result.w =  q.w;
     return result;
 }
 

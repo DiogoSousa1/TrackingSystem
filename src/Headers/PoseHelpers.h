@@ -47,7 +47,7 @@ static PoseData operator*(PoseData left, PoseData right)
 static PoseData transformToPoseStructure(const float rotation[9], const float translation[3], bool isColumnMajor)
 {
     PoseData result;
-    result.rotation = normalize(convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor)));
+    result.rotation = convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor));
 
     result.position.x = translation[0];
     result.position.y = translation[1];
@@ -69,7 +69,7 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
 {
     PoseData result;
 
-    result.rotation = normalize(convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor)));
+    result.rotation = convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor));
 
     result.position.x = static_cast<float>(translation[0]);
     result.position.y = static_cast<float>(translation[1]);
@@ -93,11 +93,11 @@ static PoseData transformToPosestructure(const rs2_pose &pose, bool toInvert)
     //? get rotation to original coordinate system not the actual rotation of camera
     if (toInvert)
     {
-        tf.rotation = invert(pose.rotation);
+        tf.rotation = conjugate(pose.rotation);
     }
     else
     {
-        tf.rotation = normalize(pose.rotation);
+        tf.rotation = pose.rotation;
     }
     tf.position.x = pose.translation.x;
     tf.position.y = pose.translation.y;

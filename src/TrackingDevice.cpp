@@ -52,6 +52,7 @@ void TrackingDevice::startTracking(const float tagSize)
         if (tagManager.allTagsDetected.totalTagsDetected > 0)
         {
 
+            //get the first tag detected
             PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
             PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
             cout << "Tag pose in camera:\n";
@@ -64,7 +65,7 @@ void TrackingDevice::startTracking(const float tagSize)
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
 
-            Quaternion coordinateTransform = /*rotationPanTiltRoll(0.0f, degreesToRadians(-90.0f), 0)*/ invert(tagWorldPose.rotation);
+            Quaternion coordinateTransform = invert(tagWorldPose.rotation);
 
             cout << "World coordinate transformation:\n";
 
