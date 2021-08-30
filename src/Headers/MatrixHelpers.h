@@ -248,6 +248,14 @@ static Matrix3 convertArrayToMatrix3(const double vector[9], bool isColumnMajor)
     return result;
 }
 
+static float determinant(Matrix3 m)
+{
+    float tmp1 = m.m11 * (m.m22 * m.m33 - m.m23 * m.m32);
+    float tmp2 = m.m12 * (m.m21 * m.m33 - m.m23 * m.m31);
+    float tmp3 = m.m13 * (m.m21 * m.m32 - m.m22 * m.m31);
+    return tmp1 - tmp2 + tmp3;
+}
+
 /**
  * @brief Multiplies two matrices using convention right applied first
  * 
@@ -338,15 +346,13 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
     return euler;
 }
 
-
 static void printMatrix3(Matrix3 matrix)
 {
     std::cout << "--------------Matrix with values------------------------------\n";
     std::cout << "11: " << matrix.m11 << "  12: " << matrix.m12 << "  13: " << matrix.m13 << "\n";
     std::cout << "21: " << matrix.m21 << "  22: " << matrix.m22 << "  23: " << matrix.m23 << "\n";
     std::cout << "31: " << matrix.m31 << "  32: " << matrix.m32 << "  33: " << matrix.m33 << "\n";
-    std::cout << "-------------------------------------------------------" << std::endl;
+    std::cout << "Determinant: " << determinant(matrix) << std::endl;
 }
-
 
 #endif
