@@ -321,28 +321,22 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         heading = atan2(m.m13, m.m33);
         attitude = PI / 2;
         bank = 0;
-        euler.tilt = bank;
-        euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
-        return euler;
     }
-    if (m.m21 < -0.998)
+    else if (m.m21 < -0.998)
     { // singularity at south pole
         heading = atan2(m.m13, m.m33);
         attitude = -PI / 2;
         bank = 0;
-        euler.tilt = bank;
-        euler.pan = heading * static_cast<float>(RadiansInDegrees);
-        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
-
-        return euler;
     }
-    heading = atan2(-m.m31, m.m11);
-    bank = atan2(-m.m23, m.m22);
-    attitude = asin(m.m21);
-    euler.tilt = bank * static_cast<float>(RadiansInDegrees);
-    euler.pan = heading * static_cast<float>(RadiansInDegrees);
-    euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+    else
+    {
+        heading = atan2(-m.m31, m.m11);
+        bank = atan2(-m.m23, m.m22);
+        attitude = asin(m.m21);
+    }
+    euler.tilt = bank;
+    euler.pan = heading;
+    euler.roll = attitude;
     return euler;
 }
 
