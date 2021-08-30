@@ -47,6 +47,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
 {
     PoseData result;
     result.rotation = convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor));
+    result.rotation = conjugate(result.rotation);
     result.position.x = translation[0];
     result.position.y = translation[1];
     result.position.z = translation[2];
