@@ -89,6 +89,7 @@ void TrackingDevice::startTracking(const float tagSize)
             float roll = enginePose.eulerRotation.roll;
             printEulers(convertMatrixToEuler(cameraRotation, true));
             //! not working with any angle > 90
+            //TODO: test camera rotation
             enginePose.eulerRotation.tilt = (tilt * (-1.0f) * cos(pan) * cos(roll)) + (sin(pan) * roll) + (sin(roll) * pan);
             enginePose.eulerRotation.tilt *= static_cast<float>(RadiansInDegrees);
 
