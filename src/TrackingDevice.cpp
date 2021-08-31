@@ -20,6 +20,7 @@ void TrackingDevice::startTracking(const float tagSize)
     rs2::stream_profile fisheyeStream = profile.get_stream(RS2_STREAM_FISHEYE, fisheye_sensor_idx);
     //get intrinsics and extrinsics for coordinate transformations between t265 pose and fisheye lens coord system
     rs2_intrinsics fisheye_intrinsics = fisheyeStream.as<rs2::video_stream_profile>().get_intrinsics();
+
     rs2_extrinsics body_toFisheye_extrinsics = fisheyeStream.get_extrinsics_to(profile.get_stream(RS2_STREAM_POSE));
 
     //creates new tag manager to use during tracking
@@ -72,18 +73,32 @@ void TrackingDevice::startTracking(const float tagSize)
 
             PoseData enginePose = {0};
             coordinateTransform.m13 = -coordinateTransform.m13;
-            coordinateTransform.m23 = -coordinateTransform.m23; 
+            coordinateTransform.m23 = -coordinateTransform.m23;
             coordinateTransform.m33 = -coordinateTransform.m33;
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
-            
+
             //compute camera in tag's world rotation
-            //TODO: rotation locked in when tag in vertical
-            Matrix3 cameraRotation =  transpose(quaternionToMatrix(lastPose.rotation)) * coordinateTransform;
+            //TODO: gimbal lock
+            //TODO: use quaternion given and revert to local
+
+            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * coordinateTransform;
             cout << "Camera rotation matrix:";
             printMatrix3(cameraRotation);
             enginePose.eulerRotation = convertMatrixToEuler(cameraRotation);
-            enginePose.eulerRotation.tilt *= -1.0f;
+            float tilt = enginePose.eulerRotation.tilt;
+            float pan = enginePose.eulerRotation.pan;
+            float roll = enginePose.eulerRotation.roll;
+
+            enginePose.eulerRotation.tilt = tilt * -1.0f * cos(pan) * cos(roll) + sin(pan) * roll + sin(roll) * pan;
+            enginePose.eulerRotation.tilt *= static_cast<float>(RadiansInDegrees);
+
+            enginePose.eulerRotation.pan = pan * cos(tilt) * cos(roll) + sin(tilt) * roll + sin(roll) * tilt;
+            enginePose.eulerRotation.pan *= static_cast<float>(RadiansInDegrees);
+
+            enginePose.eulerRotation.roll = roll * cos(tilt) * cos(pan) + sin(tilt) * pan + sin(pan) * tilt;
+            enginePose.eulerRotation.roll *= static_cast<float>(RadiansInDegrees);
+
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
 
