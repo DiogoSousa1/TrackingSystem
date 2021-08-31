@@ -82,10 +82,11 @@ void TrackingDevice::startTracking(const float tagSize)
             //TODO: gimbal lock
             //TODO: use quaternion given and revert to local
 
-            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * coordinateTransform;
+            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             cout << "Camera rotation matrix:";
             printMatrix3(cameraRotation);
             enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, true);
+            enginePose.eulerRotation.tilt *= -1.0f;
            /* float tilt = enginePose.eulerRotation.tilt;
             float pan = enginePose.eulerRotation.pan;
             float roll = enginePose.eulerRotation.roll;
