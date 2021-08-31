@@ -79,9 +79,7 @@ void TrackingDevice::startTracking(const float tagSize)
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 
             //compute camera in tag's world rotation
-            //TODO: gimbal lock
-            //TODO: use quaternion given and revert to local
-
+            //TODO: local space rotation
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             cout << "Camera rotation matrix:\n";
             printMatrix3(cameraRotation);
