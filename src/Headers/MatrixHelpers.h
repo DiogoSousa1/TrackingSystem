@@ -312,7 +312,7 @@ static Matrix3 quaternionToMatrix(Quaternion q)
  * @param m 
  * @return EulerAngles 
  */
-static EulerAngles convertMatrixToEuler(Matrix3 m)
+static EulerAngles convertMatrixToEuler(Matrix3 m, bool giveInDegrees)
 {
     EulerAngles euler = {0};
     float heading, attitude, bank;
@@ -334,9 +334,19 @@ static EulerAngles convertMatrixToEuler(Matrix3 m)
         bank = atan2(-m.m23, m.m22);
         attitude = asin(m.m21);
     }
-    euler.tilt = bank; //* static_cast<float>(RadiansInDegrees);
-    euler.pan = heading; //* static_cast<float>(RadiansInDegrees);
-    euler.roll = attitude; //* static_cast<float>(RadiansInDegrees);
+    if (giveInDegrees)
+    {
+
+        euler.tilt = bank * static_cast<float>(RadiansInDegrees);
+        euler.pan = heading * static_cast<float>(RadiansInDegrees);
+        euler.roll = attitude * static_cast<float>(RadiansInDegrees);
+    }
+    else
+    {
+        euler.tilt = bank;
+        euler.pan = heading;
+        euler.roll = attitude;
+    }
     return euler;
 }
 

@@ -69,7 +69,7 @@ void TrackingDevice::startTracking(const float tagSize)
 
             cout << "World coordinate transformation:\n";
             printMatrix3(coordinateTransform);
-            printEulers(convertMatrixToEuler(coordinateTransform));
+            printEulers(convertMatrixToEuler(coordinateTransform, true));
 
             PoseData enginePose = {0};
             coordinateTransform.m13 = -coordinateTransform.m13;
@@ -85,8 +85,8 @@ void TrackingDevice::startTracking(const float tagSize)
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * coordinateTransform;
             cout << "Camera rotation matrix:";
             printMatrix3(cameraRotation);
-            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation);
-            float tilt = enginePose.eulerRotation.tilt;
+            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, true);
+           /* float tilt = enginePose.eulerRotation.tilt;
             float pan = enginePose.eulerRotation.pan;
             float roll = enginePose.eulerRotation.roll;
 
@@ -97,7 +97,7 @@ void TrackingDevice::startTracking(const float tagSize)
             enginePose.eulerRotation.pan *= static_cast<float>(RadiansInDegrees);
 
             enginePose.eulerRotation.roll = roll * cos(tilt) * cos(pan) + sin(tilt) * pan + sin(pan) * tilt;
-            enginePose.eulerRotation.roll *= static_cast<float>(RadiansInDegrees);
+            enginePose.eulerRotation.roll *= static_cast<float>(RadiansInDegrees);*/
 
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
