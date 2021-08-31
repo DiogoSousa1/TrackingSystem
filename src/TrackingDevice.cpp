@@ -83,22 +83,22 @@ void TrackingDevice::startTracking(const float tagSize)
             //TODO: use quaternion given and revert to local
 
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
-            cout << "Camera rotation matrix:";
+            cout << "Camera rotation matrix:\n";
             printMatrix3(cameraRotation);
-            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, true);
-            enginePose.eulerRotation.tilt *= -1.0f;
-           /* float tilt = enginePose.eulerRotation.tilt;
+            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, false);
+            float tilt = enginePose.eulerRotation.tilt;
             float pan = enginePose.eulerRotation.pan;
             float roll = enginePose.eulerRotation.roll;
+            printEulers(convertMatrixToEuler(cameraRotation, true));
 
-            enginePose.eulerRotation.tilt = tilt * -1.0f * cos(pan) * cos(roll) + sin(pan) * roll + sin(roll) * pan;
+            enginePose.eulerRotation.tilt = (tilt * (-1.0f) * cos(pan) * cos(roll)) + (sin(pan) * roll) + (sin(roll) * pan);
             enginePose.eulerRotation.tilt *= static_cast<float>(RadiansInDegrees);
 
-            enginePose.eulerRotation.pan = pan * cos(tilt) * cos(roll) + sin(tilt) * roll + sin(roll) * tilt;
+            enginePose.eulerRotation.pan = (pan * cos(tilt) * cos(roll)) + (sin(tilt) * roll) + (sin(roll) * tilt);
             enginePose.eulerRotation.pan *= static_cast<float>(RadiansInDegrees);
 
-            enginePose.eulerRotation.roll = roll * cos(tilt) * cos(pan) + sin(tilt) * pan + sin(pan) * tilt;
-            enginePose.eulerRotation.roll *= static_cast<float>(RadiansInDegrees);*/
+            enginePose.eulerRotation.roll = (roll * cos(tilt) * cos(pan)) + (sin(tilt) * pan) + (sin(pan) * tilt);
+            enginePose.eulerRotation.roll *= static_cast<float>(RadiansInDegrees);
 
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
