@@ -13,12 +13,14 @@
 
 //My headers
 #include "TrackingStructures.h"
+#include "QuaternionHelpers.h" 
 
 struct FreeDOperators
 {
     const unsigned int pan = 32768;
     const unsigned int tilt = 32768;
     const unsigned int roll = 32768;
+    const unsigned int w = 32768;
     const unsigned int x = 64000;
     const unsigned int y = 64000;
     const unsigned int z = 64000;
@@ -35,6 +37,7 @@ struct CameraData
     unsigned char Pan[3];
     unsigned char Tilt[3];
     unsigned char Roll[3];
+    unsigned char W[3];
     unsigned char x[3];
     unsigned char y[3];
     unsigned char z[3];
@@ -61,9 +64,11 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
 
 static void convertPoseToCameraData(PoseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
-    ConvertToFreeDFormat(toSend->Pan, data.eulerRotation.pan, freeDOperators.pan);
-    ConvertToFreeDFormat(toSend->Tilt, data.eulerRotation.tilt, freeDOperators.tilt);
-    ConvertToFreeDFormat(toSend->Roll, data.eulerRotation.roll, freeDOperators.roll);
+    Quaternion rotation = convertMatrix3ToQuaternion(data.rotationMatrix);
+    ConvertToFreeDFormat(toSend->Pan, rotation.x, freeDOperators.pan);
+    ConvertToFreeDFormat(toSend->Tilt, rotation.y, freeDOperators.tilt);
+    ConvertToFreeDFormat(toSend->Roll, rotation.z, freeDOperators.roll);
+    ConvertToFreeDFormat(toSend->W, rotation.w, freeDOperators.w);
     ConvertToFreeDFormat(toSend->x, data.position.x, freeDOperators.x);
     ConvertToFreeDFormat(toSend->y, data.position.y, freeDOperators.y);
     ConvertToFreeDFormat(toSend->z, data.position.z, freeDOperators.z);

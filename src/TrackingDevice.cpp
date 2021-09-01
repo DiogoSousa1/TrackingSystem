@@ -83,6 +83,7 @@ void TrackingDevice::startTracking(const float tagSize)
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             cout << "Camera rotation matrix:\n";
             printMatrix3(cameraRotation);
+            enginePose.rotationMatrix = cameraRotation;
             enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, true);
 
             //! tilt reverts direction when pan ==180 (due to world use of rotation)
