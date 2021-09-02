@@ -68,34 +68,27 @@ void TrackingDevice::startTracking(const float tagSize)
             Matrix3 coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(90.0f));
 
             cout << "World coordinate transformation:\n";
-            printMatrix3(coordinateTransform);
             printEulers(convertMatrixToEuler(coordinateTransform));
-
+            Quaternion worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
             PoseData enginePose = {0};
-            coordinateTransform.m13 = -coordinateTransform.m13;
-            coordinateTransform.m23 = -coordinateTransform.m23;
-            coordinateTransform.m33 = -coordinateTransform.m33;
+            //invert z axis
+            coordinateTransform.m13 *= -1.0f;
+            coordinateTransform.m23 *= -1.0f;
+            coordinateTransform.m33 *= -1.0f;
+
+            //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 
             //compute camera in tag's world rotation
+            //Rotation of camera calculated using quaternion algebra
             //TODO: local space rotation
-            Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
-            cout << "Camera rotation matrix:\n";
-
-            printMatrix3(cameraRotation);
-            enginePose.rotationMatrix = cameraRotation;
-            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation);
-
-            //! tilt reverts direction when pan ==180 (due to world use of rotation)
-            enginePose.eulerRotation.tilt *= -1.0f;
-            printEulers(enginePose.eulerRotation);
+            Quaternion cameraRotation = invertQuaternion(lastPose.rotation) *  invertQuaternion(worldRotation);
+            enginePose.rotation = invertQuaternion(cameraRotation);
+            enginePose.eulerRotation = convertQuaternionToEuler(enginePose.rotation);
 
             cout << "------------------------------\n\nSending to engine:\n";
-            //printPoseData(enginePose);
-            enginePose.rotation = convertEulerToQuaternion(enginePose.eulerRotation);
-            printQuaternion(enginePose.rotation);
-            enginePose.rotation = invertQuaternion(enginePose.rotation);
+            printPoseData(enginePose);
             client.sendToEngine(enginePose);
         }
         else
