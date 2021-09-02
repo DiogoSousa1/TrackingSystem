@@ -23,50 +23,50 @@
  */
 static Quaternion convertMatrix3ToQuaternion(Matrix3 matrix)
 {
-    float squareroot;
-    float half;
-    float scale = matrix.m11 + matrix.m22 + matrix.m33;
+    float t;
     Quaternion result = {0};
-    if (scale > 0.0f)
+    if (matrix.m33 < 0)
     {
-        squareroot = sqrt(scale + 1.0f);
-        result.w = squareroot * 0.5f;
-        squareroot = 0.5f / squareroot;
-
-        result.x = (matrix.m23 - matrix.m32) * squareroot;
-        result.y = (matrix.m31 - matrix.m13) * squareroot;
-        result.z = (matrix.m12 - matrix.m21) * squareroot;
-    }
-    else if ((matrix.m11 >= matrix.m22) && (matrix.m11 >= matrix.m33))
-    {
-        squareroot = sqrt(1.0f + matrix.m11 - matrix.m22 - matrix.m33);
-        half = 0.5f / squareroot;
-
-        result.x = 0.5f * squareroot;
-        result.y = (matrix.m12 + matrix.m21) * half;
-        result.z = (matrix.m13 + matrix.m31) * half;
-        result.w = (matrix.m23 - matrix.m32) * half;
-    }
-    else if (matrix.m22 > matrix.m33)
-    {
-        squareroot = sqrt(1.0f + matrix.m22 - matrix.m11 - matrix.m33);
-        half = 0.5f / squareroot;
-
-        result.x = (matrix.m21 + matrix.m12) * half;
-        result.y = 0.5f * squareroot;
-        result.z = (matrix.m32 + matrix.m23) * half;
-        result.w = (matrix.m31 - matrix.m13) * half;
+        if (matrix.m11 > matrix.m22)
+        {
+            t = 1 + matrix.m11 - matrix.m22 - matrix.m33;
+            result.x = t;
+            result.y = matrix.m12 + matrix.m21;
+            result.z = matrix.m31 + matrix.m13;
+            result.w = matrix.m23 - matrix.m32;
+        }
+        else
+        {
+            t = 1 - matrix.m11 + matrix.m22 - matrix.m33;
+            result.x = matrix.m12 + matrix.m21;
+            result.y = t;
+            result.z = matrix.m23 + matrix.m32;
+            result.w = matrix.m31 - matrix.m13;
+        }
     }
     else
     {
-        squareroot = sqrt(1.0f + matrix.m33 - matrix.m11 - matrix.m22);
-        half = 0.5f / squareroot;
-
-        result.x = (matrix.m31 + matrix.m13) * half;
-        result.y = (matrix.m32 + matrix.m23) * half;
-        result.z = 0.5f * squareroot;
-        result.w = (matrix.m12 - matrix.m21) * half;
+        if (matrix.m11 < -matrix.m22)
+        {
+            t = 1 - matrix.m11 - matrix.m22 + matrix.m33;
+            result.x = matrix.m31 + matrix.m13;
+            result.y = matrix.m23 + matrix.m32;
+            result.z = t;
+            result.w = matrix.m12 - matrix.m21;
+        }
+        else
+        {
+            t = 1 + matrix.m11 + matrix.m22 + matrix.m33;
+            result.x = matrix.m23 - matrix.m32;
+            result.y = matrix.m31 - matrix.m13;
+            result.z = matrix.m12 - matrix.m21;
+            result.w = t;
+        }
     }
+    result.x *= 0.5f/sqrt(t);
+    result.y *= 0.5f/sqrt(t);
+    result.z *= 0.5f/sqrt(t);
+    result.w *= 0.5f/sqrt(t);
     return result;
 }
 
@@ -150,7 +150,7 @@ static float MagnitudeOfQuaternion(Quaternion q)
     return sqrt(LengthSquareOfQuaternion(q));
 }
 
-static Quaternion invert(Quaternion q)
+static Quaternion invertQuaternion(Quaternion q)
 {
     float lengthSq = LengthSquareOfQuaternion(q);
     Quaternion result = {0};
@@ -171,7 +171,23 @@ static Quaternion invert(Quaternion q)
     }
     return result;
 }
-
+static Quaternion convertEulerToQuaternion(EulerAngles a)
+{
+    Quaternion result = {0};
+    float c1 = cos(degreesToRadians(a.pan) / 2.0f);
+    float s1 = sin(degreesToRadians(a.pan) / 2.0f);
+    float c2 = cos(degreesToRadians(a.roll) / 2.0f);
+    float s2 = sin(degreesToRadians(a.roll) / 2.0f);
+    float c3 = cos(degreesToRadians(a.tilt) / 2.0f);
+    float s3 = sin(degreesToRadians(a.tilt) / 2.0f);
+    float c1c2 = c1 * c2;
+    float s1s2 = s1 * s2;
+    result.w = c1c2 * c3 - s1s2 * s3;
+    result.x = c1c2 * s3 + s1s2 * c3;
+    result.y = s1 * c2 * c3 + c1 * s2 * s3;
+    result.z = c1 * s2 * c3 - s1 * c2 * s3;
+    return result;
+}
 static EulerAngles convertQuaternionToEuler(Quaternion q)
 {
     EulerAngles result = {0};

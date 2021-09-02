@@ -69,7 +69,7 @@ void TrackingDevice::startTracking(const float tagSize)
 
             cout << "World coordinate transformation:\n";
             printMatrix3(coordinateTransform);
-            printEulers(convertMatrixToEuler(coordinateTransform, true));
+            printEulers(convertMatrixToEuler(coordinateTransform));
 
             PoseData enginePose = {0};
             coordinateTransform.m13 = -coordinateTransform.m13;
@@ -82,17 +82,20 @@ void TrackingDevice::startTracking(const float tagSize)
             //TODO: local space rotation
             Matrix3 cameraRotation = transpose(quaternionToMatrix(lastPose.rotation)) * transpose(coordinateTransform);
             cout << "Camera rotation matrix:\n";
+
             printMatrix3(cameraRotation);
             enginePose.rotationMatrix = cameraRotation;
-            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation, true);
+            enginePose.eulerRotation = convertMatrixToEuler(cameraRotation);
 
             //! tilt reverts direction when pan ==180 (due to world use of rotation)
             enginePose.eulerRotation.tilt *= -1.0f;
-            printEulers(convertMatrixToEuler(cameraRotation, true));
+            printEulers(enginePose.eulerRotation);
 
             cout << "------------------------------\n\nSending to engine:\n";
-            printPoseData(enginePose);
-
+            //printPoseData(enginePose);
+            enginePose.rotation = convertEulerToQuaternion(enginePose.eulerRotation);
+            printQuaternion(enginePose.rotation);
+            enginePose.rotation = invertQuaternion(enginePose.rotation);
             client.sendToEngine(enginePose);
         }
         else
