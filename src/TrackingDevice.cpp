@@ -65,7 +65,7 @@ void TrackingDevice::startTracking(const float tagSize)
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
 
-            Quaternion coordinateTransform = invert(tagWorldPose.rotation) * rotateQuaternionX(degreesToRadians(-90.0f));
+            Quaternion coordinateTransform = invert(tagWorldPose.rotation) * rotationPanTiltRoll(0, degreesToRadians(-90.0f), 0);
 
             cout << "World coordinate transformation:\n";
 
