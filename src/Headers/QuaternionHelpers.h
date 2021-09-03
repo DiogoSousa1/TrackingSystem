@@ -23,7 +23,7 @@
  */
 static Quaternion convertMatrix3ToQuaternion(Matrix3 matrix)
 {
-   float t;
+    float t;
     Quaternion result = {0};
     if (matrix.m33 < 0)
     {
@@ -63,10 +63,10 @@ static Quaternion convertMatrix3ToQuaternion(Matrix3 matrix)
             result.w = t;
         }
     }
-    result.x *= 0.5f/sqrt(t);
-    result.y *= 0.5f/sqrt(t);
-    result.z *= 0.5f/sqrt(t);
-    result.w *= 0.5f/sqrt(t);
+    result.x *= 0.5f / sqrt(t);
+    result.y *= 0.5f / sqrt(t);
+    result.z *= 0.5f / sqrt(t);
+    result.w *= 0.5f / sqrt(t);
     return result;
 }
 
@@ -122,6 +122,32 @@ static Quaternion IdentityQuaternion()
     return result;
 }
 
+static Quaternion rotateQuaternionY(float angle)
+{
+    Quaternion result = {0};
+    float half = angle * 0.5f;
+    float sinVal = sin(half);
+    float cosVal = cos(half);
+    result.x = 0;
+    result.y = 1.0f * sinVal;
+    result.z = 0;
+    result.w = cosVal;
+    return result;
+}
+
+static Quaternion rotateQuaternionX(float angle)
+{
+    Quaternion result = {0};
+    float half = angle * 0.5f;
+    float sinVal = sin(half);
+    float cosVal = cos(half);
+    result.x = 1.0f * sinVal;
+    ;
+    result.y = 0;
+    result.z = 0;
+    result.w = cosVal;
+    return result;
+}
 
 static Quaternion rotateQuaternionZ(float angle)
 {
@@ -193,12 +219,13 @@ static Quaternion invert(Quaternion q)
     return result;
 }
 
-static Quaternion conjugate(Quaternion q) {
+static Quaternion conjugate(Quaternion q)
+{
     Quaternion result = {0};
     result.x = -q.x;
     result.y = -q.y;
     result.z = -q.z;
-    result.w =  q.w;
+    result.w = q.w;
     return result;
 }
 
