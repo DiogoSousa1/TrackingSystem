@@ -17,7 +17,7 @@
 #include "Headers/EngineClient.h"
 
 #define PROJECT_PATH_LOGS "/home/barata/Documentos/Tracking_System/TrackingSystem/logs/"
-#define DEFAULT_LOG_FILE "out.log"
+#define DEFAULT_LOG_FILE "out2.log"
 #define concat(first, second) first second
 
 #define DEFAULT_IP "192.168.1.70"
