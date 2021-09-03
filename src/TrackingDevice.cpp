@@ -75,7 +75,6 @@ void TrackingDevice::startTracking(const float tagSize)
             coordinateTransform.m13 *= -1.0f;
             coordinateTransform.m23 *= -1.0f;
             coordinateTransform.m33 *= -1.0f;
-
             //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
@@ -86,7 +85,6 @@ void TrackingDevice::startTracking(const float tagSize)
             Quaternion cameraRotation = invertQuaternion(lastPose.rotation) *  invertQuaternion(worldRotation);
             enginePose.rotation = invertQuaternion(cameraRotation);
             enginePose.eulerRotation = convertQuaternionToEuler(enginePose.rotation);
-
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
             client.sendToEngine(enginePose);

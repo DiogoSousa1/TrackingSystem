@@ -64,9 +64,9 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
 
 static void convertPoseToCameraData(PoseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
-    ConvertToFreeDFormat(toSend->Pan, data.rotation.x, freeDOperators.pan);
-    ConvertToFreeDFormat(toSend->Tilt, data.rotation.y, freeDOperators.tilt);
-    ConvertToFreeDFormat(toSend->Roll, data.rotation.z, freeDOperators.roll);
+    ConvertToFreeDFormat(toSend->Pan, data.eulerRotation.pan, freeDOperators.pan);
+    ConvertToFreeDFormat(toSend->Tilt, data.eulerRotation.tilt, freeDOperators.tilt);
+    ConvertToFreeDFormat(toSend->Roll, data.eulerRotation.roll, freeDOperators.roll);
     ConvertToFreeDFormat(toSend->W, data.rotation.w, freeDOperators.w);
     ConvertToFreeDFormat(toSend->x, data.position.x, freeDOperators.x);
     ConvertToFreeDFormat(toSend->y, data.position.y, freeDOperators.y);
