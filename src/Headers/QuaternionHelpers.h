@@ -122,6 +122,7 @@ static Quaternion IdentityQuaternion()
     return result;
 }
 
+
 static Quaternion rotateQuaternionZ(float angle)
 {
     Quaternion result = {0};
