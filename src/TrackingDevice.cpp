@@ -69,6 +69,7 @@ void TrackingDevice::startTracking(const float tagSize)
 
             cout << "World coordinate transformation:\n";
             printEulers(convertMatrixToEuler(coordinateTransform));
+            //convert rotation of coordinate system to quaternion
             Quaternion worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
             PoseData enginePose = {0};
             //invert z axis
@@ -81,12 +82,9 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //compute camera in tag's world rotation
             //Rotation of camera calculated using quaternion algebra
-
-            Quaternion cameraRotation = invertQuaternion(lastPose.rotation) *  invertQuaternion(worldRotation);
+            Quaternion cameraRotation = invertQuaternion(lastPose.rotation) * invertQuaternion(worldRotation);
             enginePose.rotation = cameraRotation;
-            // enginePose.rotation = invertQuaternion(cameraRotation);
             enginePose.eulerRotation = convertQuaternionToEuler(cameraRotation);
-
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
             client.sendToEngine(enginePose);
