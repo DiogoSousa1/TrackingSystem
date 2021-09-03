@@ -47,7 +47,7 @@ static PoseData transformToPoseStructure(const float rotation[9], const float tr
 {
     PoseData result;
     result.rotation = convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor));
-    result.rotation = conjugate(result.rotation);
+    
     result.position.x = translation[0];
     result.position.y = translation[1];
     result.position.z = translation[2];
@@ -69,7 +69,6 @@ static PoseData transformToPoseStructure(const double rotation[9], const double 
     PoseData result;
 
     result.rotation = convertMatrix3ToQuaternion(convertArrayToMatrix3(rotation, isColumnMajor));
-    result.rotation = conjugate(result.rotation);
     result.position.x = static_cast<float>(translation[0]);
     result.position.y = static_cast<float>(translation[1]);
     result.position.z = static_cast<float>(translation[2]);
@@ -92,7 +91,7 @@ static PoseData transformToPosestructure(const rs2_pose &pose, bool toInvert)
 
     if (toInvert)
     {
-        tf.rotation = conjugate(pose.rotation);
+        tf.rotation = invert(pose.rotation);
     }
     else
     {
