@@ -53,7 +53,7 @@ int main()
 	bool stop = false;
 	while (!stop)
 	{
-		//read commands from pipe
+		//read commands
 		char commandSent = getchar();
 
 		if (commandSent == 's')

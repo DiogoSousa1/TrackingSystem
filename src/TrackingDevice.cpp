@@ -93,6 +93,7 @@ void TrackingDevice::startTracking(const float tagSize)
         {
             cout << "Waiting for tag detection..." << endl;
         }
+
         //keep out file compact
         lseek(1, 0, SEEK_SET);
     }
