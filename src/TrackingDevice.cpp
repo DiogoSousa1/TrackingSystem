@@ -81,10 +81,12 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //compute camera in tag's world rotation
             //Rotation of camera calculated using quaternion algebra
-            //TODO: local space rotation
+
             Quaternion cameraRotation = invertQuaternion(lastPose.rotation) *  invertQuaternion(worldRotation);
-            enginePose.rotation = invertQuaternion(cameraRotation);
-            enginePose.eulerRotation = convertQuaternionToEuler(enginePose.rotation);
+            enginePose.rotation = cameraRotation;
+            // enginePose.rotation = invertQuaternion(cameraRotation);
+            enginePose.eulerRotation = convertQuaternionToEuler(cameraRotation);
+
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);
             client.sendToEngine(enginePose);
