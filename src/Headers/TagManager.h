@@ -42,14 +42,6 @@ public:
 	 */
 	bool detect(unsigned char *grayImage, const rs2_pose *camera_world_pose);
 
-
-	static void apriltag_pose_destroy(apriltag_pose_t *p)
-	{
-		matd_destroy(p->R);
-		matd_destroy(p->t);
-		delete p;
-	}
-
 	TagStructure allTagsDetected;
 
 private:

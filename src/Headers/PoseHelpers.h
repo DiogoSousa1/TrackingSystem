@@ -95,7 +95,6 @@ static PoseData transformToPosestructure(const rs2_pose &pose, bool isColumnMajo
     PoseData tf;
     tf.rotationMatrix = quaternionToMatrix(pose.rotation);
 
-    //? get rotation to original coordinate system not the actual rotation of camera
     if (isColumnMajor)
     {
 

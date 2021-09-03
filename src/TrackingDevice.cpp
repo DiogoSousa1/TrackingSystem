@@ -32,7 +32,6 @@ void TrackingDevice::startTracking(const float tagSize)
         rs2::frameset frame = camPipeline.wait_for_frames();
         rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
         unsigned long long frame_Number = fisheyeFrame.get_frame_number();
-        rs2_pose cameraLastKnownPose;
         rs2::pose_frame poseFrame = frame.get_pose_frame();
         rs2_pose lastPose = poseFrame.get_pose_data();
 
@@ -42,11 +41,9 @@ void TrackingDevice::startTracking(const float tagSize)
         {
             fisheyeFrame.keep();
 
-            if (tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose))
-            {
-
-                cameraLastKnownPose = lastPose;
-            }
+            //Detect tags in image
+            tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
+            
         }
 
         //if already detected a tag
@@ -72,10 +69,12 @@ void TrackingDevice::startTracking(const float tagSize)
             //convert rotation of coordinate system to quaternion
             Quaternion worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
             PoseData enginePose = {0};
+
             //invert z axis
             coordinateTransform.m13 *= -1.0f;
             coordinateTransform.m23 *= -1.0f;
             coordinateTransform.m33 *= -1.0f;
+
             //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);

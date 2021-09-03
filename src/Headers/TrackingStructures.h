@@ -47,6 +47,7 @@ struct Matrix3
     float m33;
 };
 
+//type definitions
 typedef rs2_vector Vector3;
 typedef rs2_quaternion Quaternion;
 
