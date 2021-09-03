@@ -31,7 +31,7 @@
 static PoseData operator*(PoseData left, PoseData right)
 {
     PoseData result;
-    result.rotation = right.rotation * left.rotation;
+    result.rotation = invert(right.rotation) * left.rotation;
     result.position = rotateVector(right.position, invert(left.rotation)) + left.position;
     return result;
 }
