@@ -65,7 +65,7 @@ void TrackingDevice::startTracking(const float tagSize)
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
 
-            Quaternion coordinateTransform = invert(tagWorldPose.rotation) * rotationPanTiltRoll(0, degreesToRadians(-90.0f), 0);
+            Quaternion coordinateTransform = invert(tagWorldPose.rotation) * rotateQuaternionX(degreesToRadians(90.0f));
 
             cout << "World coordinate transformation:\n";
 
@@ -74,9 +74,10 @@ void TrackingDevice::startTracking(const float tagSize)
             PoseData enginePose = {0};
             //transform the camera coordinate relative to tag's world with tag in origin
             enginePose.position = rotateVector((lastPose.translation - tagWorldPose.position), coordinateTransform);
-            //enginePose.position.z *= -1.0f;
+            enginePose.position.y *= -1.0f;
+
             //compute camera in tag's world rotation
-            Quaternion cameraRotation = invert(lastPose.rotation) * invert(coordinateTransform);
+            Quaternion cameraRotation = coordinateTransform * invert(lastPose.rotation);
             enginePose.eulerRotation = convertQuaternionToEuler(cameraRotation);
             cout << "------------------------------\n\nSending to engine:\n";
             printPoseData(enginePose);

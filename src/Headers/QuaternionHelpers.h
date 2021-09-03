@@ -129,7 +129,7 @@ static Quaternion rotateQuaternionY(float angle)
     float sinVal = sin(half);
     float cosVal = cos(half);
     result.x = 0;
-    result.y = 1.0f * sinVal;
+    result.y = sinVal;
     result.z = 0;
     result.w = cosVal;
     return result;
@@ -141,8 +141,7 @@ static Quaternion rotateQuaternionX(float angle)
     float half = angle * 0.5f;
     float sinVal = sin(half);
     float cosVal = cos(half);
-    result.x = 1.0f * sinVal;
-    ;
+    result.x = sinVal;
     result.y = 0;
     result.z = 0;
     result.w = cosVal;
@@ -157,7 +156,7 @@ static Quaternion rotateQuaternionZ(float angle)
     float cosVal = cos(half);
     result.x = 0;
     result.y = 0;
-    result.z = 1.0f * sinVal;
+    result.z = sinVal;
     result.w = cosVal;
     return result;
 }
