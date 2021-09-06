@@ -29,7 +29,7 @@ void TrackingDevice::startTracking(const float tagSize)
     //transformation of coordinate system to tag world
     Matrix3 coordinateTransform;
     Quaternion worldRotation;
-    
+
     //pose data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
@@ -44,7 +44,7 @@ void TrackingDevice::startTracking(const float tagSize)
         rs2_pose lastPose = poseFrame.get_pose_data();
 
         cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
-        
+
         //only do tag detector between 6 frames
         if (frame_Number % 6 == 0)
         {
