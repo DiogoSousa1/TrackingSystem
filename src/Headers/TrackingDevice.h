@@ -38,7 +38,6 @@ public:
      */
     void stopTracking();
 
-
 private:
     EngineClient client;
     bool stop;

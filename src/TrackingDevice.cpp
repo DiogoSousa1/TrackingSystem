@@ -43,7 +43,6 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //Detect tags in image
             tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
-            
         }
 
         //if already detected a tag
@@ -68,7 +67,6 @@ void TrackingDevice::startTracking(const float tagSize)
             printEulers(convertMatrixToEuler(coordinateTransform));
             //convert rotation of coordinate system to quaternion
             Quaternion worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
-            PoseData enginePose = {0};
 
             //invert z axis
             coordinateTransform.m13 *= -1.0f;
@@ -77,16 +75,16 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
-            enginePose.position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
+            Vector3 position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 
             //compute camera in tag's world rotation
             //Rotation of camera calculated using quaternion algebra
             Quaternion cameraRotation = invertQuaternion(lastPose.rotation) * invertQuaternion(worldRotation);
-            enginePose.rotation = cameraRotation;
-            enginePose.eulerRotation = convertQuaternionToEuler(cameraRotation);
+
             cout << "------------------------------\n\nSending to engine:\n";
-            printPoseData(enginePose);
-            client.sendToEngine(enginePose);
+            printVector3(position);
+            printEulers(convertQuaternionToEuler(cameraRotation));
+            client.sendToEngine(position, cameraRotation);
         }
         else
         {

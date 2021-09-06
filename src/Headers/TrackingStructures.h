@@ -84,7 +84,4 @@ static void printEulers(EulerAngles angles)
               << std::endl;
 }
 
-
-
-
 #endif

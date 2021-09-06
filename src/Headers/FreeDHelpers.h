@@ -62,15 +62,15 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
     FourBytesToThreeBigEndian(value_in_bytes, bytes);
 }
 
-static void convertPoseToCameraData(PoseData data, unsigned int zoom, unsigned int focus, CameraData *toSend)
+static void convertPoseToCameraData(Vector3 position, Quaternion rotation, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
-    ConvertToFreeDFormat(toSend->Pan, data.rotation.y, freeDOperators.pan);
-    ConvertToFreeDFormat(toSend->Tilt, data.rotation.x, freeDOperators.tilt);
-    ConvertToFreeDFormat(toSend->Roll, data.rotation.z, freeDOperators.roll);
-    ConvertToFreeDFormat(toSend->W, data.rotation.w, freeDOperators.w);
-    ConvertToFreeDFormat(toSend->x, data.position.x, freeDOperators.x);
-    ConvertToFreeDFormat(toSend->y, data.position.y, freeDOperators.y);
-    ConvertToFreeDFormat(toSend->z, data.position.z, freeDOperators.z);
+    ConvertToFreeDFormat(toSend->Pan, rotation.y, freeDOperators.pan);
+    ConvertToFreeDFormat(toSend->Tilt, rotation.x, freeDOperators.tilt);
+    ConvertToFreeDFormat(toSend->Roll, rotation.z, freeDOperators.roll);
+    ConvertToFreeDFormat(toSend->W, rotation.w, freeDOperators.w);
+    ConvertToFreeDFormat(toSend->x, position.x, freeDOperators.x);
+    ConvertToFreeDFormat(toSend->y, position.y, freeDOperators.y);
+    ConvertToFreeDFormat(toSend->z, position.z, freeDOperators.z);
     ConvertToFreeDFormat(toSend->zoom, zoom, freeDOperators.zoom);
     ConvertToFreeDFormat(toSend->focus, focus, freeDOperators.focus);
 }
