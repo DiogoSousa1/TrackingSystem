@@ -62,7 +62,7 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
     FourBytesToThreeBigEndian(value_in_bytes, bytes);
 }
 
-static void convertPoseToCameraData(Vector3 position, Quaternion rotation, unsigned int zoom, unsigned int focus, CameraData *toSend)
+static void convertPoseToCameraData(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
     ConvertToFreeDFormat(toSend->Pan, rotation.y, freeDOperators.pan);
     ConvertToFreeDFormat(toSend->Tilt, rotation.x, freeDOperators.tilt);

@@ -58,7 +58,6 @@ void TrackingDevice::startTracking(const float tagSize)
             printPoseData(tagWorldPose);
             printMatrix3(tagWorldPose.rotationMatrix);
 
-            //TODO: change all the matrices calculations to quaternion
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
             Matrix3 coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(90.0f));
@@ -84,7 +83,7 @@ void TrackingDevice::startTracking(const float tagSize)
             cout << "------------------------------\n\nSending to engine:\n";
             printVector3(position);
             printEulers(convertQuaternionToEuler(cameraRotation));
-            client.sendToEngine(position, cameraRotation);
+            client.sendToEngine(position, cameraRotation, 1, 1);
         }
         else
         {

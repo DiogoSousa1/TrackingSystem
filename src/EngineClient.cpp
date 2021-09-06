@@ -14,13 +14,13 @@ EngineClient::EngineClient(string ip, string port)
     int opt = 1;
     setsockopt(socketDescriptor, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt));
 }
-bool EngineClient::sendToEngine(Vector3 position, Quaternion rotation)
+bool EngineClient::sendToEngine(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus)
 {
     CameraData data;
     data.Header = 0xD1;
     data.Checksum = 1;
     data.CameraId = 0;
-    convertPoseToCameraData(position, rotation, 1, 1, &data);
+    convertPoseToCameraData(position, rotation, zoom, focus, &data);
     data.UserDefined = 1;
     if (sendto(socketDescriptor, (char *)&data, sizeof(data), 0, (struct sockaddr *)&address, sizeof(address)) == -1)
     {

@@ -27,7 +27,7 @@ class EngineClient
 public:
     EngineClient(string ip, string port);
     virtual ~EngineClient();
-    bool sendToEngine(Vector3 position, Quaternion rotation);
+    bool sendToEngine(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus);
 
 private:
     int socketDescriptor;
