@@ -26,6 +26,8 @@ void TrackingDevice::startTracking(const float tagSize)
     //creates new tag manager to use during tracking
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 
+    //tag world pose
+    PoseData tagWorldPose;
     //transformation of coordinate system to tag world
     Matrix3 coordinateTransform;
     Quaternion worldRotation;
@@ -59,7 +61,7 @@ void TrackingDevice::startTracking(const float tagSize)
         {
 
             //get pose data of first tag detected
-            PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
+            tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
 
             cout << "--------------------------\n\nTag pose in world:\n";
             printPoseData(tagWorldPose);
