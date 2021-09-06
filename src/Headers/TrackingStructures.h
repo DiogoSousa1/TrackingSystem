@@ -62,7 +62,7 @@ struct PoseData
     EulerAngles eulerRotation;
 };
 /**
- * @brief Structure to keep all tag data
+ * @brief Structure to keep all tags data
  * 
  */
 struct TagStructure

@@ -60,9 +60,6 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //get pose data of first tag detected
             PoseData tagWorldPose = tagManager.allTagsDetected.tagsWorldPositions[0];
-            PoseData tagCameraPose = tagManager.allTagsDetected.tagsCameraPositions[0];
-            cout << "Tag pose in camera:\n";
-            printPoseData(tagCameraPose);
 
             cout << "--------------------------\n\nTag pose in world:\n";
             printPoseData(tagWorldPose);
