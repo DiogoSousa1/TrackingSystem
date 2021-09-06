@@ -26,6 +26,14 @@ void TrackingDevice::startTracking(const float tagSize)
     //creates new tag manager to use during tracking
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 
+    //transformation of coordinate system to tag world
+    Matrix3 coordinateTransform;
+    Quaternion worldRotation;
+    
+    //pose data to fill and send to engine
+    Vector3 position;
+    Quaternion rotation;
+
     while (!stop)
     {
 
@@ -36,6 +44,7 @@ void TrackingDevice::startTracking(const float tagSize)
         rs2_pose lastPose = poseFrame.get_pose_data();
 
         cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
+        
         //only do tag detector between 6 frames
         if (frame_Number % 6 == 0)
         {
@@ -60,12 +69,12 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
-            Matrix3 coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(90.0f));
+            coordinateTransform = transpose(tagWorldPose.rotationMatrix) * rotateX(degreesToRadians(90.0f));
 
             cout << "World coordinate transformation:\n";
             printEulers(convertMatrixToEuler(coordinateTransform));
             //convert rotation of coordinate system to quaternion
-            Quaternion worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
+            worldRotation = convertMatrix3ToQuaternion(coordinateTransform);
 
             //invert z axis
             coordinateTransform.m13 *= -1.0f;
@@ -74,16 +83,16 @@ void TrackingDevice::startTracking(const float tagSize)
 
             //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
-            Vector3 position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
+            position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
 
             //compute camera in tag's world rotation
             //Rotation of camera calculated using quaternion algebra
-            Quaternion cameraRotation = invertQuaternion(lastPose.rotation) * invertQuaternion(worldRotation);
+            rotation = invertQuaternion(lastPose.rotation) * invertQuaternion(worldRotation);
 
             cout << "------------------------------\n\nSending to engine:\n";
             printVector3(position);
-            printEulers(convertQuaternionToEuler(cameraRotation));
-            client.sendToEngine(position, cameraRotation, 1, 1);
+            printEulers(convertQuaternionToEuler(rotation));
+            client.sendToEngine(position, rotation, 1, 1);
         }
         else
         {
