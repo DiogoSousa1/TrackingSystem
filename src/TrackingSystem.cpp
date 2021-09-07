@@ -33,6 +33,15 @@ int main()
 
 	string ip = DEFAULT_IP;
 	string port = DEFAULT_PORT;
+	cout << "Insert the translation between broadcast camera and tracking device in format \"x y z\":\n";
+	Vector3 relativePosition;
+	EulerAngles angles;
+	Quaternion relativeRotation;
+	cin >> relativePosition.x >> relativePosition.y >> relativePosition.z;
+	cout << "Insert the rotation between broadcast camera and tracking device in format \"pan tilt roll\":" << endl;
+	cin >> angles.pan >> angles.tilt >> angles.roll;
+	relativeRotation = convertEulerToQuaternion(angles);
+
 	cout << "Receiving input here...\nPress s to shutdown app!" << endl;
 
 	//write standard output to out.log file
@@ -44,10 +53,10 @@ int main()
 	EngineClient client = EngineClient(ip, port);
 	TrackingDevice device = TrackingDevice(client);
 
-	thread t([&device]
+	thread t([&]
 			 {
 				 const float tagSize = 0.144f;
-				 device.startTracking(tagSize);
+				 device.startTracking(tagSize, relativePosition, relativeRotation);
 			 });
 
 	bool stop = false;

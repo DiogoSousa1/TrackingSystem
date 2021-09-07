@@ -112,7 +112,6 @@ static void printPoseData(PoseData data)
 {
     printVector3(data.position);
     printEulers(data.eulerRotation);
-    //print of matrix is useless in terms of debug
 }
 
 static void printApriltagRawData(apriltag_pose_t &pose)

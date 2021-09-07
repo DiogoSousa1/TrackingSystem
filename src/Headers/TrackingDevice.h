@@ -31,7 +31,7 @@ public:
      * 
      * @param tagSize tag size in meters
      */
-    void startTracking(const float tagSize);
+    void startTracking(const float tagSize, Vector3 &relativePosition, Quaternion &relativeRotation);
     /**
      * @brief Sends a stop request
      * 

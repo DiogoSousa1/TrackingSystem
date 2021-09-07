@@ -8,7 +8,7 @@ TrackingDevice::~TrackingDevice()
 {
 }
 
-void TrackingDevice::startTracking(const float tagSize)
+void TrackingDevice::startTracking(const float tagSize, Vector3& relativePosition, Quaternion& relativeRotation)
 {
     //Initialization of t265 pipeline
     rs2::pipeline camPipeline;
@@ -35,15 +35,14 @@ void TrackingDevice::startTracking(const float tagSize)
     //pose data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
-
+    
     while (!stop)
     {
 
         rs2::frameset frame = camPipeline.wait_for_frames();
         rs2::video_frame fisheyeFrame = frame.get_fisheye_frame(fisheye_sensor_idx);
         unsigned long long frame_Number = fisheyeFrame.get_frame_number();
-        rs2::pose_frame poseFrame = frame.get_pose_frame();
-        rs2_pose lastPose = poseFrame.get_pose_data();
+        rs2_pose lastPose = frame.get_pose_frame().get_pose_data();
 
         cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
 
@@ -65,7 +64,6 @@ void TrackingDevice::startTracking(const float tagSize)
 
             cout << "--------------------------\n\nTag pose in world:\n";
             printPoseData(tagWorldPose);
-            printMatrix3(tagWorldPose.rotationMatrix);
 
             //calculate the  between the camera world and tags coord system
             //need rotations to align y with the tag's normal
