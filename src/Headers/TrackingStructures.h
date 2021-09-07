@@ -61,6 +61,7 @@ struct PoseData
     Vector3 position;
     EulerAngles eulerRotation;
 };
+
 /**
  * @brief Structure to keep all tags data
  * 

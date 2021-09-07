@@ -20,7 +20,7 @@
 #define DEFAULT_LOG_FILE "out2.log"
 #define concat(first, second) first second
 
-#define DEFAULT_IP "192.168.5.249"
+#define DEFAULT_IP "192.168.1.70"
 #define DEFAULT_PORT "6301"
 
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
@@ -41,7 +41,7 @@ int main()
 	cout << "Insert the rotation between broadcast camera and tracking device in format \"pan tilt roll\":" << endl;
 	cin >> angles.pan >> angles.tilt >> angles.roll;
 	relativeRotation = convertEulerToQuaternion(angles);
-
+	relativePosition = rotateVector(relativePosition, relativeRotation);
 	cout << "Receiving input here...\nPress s to shutdown app!" << endl;
 
 	//write standard output to out.log file

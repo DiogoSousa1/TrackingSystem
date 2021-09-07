@@ -8,7 +8,7 @@ TrackingDevice::~TrackingDevice()
 {
 }
 
-void TrackingDevice::startTracking(const float tagSize, Vector3& relativePosition, Quaternion& relativeRotation)
+void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePosition, Quaternion &relativeRotation)
 {
     //Initialization of t265 pipeline
     rs2::pipeline camPipeline;
@@ -26,6 +26,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3& relativePositio
     //creates new tag manager to use during tracking
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 
+    
     //tag world pose
     PoseData tagWorldPose;
     //transformation of coordinate system to tag world
@@ -35,7 +36,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3& relativePositio
     //pose data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
-    
+
     while (!stop)
     {
 
@@ -45,7 +46,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3& relativePositio
         rs2_pose lastPose = frame.get_pose_frame().get_pose_data();
 
         cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
-
+        
         //only do tag detector between 6 frames
         if (frame_Number % 6 == 0)
         {
@@ -81,11 +82,11 @@ void TrackingDevice::startTracking(const float tagSize, Vector3& relativePositio
 
             //vector transformation made using matrix algebra
             //transform the camera coordinate relative to tag's world with tag in origin
-            position = transformCoordinate((lastPose.translation - tagWorldPose.position), coordinateTransform);
+            position = transformCoordinate(((lastPose.translation + relativePosition) - tagWorldPose.position), coordinateTransform);
 
             //compute camera in tag's world rotation
             //Rotation of camera calculated using quaternion algebra
-            rotation = invertQuaternion(lastPose.rotation) * invertQuaternion(worldRotation);
+            rotation = invertQuaternion(lastPose.rotation * relativeRotation) * invertQuaternion(worldRotation);
 
             cout << "------------------------------\n\nSending to engine:\n";
             printVector3(position);
