@@ -41,7 +41,7 @@ int main()
 	cout << "Insert the rotation between broadcast camera and tracking device in format \"pan tilt roll\":" << endl;
 	cin >> angles.pan >> angles.tilt >> angles.roll;
 	relativeRotation = convertEulerToQuaternion(angles);
-	relativePosition = rotateVector(relativePosition, relativeRotation);
+	relativePosition = rotateVector(relativePosition, invertQuaternion(relativeRotation));
 	cout << "Receiving input here...\nPress s to shutdown app!" << endl;
 
 	//write standard output to out.log file
