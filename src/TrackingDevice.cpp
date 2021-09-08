@@ -29,6 +29,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
     
     //tag world pose
     PoseData tagWorldPose;
+    
     //transformation of coordinate system to tag world
     Matrix3 coordinateTransform;
     Quaternion worldRotation;

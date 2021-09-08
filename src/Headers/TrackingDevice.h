@@ -30,6 +30,8 @@ public:
      * @brief Starts the t265 pipeline and initializes tracking with tag detection 
      * 
      * @param tagSize tag size in meters
+     * @param relativePosition - camera extrinsics between tracking device and broadcast camera
+     * @param relativeRotation - camera extrinsics between tracking device and broadcast camera
      */
     void startTracking(const float tagSize, Vector3 &relativePosition, Quaternion &relativeRotation);
     /**
