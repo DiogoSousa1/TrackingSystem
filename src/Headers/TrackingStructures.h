@@ -12,7 +12,7 @@
 #define TAGSTRUCTURES_H
 #include <librealsense2/rsutil.h>
 #include <iostream>
-#include <apriltag_pose.h>
+#include <apriltag/apriltag_pose.h>
 
 /**
  * @brief Structure to store euler angles
