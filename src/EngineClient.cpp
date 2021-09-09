@@ -1,5 +1,5 @@
 #include "Headers/EngineClient.h"
-
+#ifdef __unix__
 EngineClient::EngineClient(string ip, string port)
 {
     socketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
@@ -38,3 +38,17 @@ EngineClient::~EngineClient()
     address = {0};
     return;
 }
+#endif
+#ifdef _WIN32
+EngineClient::EngineClient(string ip, string port) {
+    address = {0};
+    
+}
+
+void EngineClient::LoadWSA() {
+
+    if(WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+        fprintf(stderr,"Not able to startup winsock dll");
+    }
+} 
+#endif
