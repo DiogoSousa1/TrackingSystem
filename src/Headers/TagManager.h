@@ -12,9 +12,9 @@
 #ifndef TAGMANAGER_H_
 #define TAGMANAGER_H_
 
-#include <apriltag.h>
-#include <tag36h11.h>
-#include <apriltag_pose.h>
+#include <apriltag/apriltag.h>
+#include <apriltag/tag36h11.h>
+#include <apriltag/apriltag_pose.h>
 #include <librealsense2/rs.h>
 #include <librealsense2/rsutil.h>
 #include <memory>
