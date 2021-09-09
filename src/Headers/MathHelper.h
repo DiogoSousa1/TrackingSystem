@@ -13,7 +13,7 @@
 
 #include <math.h>
 #include <librealsense2/rsutil.h>
-#include <apriltag/apriltag.h>
+#include <apriltag.h>
 
 //My headers
 #include "TrackingStructures.h"

@@ -48,10 +48,10 @@ public:
     EngineClient(string ip, string port);
     virtual ~EngineClient();
     bool sendToEngine(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus);
-
+   
 private:
     void LoadWSA();
-    socket socketDescriptor;
+    SOCKET socketDescriptor;
     sockaddr_in address;
     WSADATA wsa;
 };
