@@ -14,8 +14,6 @@ This system is being created for wTVision and this rep should be deleted soon!
 
 <h3>Known issues and objectives:</h3>
 <ul>
-<li>Windows support for this project in wTVision - AprilTag library build</li>
-<li>Increase extensibility of the program</li>
 <li>Use quaternions to all calculations of rotation</li>
 </ul>
 
