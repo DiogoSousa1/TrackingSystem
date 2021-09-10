@@ -44,7 +44,7 @@ bool Tag_Manager::detect(unsigned char *image, const rs2_pose *camera_world_pose
     allTagsDetected.tagsCameraPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
     allTagsDetected.tagsWorldPositions = (PoseData *)malloc(sizeof(PoseData) * totalTagsDetected);
 
-    apriltag_detection *dataDetection;
+    apriltag_detection *dataDetection = {0};
     apriltag_pose_t rawPose;
     PoseData cameraCoordinatesPosition;
 
