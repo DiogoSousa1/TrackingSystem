@@ -14,7 +14,7 @@
 #ifdef _WIN32
 #include <io.h>
 #endif
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 
 //My headers
 #include "Headers/TagManager.h"
