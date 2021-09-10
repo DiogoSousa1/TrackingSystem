@@ -8,13 +8,13 @@
 
 #include <iostream>
 #include <fstream>
-#ifdef __unix__
 #include <fcntl.h>
-#endif
 #include <thread>
+
 #ifdef _WIN32
 #include <io.h>
 #endif
+#pragma warning(disable:4996)
 
 //My headers
 #include "Headers/TagManager.h"
