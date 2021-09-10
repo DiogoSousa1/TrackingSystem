@@ -51,7 +51,7 @@ int main()
 
 	//write standard output to out.log file
 	remove(FULL_PATH_OUT_LOG);
-	int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT);
+	int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT, S_IRWXU);
 	int sout = dup(1);
 	dup2(out, 1);
 
