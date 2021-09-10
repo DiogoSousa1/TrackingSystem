@@ -8,8 +8,13 @@
 
 #include <iostream>
 #include <fstream>
+#ifdef __unix__
 #include <fcntl.h>
+#endif
 #include <thread>
+#ifdef _WIN32
+#include <io.h>
+#endif
 
 //My headers
 #include "Headers/TagManager.h"
@@ -46,7 +51,7 @@ int main()
 
 	//write standard output to out.log file
 	remove(FULL_PATH_OUT_LOG);
-	int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT | O_NONBLOCK, S_IRWXU);
+	int out = open(FULL_PATH_OUT_LOG, O_RDWR | O_CREAT);
 	int sout = dup(1);
 	dup2(out, 1);
 

@@ -36,8 +36,6 @@ bool EngineClient::sendToEngine(Vector3& position, Quaternion& rotation, unsigne
 	return true;
 }
 
-//Support windows socket connection
-
 
 
 #ifdef _WIN32

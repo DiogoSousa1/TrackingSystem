@@ -20,9 +20,12 @@ using namespace std;
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+#ifndef _WINDOWS_
 #include <winsock2.h>
 #include <Ws2tcpip.h>
+#endif
 #pragma comment(lib, "Ws2_32.lib")
+
 #endif
 
 #ifdef __unix__
@@ -38,7 +41,7 @@ class EngineClient
 public:
     EngineClient(string ip, string port);
     virtual ~EngineClient();
-    bool sendToEngine(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus);
+    bool sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
 
 private:
     unsigned int socketDescriptor;
