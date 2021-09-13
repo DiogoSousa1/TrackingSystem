@@ -26,10 +26,9 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
     //creates new tag manager to use during tracking
     Tag_Manager tagManager = Tag_Manager(body_toFisheye_extrinsics, fisheye_intrinsics, tagSize);
 
-    
     //tag world pose
     PoseData tagWorldPose;
-    
+
     //transformation of coordinate system to tag world
     Matrix3 coordinateTransform;
     Quaternion worldRotation;
@@ -37,7 +36,6 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
     //pose data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
-
     while (!stop)
     {
 
@@ -47,7 +45,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
         rs2_pose lastPose = frame.get_pose_frame().get_pose_data();
 
         cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
-        
+
         //only do tag detector between 6 frames
         if (frame_Number % 6 == 0)
         {
@@ -55,6 +53,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
 
             //Detect tags in image
             tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
+            
         }
 
         //if already detected a tag
