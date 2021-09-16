@@ -36,8 +36,23 @@ using namespace std;
 int main()
 {
 
-	string ip = DEFAULT_IP;
-	string port = DEFAULT_PORT;
+	string ip;
+	string port;
+	cout << "Insert ip:port for sending data\n";
+	string aux;
+	getline(cin, aux);
+	stringstream stream(aux);
+	getline(stream,ip,':');
+	getline(stream, port);
+	cout << "ip given: " << ip;
+	cout << "\nport given" << port << "\n";
+
+	if(ip.size() == 0) {
+		ip = DEFAULT_IP;
+	}
+	if(port.size() == 0) {
+		port = DEFAULT_PORT;
+	}
 	cout << "Insert the translation between broadcast camera and tracking device in format \"x y z\":\n";
 	Vector3 relativePosition;
 	EulerAngles angles;
