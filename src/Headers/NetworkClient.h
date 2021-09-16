@@ -30,16 +30,22 @@ using namespace std;
 #include <unistd.h>
 #endif
 
-class EngineClient
+class NetworkClient
 {
 public:
-    EngineClient(string ip, string port);
-    virtual ~EngineClient();
+    NetworkClient(string sendIP, string sendPort, string receiveIP, string receivePort);
+    virtual ~NetworkClient();
     bool sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
 
 private:
-    unsigned int socketDescriptor;
-    sockaddr_in address;
+    //for sending camera data to engine
+    unsigned int sendSocketDescriptor;
+    sockaddr_in sendAddress;
+    //for receiving camera raw data
+    unsigned int receiveSocketDescriptor;
+    sockaddr_in receiveAddress;
+    void initializeSocket(string IP, string Port, bool isReceiver);
+
 #ifdef _WIN32
     void LoadWSA();
     WSADATA wsa;

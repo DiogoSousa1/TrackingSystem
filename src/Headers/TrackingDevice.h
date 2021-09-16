@@ -16,14 +16,14 @@
 #include <librealsense2/rsutil.h>
 
 //My headers
-#include "EngineClient.h"
+#include "NetworkClient.h"
 #include "TagManager.h"
 
 class TrackingDevice
 {
 public:
     //Constructors and destructors
-    TrackingDevice(EngineClient &engine_client);
+    TrackingDevice(NetworkClient &engine_client);
     ~TrackingDevice();
 
     /**
@@ -41,7 +41,7 @@ public:
     void stopTracking();
 
 private:
-    EngineClient client;
+    NetworkClient client;
     bool stop;
 };
 

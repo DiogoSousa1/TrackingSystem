@@ -19,7 +19,7 @@
 //My headers
 #include "Headers/TagManager.h"
 #include "Headers/TrackingDevice.h"
-#include "Headers/EngineClient.h"
+#include "Headers/NetworkClient.h"
 
 #define PROJECT_PATH_LOGS "./"
 #define DEFAULT_LOG_FILE "out2.log"
@@ -36,23 +36,28 @@ using namespace std;
 int main()
 {
 
-	string ip;
-	string port;
+	string sendIP;
+	string sendPort;
+	string receiveIP;
+	string receivePort;
 	cout << "Insert ip:port for sending data\n";
 	string aux;
 	getline(cin, aux);
 	stringstream stream(aux);
-	getline(stream,ip,':');
-	getline(stream, port);
-	cout << "ip given: " << ip;
-	cout << "\nport given" << port << "\n";
-
-	if(ip.size() == 0) {
-		ip = DEFAULT_IP;
+	getline(stream,sendIP,':');
+	getline(stream, sendPort);
+	if(sendIP.size() == 0) {
+		sendIP = DEFAULT_IP;
 	}
-	if(port.size() == 0) {
-		port = DEFAULT_PORT;
+	if(sendPort.size() == 0) {
+		sendPort = DEFAULT_PORT;
 	}
+	getline(cin, aux);
+	stream = stringstream(aux);
+	getline(stream, receiveIP, ':');
+	getline(stream, receivePort);
+	
+	
 	cout << "Insert the translation between broadcast camera and tracking device in format \"x y z\":\n";
 	Vector3 relativePosition;
 	EulerAngles angles;
@@ -70,7 +75,7 @@ int main()
 	int sout = dup(1);
 	dup2(out, 1);
 
-	EngineClient client = EngineClient(ip, port);
+	NetworkClient client = NetworkClient(sendIP, sendPort, receiveIP, receivePort);
 	TrackingDevice device = TrackingDevice(client);
 
 	thread t([&]
