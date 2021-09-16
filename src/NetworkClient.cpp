@@ -9,7 +9,7 @@ NetworkClient::NetworkClient(string sendIP, string sendPort, string receiveIP, s
 
 void NetworkClient::initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort)
 {
-
+	//set receiver of data
 	receiveSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
 	if (receiveSocketDescriptor == -1)
 	{
@@ -19,7 +19,8 @@ void NetworkClient::initializeSockets(string sendIP, string sendPort, string rec
 	receiveAddress.sin_family = AF_INET;
 	inet_pton(AF_INET, (receiveIP).c_str(), &(receiveAddress.sin_addr));
 	receiveAddress.sin_port = htons(atoi(receivePort.data()));
-
+	
+	//set sender of data
 	sendSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sendSocketDescriptor == -1)
 	{
