@@ -4,38 +4,31 @@ NetworkClient::NetworkClient(string sendIP, string sendPort, string receiveIP, s
 #ifdef _WIN32
 	LoadWSA();
 #endif
-	initializeSocket(sendIP, sendPort, false);
-	initializeSocket(receiveIP, receivePort, true);
+	initializeSockets(sendIP, sendPort, receiveIP, receivePort);
 }
 
-void NetworkClient::initializeSocket(string IP, string Port, bool isReceiver)
+void NetworkClient::initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort)
 {
-	if (isReceiver)
-	{
 
-		receiveSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
-		if (receiveSocketDescriptor == -1)
-		{
-			std::cerr << "Could not create socket" << endl;
-		}
-		receiveAddress = {0};
-		receiveAddress.sin_family = AF_INET;
-		inet_pton(AF_INET, (IP).c_str(), &(receiveAddress.sin_addr));
-		receiveAddress.sin_port = htons(atoi(Port.data()));
-	}
-	else
+	receiveSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
+	if (receiveSocketDescriptor == -1)
 	{
-
-		sendSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
-		if (sendSocketDescriptor == -1)
-		{
-			std::cerr << "Could not create socket" << endl;
-		}
-		sendAddress = {0};
-		sendAddress.sin_family = AF_INET;
-		inet_pton(AF_INET, (IP).c_str(), &(sendAddress.sin_addr));
-		sendAddress.sin_port = htons(atoi(Port.data()));
+		std::cerr << "Could not create socket" << endl;
 	}
+	receiveAddress = {0};
+	receiveAddress.sin_family = AF_INET;
+	inet_pton(AF_INET, (receiveIP).c_str(), &(receiveAddress.sin_addr));
+	receiveAddress.sin_port = htons(atoi(receivePort.data()));
+
+	sendSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sendSocketDescriptor == -1)
+	{
+		std::cerr << "Could not create socket" << endl;
+	}
+	sendAddress = {0};
+	sendAddress.sin_family = AF_INET;
+	inet_pton(AF_INET, (sendIP).c_str(), &(sendAddress.sin_addr));
+	sendAddress.sin_port = htons(atoi(sendPort.data()));
 }
 
 NetworkClient::~NetworkClient()

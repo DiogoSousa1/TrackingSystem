@@ -44,7 +44,7 @@ private:
     //for receiving camera raw data
     unsigned int receiveSocketDescriptor;
     sockaddr_in receiveAddress;
-    void initializeSocket(string IP, string Port, bool isReceiver);
+    void initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort);
 
 #ifdef _WIN32
     void LoadWSA();
