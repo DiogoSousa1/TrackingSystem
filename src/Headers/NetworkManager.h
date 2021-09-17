@@ -30,11 +30,11 @@ using namespace std;
 #include <unistd.h>
 #endif
 
-class NetworkClient
+class NetworkManager
 {
 public:
-    NetworkClient(string sendIP, string sendPort, string receiveIP, string receivePort);
-    virtual ~NetworkClient();
+    NetworkManager(string sendIP, string sendPort, string receiveIP, string receivePort);
+    virtual ~NetworkManager();
     bool sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
 
 private:

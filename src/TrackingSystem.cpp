@@ -19,7 +19,7 @@
 //My headers
 #include "Headers/TagManager.h"
 #include "Headers/TrackingDevice.h"
-#include "Headers/NetworkClient.h"
+#include "Headers/NetworkManager.h"
 
 #define PROJECT_PATH_LOGS "./"
 #define DEFAULT_LOG_FILE "out2.log"
@@ -75,7 +75,7 @@ int main()
 	int sout = dup(1);
 	dup2(out, 1);
 
-	NetworkClient client = NetworkClient(sendIP, sendPort, receiveIP, receivePort);
+	NetworkManager client = NetworkManager(sendIP, sendPort, receiveIP, receivePort);
 	TrackingDevice device = TrackingDevice(client);
 
 	thread t([&]

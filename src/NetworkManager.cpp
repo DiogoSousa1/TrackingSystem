@@ -1,5 +1,5 @@
-#include "Headers/NetworkClient.h"
-NetworkClient::NetworkClient(string sendIP, string sendPort, string receiveIP, string receivePort)
+#include "Headers/NetworkManager.h"
+NetworkManager::NetworkManager(string sendIP, string sendPort, string receiveIP, string receivePort)
 {
 #ifdef _WIN32
 	LoadWSA();
@@ -7,7 +7,7 @@ NetworkClient::NetworkClient(string sendIP, string sendPort, string receiveIP, s
 	initializeSockets(sendIP, sendPort, receiveIP, receivePort);
 }
 
-void NetworkClient::initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort)
+void NetworkManager::initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort)
 {
 	//set receiver of data
 	receiveSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
@@ -32,11 +32,11 @@ void NetworkClient::initializeSockets(string sendIP, string sendPort, string rec
 	sendAddress.sin_port = htons(atoi(sendPort.data()));
 }
 
-NetworkClient::~NetworkClient()
+NetworkManager::~NetworkManager()
 {
 }
 
-bool NetworkClient::sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus)
+bool NetworkManager::sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus)
 {
 	CameraData data;
 	data.Header = 0xD1;

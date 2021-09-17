@@ -1,6 +1,6 @@
 #include "Headers/TrackingDevice.h"
 
-TrackingDevice::TrackingDevice(NetworkClient &engine_client) : client(engine_client)
+TrackingDevice::TrackingDevice(NetworkManager &engine_client) : client(engine_client)
 {
     stop = false;
 }
