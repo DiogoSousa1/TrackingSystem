@@ -1,5 +1,5 @@
 /**
- * @file EngineClient.h
+ * @file NetworkManager.h
  * @author Diogo Sousa
  * @brief Client to connect to R3 engine using FreeD protocol
  * @version 1.0
