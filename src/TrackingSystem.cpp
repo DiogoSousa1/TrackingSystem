@@ -44,20 +44,21 @@ int main()
 	string aux;
 	getline(cin, aux);
 	stringstream stream(aux);
-	getline(stream,sendIP,':');
+	getline(stream, sendIP, ':');
 	getline(stream, sendPort);
-	if(sendIP.size() == 0) {
+	if (sendIP.size() == 0)
+	{
 		sendIP = DEFAULT_IP;
 	}
-	if(sendPort.size() == 0) {
+	if (sendPort.size() == 0)
+	{
 		sendPort = DEFAULT_PORT;
 	}
 	getline(cin, aux);
 	stream = stringstream(aux);
 	getline(stream, receiveIP, ':');
 	getline(stream, receivePort);
-	
-	
+
 	cout << "Insert the translation between broadcast camera and tracking device in format \"x y z\":\n";
 	Vector3 relativePosition;
 	EulerAngles angles;

@@ -33,17 +33,23 @@ using namespace std;
 class NetworkManager
 {
 public:
+    //constructors and destructors
     NetworkManager(string sendIP, string sendPort, string receiveIP, string receivePort);
     virtual ~NetworkManager();
-    bool sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
+
+    //send tracking data to destination
+    bool sendTrackingData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
 
 private:
     //for sending camera data to engine
     unsigned int sendSocketDescriptor;
     sockaddr_in sendAddress;
+
     //for receiving camera raw data
     unsigned int receiveSocketDescriptor;
     sockaddr_in receiveAddress;
+
+    //initialize sockets to send and receive data
     void initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort);
 
 #ifdef _WIN32

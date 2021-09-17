@@ -4,6 +4,7 @@ TrackingDevice::TrackingDevice(NetworkManager &engine_client) : client(engine_cl
 {
     stop = false;
 }
+
 TrackingDevice::~TrackingDevice()
 {
 }
@@ -53,8 +54,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
 
             //Detect tags in image
             tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
-            
-        }
+                }
 
         //if already detected a tag
         if (tagManager.allTagsDetected.totalTagsDetected > 0)
@@ -91,7 +91,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
             cout << "------------------------------\n\nSending to engine:\n";
             printVector3(position);
             printEulers(convertQuaternionToEuler(rotation));
-            client.sendToEngine(position, rotation, 1, 1);
+            client.sendTrackingData(position, rotation, 1, 1);
         }
         else
         {

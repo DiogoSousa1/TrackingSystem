@@ -19,7 +19,7 @@ void NetworkManager::initializeSockets(string sendIP, string sendPort, string re
 	receiveAddress.sin_family = AF_INET;
 	inet_pton(AF_INET, (receiveIP).c_str(), &(receiveAddress.sin_addr));
 	receiveAddress.sin_port = htons(atoi(receivePort.data()));
-	
+
 	//set sender of data
 	sendSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sendSocketDescriptor == -1)
@@ -36,7 +36,7 @@ NetworkManager::~NetworkManager()
 {
 }
 
-bool NetworkManager::sendToEngine(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus)
+bool NetworkManager::sendTrackingData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus)
 {
 	CameraData data;
 	data.Header = 0xD1;
