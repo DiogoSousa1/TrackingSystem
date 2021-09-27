@@ -45,7 +45,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
         unsigned long long frame_Number = fisheyeFrame.get_frame_number();
         rs2_pose lastPose = frame.get_pose_frame().get_pose_data();
 
-        cout << "Tracker confidence: " << lastPose.tracker_confidence << "\n";
+        cout << "Tracker confidence: " << lastPose.tracker_confidence << "\r";
 
         //only do tag detector between 6 frames
         if (frame_Number % 6 == 0)
@@ -54,7 +54,7 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
 
             //Detect tags in image
             tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
-                }
+        }
 
         //if already detected a tag
         if (tagManager.allTagsDetected.totalTagsDetected > 0)
