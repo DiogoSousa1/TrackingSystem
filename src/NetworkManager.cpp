@@ -1,30 +1,30 @@
 #include "Headers/NetworkManager.h"
-NetworkManager::NetworkManager(string sendIP, string sendPort, string receiveIP, string receivePort)
+NetworkManager::NetworkManager(string sendIP, string sendPort, string receivePort)
 {
 #ifdef _WIN32
 	LoadWSA();
 #endif
-	initializeSockets(sendIP, sendPort, receiveIP, receivePort);
+	initializeSockets(sendIP, sendPort, receivePort);
 }
 
-void NetworkManager::initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort)
+void NetworkManager::initializeSockets(string sendIP, string sendPort, string receivePort)
 {
-	//set receiver of data
+	//open descriptor for receiving data
 	receiveSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
 	if (receiveSocketDescriptor == -1)
 	{
-		std::cerr << "Could not create socket" << endl;
+		std::cerr << "Could not create receive socket" << endl;
 	}
 	receiveAddress = {0};
 	receiveAddress.sin_family = AF_INET;
-	inet_pton(AF_INET, (receiveIP).c_str(), &(receiveAddress.sin_addr));
 	receiveAddress.sin_port = htons(atoi(receivePort.data()));
+	receiveAddress.sin_addr.s_addr = INADDR_ANY;
 
 	//set sender of data
 	sendSocketDescriptor = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sendSocketDescriptor == -1)
 	{
-		std::cerr << "Could not create socket" << endl;
+		std::cerr << "Could not create send socket" << endl;
 	}
 	sendAddress = {0};
 	sendAddress.sin_family = AF_INET;
@@ -34,6 +34,20 @@ void NetworkManager::initializeSockets(string sendIP, string sendPort, string re
 
 NetworkManager::~NetworkManager()
 {
+}
+
+void NetworkManager::receiveLensData(const float *zoom, const float *focus)
+{
+	thread t([this]
+			 {
+				 unsigned char *buff = new  unsigned char[30];
+				 while (true)
+				 {
+					 recv(receiveSocketDescriptor, buff, 30, 0);
+					 //TODO:
+					//interpret receive packet here
+				}
+			 });
 }
 
 bool NetworkManager::sendTrackingData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus)

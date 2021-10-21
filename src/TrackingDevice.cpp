@@ -34,9 +34,10 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
     Matrix3 coordinateTransform;
     Quaternion worldRotation;
 
-    //pose data to fill and send to engine
+    //pose and lens data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
+    float zoom, focus;
     while (!stop)
     {
 
@@ -55,7 +56,6 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
             //Detect tags in image
             tagManager.detect((unsigned char *)fisheyeFrame.get_data(), &lastPose);
         }
-
         //if already detected a tag
         if (tagManager.allTagsDetected.totalTagsDetected > 0)
         {

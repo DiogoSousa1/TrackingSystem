@@ -38,7 +38,6 @@ int main()
 
 	string sendIP;
 	string sendPort;
-	string receiveIP;
 	string receivePort;
 	cout << "Insert ip:port for sending data\n";
 	string aux;
@@ -54,10 +53,9 @@ int main()
 	{
 		sendPort = DEFAULT_PORT;
 	}
+
+	cout << "Insert port for receiving data\n";
 	getline(cin, aux);
-	stream = stringstream(aux);
-	getline(stream, receiveIP, ':');
-	getline(stream, receivePort);
 
 	cout << "Insert the translation between broadcast camera and tracking device in format \"x y z\":\n";
 	Vector3 relativePosition;
@@ -70,10 +68,9 @@ int main()
 	relativePosition = rotateVector(relativePosition, invertQuaternion(relativeRotation));
 	cout << "Receiving input here...\nPress s to shutdown app!" << endl;
 
-
-	NetworkManager client = NetworkManager(sendIP, sendPort, receiveIP, receivePort);
+	NetworkManager client = NetworkManager(sendIP, sendPort, receivePort);
 	TrackingDevice device = TrackingDevice(client);
-
+	
 	thread t([&]
 			 {
 				 const float tagSize = 0.144f;

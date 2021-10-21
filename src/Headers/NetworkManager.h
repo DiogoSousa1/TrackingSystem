@@ -11,9 +11,13 @@
 #ifndef ENGINECLIENT_H
 #define ENGINECLIENT_H
 
+
+#include <thread>
+
 //My headers
 #include "TrackingStructures.h"
 #include "FreeDHelpers.h"
+
 using namespace std;
 
 #ifdef _WIN32
@@ -30,27 +34,31 @@ using namespace std;
 #include <unistd.h>
 #endif
 
+
+
 class NetworkManager
 {
 public:
     //constructors and destructors
-    NetworkManager(string sendIP, string sendPort, string receiveIP, string receivePort);
+    NetworkManager(string sendIP, string sendPort, string receivePort);
     virtual ~NetworkManager();
 
     //send tracking data to destination
     bool sendTrackingData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
+    //starts receiving data 
+    void receiveLensData(const float* zoom, const float* focus);
 
+    unsigned int receiveSocketDescriptor;
 private:
     //for sending camera data to engine
     unsigned int sendSocketDescriptor;
     sockaddr_in sendAddress;
 
     //for receiving camera raw data
-    unsigned int receiveSocketDescriptor;
     sockaddr_in receiveAddress;
 
     //initialize sockets to send and receive data
-    void initializeSockets(string sendIP, string sendPort, string receiveIP, string receivePort);
+    void initializeSockets(string sendIP, string sendPort, string receivePort);
 
 #ifdef _WIN32
     void LoadWSA();
