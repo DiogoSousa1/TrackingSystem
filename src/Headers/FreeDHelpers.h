@@ -13,7 +13,7 @@
 
 //My headers
 #include "TrackingStructures.h"
-#include "QuaternionHelpers.h" 
+#include "QuaternionHelpers.h"
 
 struct FreeDOperators
 {
@@ -54,6 +54,16 @@ static void FourBytesToThreeBigEndian(unsigned char value4Bytes[4], unsigned cha
     value3bytes[2] = value4Bytes[0];
 }
 
+static int ThreeBytesToSignedInt(unsigned char byte0, unsigned char byte1, unsigned char byte2)
+{
+    int value = (int)(byte0 << 16 | byte1 << 8 | byte2);
+    if (value & (0x8 << 20))
+    {
+        value |= 0xFF << 24;
+    }
+    return value;
+}
+
 static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned int multiplier)
 {
     unsigned char value_in_bytes[4];
@@ -62,7 +72,7 @@ static void ConvertToFreeDFormat(unsigned char bytes[3], float value, unsigned i
     FourBytesToThreeBigEndian(value_in_bytes, bytes);
 }
 
-static void convertPoseToCameraData(Vector3& position, Quaternion& rotation, unsigned int zoom, unsigned int focus, CameraData *toSend)
+static void convertPoseToCameraData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus, CameraData *toSend)
 {
     ConvertToFreeDFormat(toSend->Pan, rotation.y, freeDOperators.pan);
     ConvertToFreeDFormat(toSend->Tilt, rotation.x, freeDOperators.tilt);

@@ -46,7 +46,7 @@ public:
     //send tracking data to destination
     bool sendTrackingData(Vector3 &position, Quaternion &rotation, unsigned int zoom, unsigned int focus);
     //starts receiving data 
-    void receiveLensData(const float* zoom, const float* focus);
+    void receiveLensData(int* zoom, int* focus);
 
     unsigned int receiveSocketDescriptor;
 private:

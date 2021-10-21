@@ -37,7 +37,8 @@ void TrackingDevice::startTracking(const float tagSize, Vector3 &relativePositio
     //pose and lens data to fill and send to engine
     Vector3 position;
     Quaternion rotation;
-    float zoom, focus;
+    int zoom, focus;
+    client.receiveLensData(&zoom, &focus);
     while (!stop)
     {
 

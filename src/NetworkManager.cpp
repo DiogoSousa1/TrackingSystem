@@ -36,15 +36,17 @@ NetworkManager::~NetworkManager()
 {
 }
 
-void NetworkManager::receiveLensData(const float *zoom, const float *focus)
+void NetworkManager::receiveLensData(int *zoom, int *focus)
 {
-	thread t([this]
+	thread t([&]
 			 {
 				 unsigned char *buff = new  unsigned char[30];
 				 while (true)
 				 {
 					 recv(receiveSocketDescriptor, buff, 30, 0);
-					 //TODO:
+					 //TODO: FreeD packets from panasonic are 20-25 the values of zoom and focus
+					 *zoom = ThreeBytesToSignedInt(buff[20],buff[21], buff[22]);
+						*focus = ThreeBytesToSignedInt(buff[23], buff[24], buff[25]); 
 					//interpret receive packet here
 				}
 			 });
