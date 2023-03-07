@@ -20,9 +20,9 @@
 <p>Quaternion branch uses only quaternion calculations to represent rotation (not working properly)</p>
 
 
-<h2>Purpose<h2>
+<h2>Purpose</h2>
 The basic purpose of the system is to send tracking data from data given by the intel camera, a tag is detected and the coordinate system is calculated around that tag.
 
 
-<h1>Disclaimer<h1>
+<h1>Disclaimer</h1>
 This repo was for a private project to implement a tracking solution, since intel discontinued the support for the specific camera in use the project was cancelled :(.
