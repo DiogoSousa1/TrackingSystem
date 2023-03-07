@@ -25,7 +25,7 @@
 #define DEFAULT_LOG_FILE "out2.log"
 #define concat(first, second) first second
 
-#define DEFAULT_IP "192.168.5.249"
+#define DEFAULT_IP "127.0.0.1"
 #define DEFAULT_PORT "6301"
 
 #define FULL_PATH_OUT_LOG concat(PROJECT_PATH_LOGS, DEFAULT_LOG_FILE)
